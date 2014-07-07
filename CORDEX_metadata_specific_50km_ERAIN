@@ -1,0 +1,509 @@
+#!/bin/bash
+
+#-- VARIABLE source
+sourceDIR[ 1]='../EUROPE_STS'
+sourceDIR[ 2]='../EUROPE_STS'
+sourceDIR[ 3]='../EUROPE_STS'
+sourceDIR[ 4]='../EUROPE_STS'
+
+#-- VARIABLE RegCM name
+varalica[ 1]='t2avg'
+varalica[ 2]='t2max'
+varalica[ 3]='t2min'
+varalica[ 4]='pcpavg'
+
+#--- VARIABLE name
+name[ 1]='tas'
+name[ 2]='tasmax'
+name[ 3]='tasmin'
+name[ 4]='pr'
+name[ 5]='ps'
+name[ 6]='psl'
+name[ 7]='huss'
+name[ 8]='sfcwind'
+name[ 9]='sfcwindmax'
+name[10]='clt'
+name[11]='sund'
+name[12]='rsds'
+name[13]='rlds'
+name[14]='hfls'
+name[15]='hfss'
+name[16]='rsus'
+name[17]='rlus'
+name[18]='evspsbl'
+name[19]='unknown'
+name[20]='mfrso'
+name[21]='mrros'
+name[22]='mrro'
+name[23]='mrso'
+name[24]='snw'
+name[25]='snm'
+name[26]='prhmax'
+name[27]='prc'
+name[28]='rlut'
+name[29]='rsdt'
+name[30]='rsut'
+name[31]='uas'
+name[32]='vas'
+name[33]='wsgsmax'
+name[34]='tauu'
+name[35]='tauv'
+name[36]='ts'
+name[37]='zmla'
+name[38]='prw'
+name[39]='clwvi'
+name[40]='clivi'
+name[41]='ua850'
+name[42]='va850'
+name[43]='ta850'
+name[44]='hus850'
+name[45]='ua500'
+name[46]='va500'
+name[47]='zg500'
+name[48]='ta500'
+name[49]='ua200'
+name[50]='va200'
+name[51]='ta200'
+name[52]='zg200'
+name[53]='clh'
+name[54]='clm'
+name[55]='cll'
+name[56]='snc'
+name[57]='snd'
+name[58]='sic'
+name[59]='prsn'
+name[60]='orog'  #Nije definirano u CORDEX bazi
+name[61]='sftls' #Nije definirano u CORDEX bazi
+#--- VARIABLE name
+
+#---- VARIABLE long_name
+long_name[ 1]='Near-Surface Temperature'
+long_name[ 2]='Daily Maximum Near-Surface Temperature'
+long_name[ 3]='Daily Minimum Near-Surface Temperature'
+long_name[ 4]='Precipitation'
+long_name[ 5]='Surface Air Pressure'
+long_name[ 6]='Sea Level Pressure'
+long_name[ 7]='Near-Surface Specific Humidity'
+long_name[ 8]='Near-Surface Wind Speed'
+long_name[ 9]='Daily Maximum Near-Surface Wind Speed'
+long_name[10]='Total Cloud Fraction'
+long_name[11]='Duration Of Sunshine'
+long_name[12]='Surface Downwelling Shortwave Radiation'
+long_name[13]='Surface Downwelling Longwave Radiation'
+long_name[14]='Surface Upward Latent Heat Flux'
+long_name[15]='Surface Upward Sensible Heat Flux'
+long_name[16]='Surface Upwelling Shortwave Radiation'
+long_name[17]='Surface Upwelling Longwave Radiation'
+long_name[18]='Evaporation'
+long_name[19]='Potential Evapotransiration'
+long_name[20]='Total Soil Frozen Water Content'
+long_name[21]='Surface Runoff'
+long_name[22]='Subsurface Runoff'
+long_name[23]='Total Soil Moisture'
+long_name[24]='Snow Amount'
+long_name[25]='Surface Snow Melt'
+long_name[26]='Daily Maximum Precipitation'
+long_name[27]='Convective Precipitation'
+long_name[28]='TOA Outgoing Longwave Radiation'
+long_name[29]='TOA Incident Shortwave Radiation'
+long_name[30]='TOA Outgoing Shortwave Radiation'
+long_name[31]='Eastward Near-Surface Wind Velocity'
+long_name[32]='Northward Near-Surface Wind Velocity'
+long_name[33]='Daily Maximum Near-Surface Wind Speed of Gust'
+long_name[34]='Surface Downward Eastward Wind Stress'
+long_name[35]='Surface Downward Northward Wind Stress'
+long_name[36]='Surface Temperature'
+long_name[37]='Height Of Boundary Layer'
+long_name[38]='Water Vapor Path'
+long_name[39]='Condensed Water Path'
+long_name[40]='Ice Water Path'
+long_name[41]='Eastward Wind'
+long_name[42]='Northward Wind'
+long_name[43]='Air Temperature'
+long_name[44]='Specific Humidity'
+long_name[45]='Eastward Wind'
+long_name[46]='Northward Wind'
+long_name[47]='Geopotential Height'
+long_name[48]='Air Temperature'
+long_name[49]='Eastward Wind'
+long_name[50]='Northward Wind'
+long_name[51]='Air Temperature'
+long_name[52]='Geopotential Height'
+long_name[53]='High Cloud Cover'
+long_name[54]='Medium Cloud Cover'
+long_name[55]='Low Cloud Cover'
+long_name[56]='Snow Area Fraction'
+long_name[57]='Snow Depth'
+long_name[58]='Sea Ice Fraction'
+long_name[59]='Snowfall Flux'
+
+long_name[60]='Orography'                       #Nije definirano u CORDEX bazi
+long_name[61]='Land area fraction of grid cell' #Nije definirano u CORDEX bazi
+#---- VARIABLE long_name
+
+#----- VARIABLE standard_name
+stand_name[ 1]='air_temperature'
+stand_name[ 2]='air_temperature'
+stand_name[ 3]='air_temperature'
+stand_name[ 4]='precipitation_flux'
+stand_name[ 5]='surface_air_pressure'
+stand_name[ 6]='air_pressure_at_sea_level'
+stand_name[ 7]='specific_humidity'
+stand_name[ 8]='wind_speed'
+stand_name[ 9]='wind_speed'
+stand_name[10]='cloud_area_fraction'
+stand_name[11]='duration_of_sunshine'
+stand_name[12]='surface_downwelling_shortwave_flux_in_air'
+stand_name[13]='surface_downwelling_longwave_flux_in_air'
+stand_name[14]='surface_upward_latent_heat_flux'
+stand_name[15]='surface_upward_sensible_heat_flux'
+stand_name[16]='surface_upwelling_shortwave_flux_in_air'
+stand_name[17]='surface_upwelling_longwave_flux_in_air'
+stand_name[18]='water_evaporation_flux'
+stand_name[19]='potential_water_evaporation_flux'
+stand_name[20]='soil_frozen_water_content'
+stand_name[21]='surface_runoff_flux'
+stand_name[22]='runoff_flux'
+stand_name[23]='soil_moisture_content'
+stand_name[24]='surface_snow_amount'
+stand_name[25]='surface_snow_melt_flux'
+stand_name[26]='precipitation_flux'
+stand_name[27]='convective_precipitation_flux'
+stand_name[28]='toa_outgoing_longwave_flux'
+stand_name[29]='toa_incoming_shortwave_flux'
+stand_name[30]='toa_outgoing_shortwave_flux'
+stand_name[31]='eastward_wind'
+stand_name[32]='northward_wind'
+stand_name[33]='wind_speed_of_gust'
+stand_name[34]='surface_downward_eastward_stress'
+stand_name[35]='surface_downward_northward_stress'
+stand_name[36]='surface_temperature'
+stand_name[37]='atmosphere_boundary_layer_thickness'
+stand_name[38]='atmosphere_water_vapor_content'
+stand_name[39]='atmosphere_cloud_condensed_water_content'
+stand_name[40]='atmosphere_cloud_ice_content'
+stand_name[41]='eastward_wind'
+stand_name[42]='northward_wind'
+stand_name[43]='air_temperature'
+stand_name[44]='specific_humidity'
+stand_name[45]='eastward_wind'
+stand_name[46]='northward_wind'
+stand_name[47]='geopotential_height'
+stand_name[48]='air_temperature'
+stand_name[49]='eastward_wind'
+stand_name[50]='northward_wind'
+stand_name[51]='air_temperature'
+stand_name[52]='geopotential_height'
+stand_name[53]='cloud_area_fraction_in_atmosphere_layer'
+stand_name[54]='cloud_area_fraction_in_atmosphere_layer'
+stand_name[55]='cloud_area_fraction_in_atmosphere_layer'
+stand_name[56]='surface_snow_area_fraction'
+stand_name[57]='surface_snow_thickness'
+stand_name[58]='sea_ice_fraction'
+stand_name[59]='snowfall_flux'
+
+stand_name[60]='surface_altitude'   #Nije definirano u CORDEX bazi
+stand_name[61]='land_area_fraction' #Nije definirano u CORDEX bazi
+#----- VARIABLE standard_name
+
+#------ Units
+units[ 1]='K'
+units[ 2]='K'
+units[ 3]='K'
+units[ 4]='kg m-2 s-1'
+units[ 5]='Pa'
+units[ 6]='Pa'
+units[ 7]='1'
+units[ 8]='m s-1'
+units[ 9]='m s-1'
+units[10]='%'
+units[11]='s'
+units[12]='W m-2'
+units[13]='W m-2'
+units[14]='W m-2'
+units[15]='W m-2'
+units[16]='W m-2'
+units[17]='W m-2'
+units[18]='kg m-2 s-1'
+units[19]='kg m-2 s-1'
+units[20]='kg m-2'
+units[21]='kg m-2 s-1'
+units[22]='kg m-2 s-1'
+units[23]='kg m-2'
+units[24]='kg m-2'
+units[25]='kg m-2 s-1'
+units[26]='kg m-2 s-1'
+units[27]='kg m-2 s-1'
+units[28]='W m-2'
+units[29]='W m-2'
+units[30]='W m-2'
+units[31]='m s-1'
+units[32]='m s-1'
+units[33]='m s-1'
+units[34]='Pa'
+units[35]='Pa'
+units[36]='K'
+units[37]='m'
+units[38]='kg m-2'
+units[39]='kg m-2'
+units[40]='kg m-2'
+units[41]='m s-1'
+units[42]='m s-1'
+units[43]='K'
+units[44]='1'
+units[45]='m s-1'
+units[46]='m s-1'
+units[47]='m'
+units[48]='K'
+units[49]='m s-1'
+units[50]='m s-1'
+units[51]='K'
+units[52]='m'
+units[53]='%'
+units[54]='%'
+units[55]='%'
+units[56]='%'
+units[57]='m'
+units[58]='%'
+units[59]='kg m-2 s-1'
+
+units[60]='m' #Nije definirano u CORDEX bazi
+units[61]='1' #Nije definirano u CORDEX bazi
+#------ Units
+
+#------- cellMethod
+cellMethod[ 1]='point'
+cellMethod[ 2]='maximum'
+cellMethod[ 3]='minimum'
+cellMethod[ 4]='mean'
+cellMethod[ 5]='point'
+cellMethod[ 6]='point'
+cellMethod[ 7]='point'
+cellMethod[ 8]='point'
+cellMethod[ 9]='maximum/mean'
+cellMethod[10]='point'
+cellMethod[11]='sum'
+cellMethod[12]='point' #Treba ici 'mean'. 19.4.2012. U RegCM je point
+cellMethod[13]='point' #Treba ici 'mean'. 19.4.2012. U RegCM je point
+cellMethod[14]='mean'
+cellMethod[15]='mean'
+cellMethod[16]='mean'
+cellMethod[17]='mean'
+cellMethod[18]='mean'
+cellMethod[19]='mean'
+cellMethod[20]='mean'
+cellMethod[21]='mean'
+cellMethod[22]='mean'
+cellMethod[23]='mean'
+cellMethod[24]='point'
+cellMethod[25]='mean'
+cellMethod[26]='maximum'
+cellMethod[27]='mean'
+cellMethod[28]='point'  #Treba ici 'mean'. 3.5.2012. U RegCM je point
+cellMethod[29]='point'  #Treba ici 'mean'. 3.5.2012. U RegCM je point
+cellMethod[30]='point'  #Treba ici 'mean'. 3.5.2012. U RegCM je point
+cellMethod[31]='point'
+cellMethod[32]='point'
+cellMethod[33]='maximum'
+cellMethod[34]='point'  #Treba ici 'mean'. 19.4.2012. U RegCM je point
+cellMethod[35]='point'  #Treba ici 'mean'. 19.4.2012. U RegCM je point
+cellMethod[36]='point'
+cellMethod[37]='point'
+cellMethod[38]='point'
+cellMethod[39]='point'
+cellMethod[40]='point'
+cellMethod[41]='point'
+cellMethod[42]='point'
+cellMethod[43]='point'
+cellMethod[44]='point'
+cellMethod[45]='point'
+cellMethod[46]='point'
+cellMethod[47]='point'
+cellMethod[48]='point'
+cellMethod[49]='point'
+cellMethod[50]='point'
+cellMethod[51]='point'
+cellMethod[52]='point'
+cellMethod[53]='mean'
+cellMethod[54]='mean'
+cellMethod[55]='mean'
+cellMethod[56]='point'
+cellMethod[57]='point'
+cellMethod[58]='point'
+cellMethod[59]='mean'
+#------- cellMethod
+
+
+#-------- Global attributes
+	conventions="CF-1.4"
+	contact="lidija.srnec@cirus.dhz.hr, ivan.guettler@cirus.dhz.hr"
+	comment="CORDEX Europe RegCM4.2 50km HadGEM2-ES"
+	creation_date="2013-05-15"
+
+	experiment_id="rcp45"
+	experiment="RCP4.5 run with HadGEM2-ES forcing"
+
+	driving_experiment="HadGEM2-ES, rcp4.5, r1i1p1"
+	driving_model_id="MOHC-HadGEM2-ES"
+	driving_model_ensemble_member="r1i1p1"
+	driving_experiment_name="RCP45"
+
+	frequency[1]="day"
+	frequency[2]="month"
+	frequency[3]="season"
+
+	institude_id="DHMZ"
+	institution="Meteorological and Hydrological Service of Croatia"
+	model_id="DHMZ-RegCM4.2"
+	project_id="CORDEX"
+	CORDEX_domain="EUR-44"
+	RCM_version_id="v1"
+	product="output"
+	references="http://gforge.ictp.it/gf/project/regcm/"
+#-------- Global attributes
+
+#--------- Single value variables
+	#height=2 m
+	H2_value=2
+	H2_type="double height"
+	H2_longname="height"
+	H2_standardname="height"
+	H2_units="m"
+	H2_positive="up"
+	H2_axis="Z"
+
+	#height=10 m
+	H10_type="double height"
+	H10_longname="height"
+	H10_standardname="height"
+	H10_units="m"
+	H10_positive="up"
+	H10_axis="Z"
+
+	#plev=850 00,500 00,200 00
+P_type="double plev"
+P_longname="pressure level"
+P_standardname="air_pressure"
+P_units="Pa"
+P_positive="down"
+P_axis="Z"
+P_bounds="plev_bnds"
+
+	#plev_bnds [440 00, 0.0], [680 00, 440 00], [1000 00, 680 00]
+	Pbnds_type="double plev_bnds(2)"
+	Pbnds_longname="Boundaries of the layer in which cloud area fraction is computed"
+	Pbnds_units="Pa"
+#--------- Single value variables
+
+#---------- Projection stuff
+        projection_type="char"
+        projection_name="Lambert_Conformal"
+        projection_grid_mapping_name="lambert_conformal_conic" 
+        projection_standard_parallel1=30.0
+        projection_standard_parallel2=65.0
+        projection_longitude_of_central_meridian=9.75
+        projection_latitude_of_projection_origin=49.68
+#---------- Projection stuff
+
+#----------- Time stuff
+        time_start_date='1949-12-01'
+        time_start_hour='00:00'
+        time_start='1949-12-01 00:00'
+        time_start_unit=day
+        time_long_name="time"
+        time_standard_name="time"
+        time_axis="T"
+        time_units="days since 1949-12-01 00:00:00 UTC"
+        time_calendar="360day"
+        time_bounds="time_bnds"
+
+#======================================================================================
+#======================================================================================
+#======================================================================================
+
+#This is needed for spliting files in HadGEM HIST
+    DAYstrt[1]=19700101
+        DAYendi[1]=19701230
+            DAYstrt[2]=19710101
+                DAYendi[2]=19751230
+                    DAYstrt[3]=19760101
+                        DAYendi[3]=19801230
+                            DAYstrt[4]=19810101
+                                DAYendi[4]=19851230
+                                    DAYstrt[5]=19860101
+                                        DAYendi[5]=19901230
+                                            DAYstrt[6]=19910101
+                                                DAYendi[6]=19951230
+                                                    DAYstrt[7]=19960101
+                                                        DAYendi[7]=20001230
+                                                            DAYstrt[8]=20010101
+                                                                DAYendi[8]=20051130
+#Datumi koji su mi potrebni za ispravno definiranje intervala
+    DAYendX[1]=19710101 #cdo uzima unutar intervala pa moramo prilagoditi ovako
+        DAYendX[2]=19760101
+            DAYendX[3]=19810101
+                DAYendX[4]=19860101
+                    DAYendX[5]=19910101
+                        DAYendX[6]=19960101
+                            DAYendX[7]=20010101
+                                DAYendX[8]=20051201
+
+#Datumi koji ce pisati u nazivu datoteke
+
+    MONstrt[1]=197001
+        MONendi[1]=197012
+            MONstrt[2]=197101
+                MONendi[2]=198012
+                    MONstrt[3]=198101
+                        MONendi[3]=199012
+                            MONstrt[4]=199101
+                                MONendi[4]=200012
+                                    MONstrt[5]=200101
+                                        MONendi[5]=200511
+
+#Datumi koji su mi potrebni za ispravno definiranje intervala
+    MONstrX[1]=19700101
+        MONendX[1]=19710101
+            MONstrX[2]=19710101
+                MONendX[2]=19810101
+                    MONstrX[3]=19810101
+                        MONendX[3]=19910101
+                            MONstrX[4]=19910101
+                                MONendX[4]=20010101
+                                    MONstrX[5]=20010101
+                                       MONendX[5]=20051201
+
+#Datumi koji su mi potrebni za ispravno definiranje intervala
+#    YEARSforMON[1]='1970'
+#        YEARSforMON[2]='1971,1972,1973,1974,1975,1976,1977,1978,1979,1980'
+#            YEARSforMON[3]='1981,1982,1983,1984,1985,1986,1987,1988,1989,1990'
+#                YEARSforMON[4]='1991,1992,1993,1994,1995,1996,1997,1998,1999,2000'
+#                    YEARSforMON[5]='2001,2002,2003,2004,2005'
+
+#Datumi koji ce pisati u nazivu datoteke
+    SEMstrt[1]=197003
+        SEMendi[1]=197011
+            SEMstrt[2]=197012
+                SEMendi[2]=198011
+                    SEMstrt[3]=198012
+                        SEMendi[3]=199011
+                            SEMstrt[4]=199012
+                                SEMendi[4]=200011
+                                    SEMstrt[5]=200012
+                                        SEMendi[5]=200511
+
+#Datumi koji su mi potrebni za ispravno definiranje intervala
+    SEMstrX[1]=19700530
+        SEMendX[1]=19701230
+            SEMstrX[2]=19710230
+                SEMendX[2]=19801230
+                    SEMstrX[3]=19810230
+                        SEMendX[3]=19901230
+                            SEMstrX[4]=19910230
+                                SEMendX[4]=20001230
+                                    SEMstrX[5]=20010230
+                                       SEMendX[5]=20051130
+
+#======================================================================================
+#======================================================================================
+#======================================================================================
