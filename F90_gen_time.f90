@@ -15,10 +15,10 @@
 
         print *, "Enter starting date of your simulation (YYYYMMDD):"
 !       read  *, Sstart
-        Sstart=19890101
+        Sstart=19700101
         print *, "Enter final    date of your simulation (YYYYMMDD):"
 !       read  *, Send
-        Send=20090401
+        Send=20051130
       print *, "Select calendar: (1) 365 leap, (2) 365 nonleap, (3) 360"
 !       read  *, caln
         caln=1
@@ -86,10 +86,10 @@
                                 k=SstartM
                                 j=i
                                 do l=i,i+10
-                                        j=j+1
                                         if (mod(j,10)==0) then
-                                        exit
+                                        cycle
                                         end if
+                                        j=j+1
                                 end do
                         if (k>9) then
                                 write(12,"(A,I3,A,I4,I2,A,I4,A)")    'filenameMM[',filekMM,']=_',i,k,'-',j        ,'12'
@@ -125,10 +125,10 @@
                                 k=SstartM
                                 j=i
                                 do l=i,i+5
-                                        j=j+1
                                         if (mod(j,5)==0) then
-                                        exit
+                                        cycle
                                         end if
+                                        j=j+1
                                 end do
                         if (k>9) then
                                 write(13,"(A,I3,A,I4,I2,A,I4,A)")    'filenameDM[',filekDM,']=_',i,k,'-',j        ,'12'
