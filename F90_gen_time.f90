@@ -5,38 +5,60 @@
                 ! (2) enter calendar 1 365 leap, 2 365 nonleap, 3 360
                 ! (3) compute time steps       for each DM, MM and SM file
                 ! (4) compute time step bounds for each DM, MM and SM file
-                ! (5) save txt files for othe programs
+                ! (5) save txt files for other programs
 
         real(kind=4) :: Sstart, Send
-        integer      :: SstartY, SstartM, SstartD, SendY, SendM, SendD
+        integer      :: SstartY, SstartM, SstartD, SendY, SendM, SendD, SendM_LastSeason
         integer      :: caln, nDays
         integer      :: i,j,k,l
-        integer      :: filekMM, filekDM
+        integer      :: filekMM, filekDM, filekSM
         integer,dimension(1:12)  :: daysInMonth
 
-        print *, "Enter starting date of your simulation (YYYYMMDD):"
-!       read  *, Sstart
-        Sstart=19700101
-        print *, "Enter final    date of your simulation (YYYYMMDD):"
-!       read  *, Send
-        Send=20051130
+      print *, "Enter starting date of your simulation (YYYYMMDD):"
+!     read  *, Sstart
+      Sstart=19700101
+      print *, "Enter final    date of your simulation (YYYYMMDD):"
+!     read  *, Send
+      Send=20051130
       print *, "Select calendar: (1) 365 leap, (2) 365 nonleap, (3) 360"
-!       read  *, caln
-        caln=1
+!     read  *, caln
+      caln=1
 
-        ! Compute details
+        ! Compute time details (YEAR, MONTH, DAY)
         SstartY=floor(Sstart/10000)
         SstartM=floor((Sstart-SstartY*10000)/100)
         SstartD=Sstart-SstartY*10000-SstartM*100
         SendY  =floor(Send/10000)
         SendM  =floor((Send-SendY*10000)/100)
         SendD  =Send-SendY*10000-SendM*100
+        ! Determine the last month of the last full season
+        if     ((SendM==12).or.(SendM==1))  then
+             SendM_LastSeason=11
+        elseif (SendM==2)                   then
+             SendM_LastSeason=2
+        elseif ((SendM==3).or.(SendM==4))   then
+             SendM_LastSeason=2
+        elseif (SendM==5)                   then
+             SendM_LastSeason=5
+        elseif ((SendM==6).or.(SendM==7))   then
+             SendM_LastSeason=5
+        elseif (SendM==8)                   then
+             SendM_LastSeason=5
+        elseif ((SendM==9).or.(SendM==10))  then
+             SendM_LastSeason=8
+        elseif (SendM==11)                  then
+             SendM_LastSeason=11
+        end if
 
+
+      ! Output is writen in following files
       open(unit=12, file="filenames_MM.txt", action="write",status="old",position="append")
       open(unit=13, file="filenames_DM.txt", action="write",status="old",position="append")
+      open(unit=14, file="filenames_SM.txt", action="write",status="old",position="append")
 
         filekMM=1
         filekDM=1
+        filekSM=1
         do i=SstartY,SendY
                 !-----------------------------------------------------------------------------------
                 !Start: determine number of days in specific year
@@ -108,7 +130,7 @@
                         end if
                 end if
                 !-----------------------------------------------------------------------------------
-                !End: Write MM filenames
+                !End:   Write MM filenames
                 !-----------------------------------------------------------------------------------
                 !-----------------------------------------------------------------------------------
                 !Start: Write DM filenames
@@ -147,11 +169,51 @@
                         end if
                 end if
                 !-----------------------------------------------------------------------------------
-                !End: Write DM filenames
+                !End:   Write DM filenames
                 !-----------------------------------------------------------------------------------
-        end do !i
+                !-----------------------------------------------------------------------------------
+                !Start: Write SM filenames
+                !-----------------------------------------------------------------------------------
+                if (mod(i,10)==0) then
+                        j=i+10
+                        k=11
+                        if (j>SendY) then 
+                            j=SendY 
+                            k=SendM_LastSeason
+                        end if
+                        if (k>9) then
+                                write(14,"(A,I3,A,I4,A,I4,I2)")   'filenameSM[',filekSM,']=_',i,'12-',j    ,k
+                                filekSM=filekSM+1
+                        else 
+                                write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
+                                filekSM=filekSM+1
+                        end if
+!                else
+!                        if (i==SstartY) then
+!                                k=SstartM
+!                                j=i
+!                                do l=i,i+10
+!                                        if (mod(j,10)==0) then
+!                                        cycle
+!                                        end if
+!                                        j=j+1
+!                                end do
+!                        if (k>9) then
+!                                write(14,"(A,I3,A,I4,I2,A,I4,A)")    'filenameSM[',filekSM,']=_',i,k,'-',j        ,'12'
+!                                filekSM=filekSM+1
+!                        else 
+!                                write(14,"(A,I3,A,I4,A,I1,A,I4,A)")  'filenameSM[',filekSM,']=_',i,'0',k,'-',j    ,'12'
+!                                filekSM=filekSM+1
+!                        end if
+!                        end if
+                end if
+                !-----------------------------------------------------------------------------------
+                !End:   Write SM filenames
+                !-----------------------------------------------------------------------------------
+        end do !i years
 
         close(unit=12)
         close(unit=13)
+        close(unit=14)
 
         end program gentime
