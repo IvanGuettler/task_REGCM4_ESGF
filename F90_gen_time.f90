@@ -8,7 +8,8 @@
                 ! (5) save txt files for other programs
 
         real(kind=4) :: Sstart, Send
-        integer      :: SstartY, SstartM, SstartD, SendY, SendM, SendD, SendM_LastSeason
+        integer      :: SstartY, SstartM, SstartD, SendY, SendM, SendD
+        integer      :: SstartM_FirstSeason, SendM_LastSeason
         integer      :: caln, nDays
         integer      :: i,j,k,l
         integer      :: filekMM, filekDM, filekSM
@@ -48,6 +49,24 @@
              SendM_LastSeason=8
         elseif (SendM==11)                  then
              SendM_LastSeason=11
+        end if
+        ! Determine the frist month of the first full season <<< in case of very short simulations (<3mn) this should be modifed
+        if     (SstartM==12)                    then
+                SstartM_FirstSeason=12
+        elseif ((SstartM==1).or.(SstartM==2))   then
+                SstartM_FirstSeason=3
+        elseif (SstartM==3)                     then
+                SstartM_FirstSeason=3
+        elseif ((SstartM==4).or.(SstartM==5))   then
+                SstartM_FirstSeason=6
+        elseif (SstartM==6)                     then
+                SstartM_FirstSeason=6
+        elseif ((SstartM==7).or.(SstartM==8))   then
+                SstartM_FirstSeason=9
+        elseif (SstartM==9)                     then
+                SstartM_FirstSeason=9
+        elseif ((SstartM==10).or.(SstartM==11)) then
+                SstartM_FirstSeason=12
         end if
 
 
@@ -174,6 +193,23 @@
                 !-----------------------------------------------------------------------------------
                 !Start: Write SM filenames
                 !-----------------------------------------------------------------------------------
+                if (i==SstartY) then
+                                k=SstartM_FirstSeason
+                                j=i
+                                do l=i,i+10
+                                        if (mod(j,10)==0) then
+                                        cycle
+                                        end if
+                                        j=j+1
+                                end do
+                        if (k>9) then
+                                write(14,"(A,I3,A,I4,I2,A,I4,A)")    'filenameSM[',filekSM,']=_',i,k,'-',j        ,'11'
+                                filekSM=filekSM+1
+                        else 
+                                write(14,"(A,I3,A,I4,A,I1,A,I4,A)")  'filenameSM[',filekSM,']=_',i,'0',k,'-',j    ,'11'
+                                filekSM=filekSM+1
+                        end if
+                endif
                 if (mod(i,10)==0) then
                         j=i+10
                         k=11
@@ -188,24 +224,6 @@
                                 write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
                                 filekSM=filekSM+1
                         end if
-!                else
-!                        if (i==SstartY) then
-!                                k=SstartM
-!                                j=i
-!                                do l=i,i+10
-!                                        if (mod(j,10)==0) then
-!                                        cycle
-!                                        end if
-!                                        j=j+1
-!                                end do
-!                        if (k>9) then
-!                                write(14,"(A,I3,A,I4,I2,A,I4,A)")    'filenameSM[',filekSM,']=_',i,k,'-',j        ,'12'
-!                                filekSM=filekSM+1
-!                        else 
-!                                write(14,"(A,I3,A,I4,A,I1,A,I4,A)")  'filenameSM[',filekSM,']=_',i,'0',k,'-',j    ,'12'
-!                                filekSM=filekSM+1
-!                        end if
-!                        end if
                 end if
                 !-----------------------------------------------------------------------------------
                 !End:   Write SM filenames
