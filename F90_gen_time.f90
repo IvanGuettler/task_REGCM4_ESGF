@@ -12,6 +12,7 @@
         integer      :: caln, nDays
         integer      :: i,j,k,l
         integer      :: filekMM, filekDM
+        integer,dimension(1:12)  :: daysInMonth
 
         print *, "Enter starting date of your simulation (YYYYMMDD):"
 !       read  *, Sstart
@@ -43,23 +44,29 @@
                 ! 365 day leap calendar
                 if      (caln==1) then
                         nDays=365
+                        daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
                         if (mod(i,4)==0) then
                                 if (mod(i,100)==0) then
                                         if (mod(i,400)==0) then
                                                 nDays=366
+                                                daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
                                         else
                                                 nDays=365
+                                                daysInMonth=(/31,28,31,30,31,30,31,31,30,31,30,31/)
                                         end if
                                 else
                                         nDays=366
+                                        daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
                                 end if
                         end if
                 ! 365 day noleap calendar
                 else if (caln==2) then
                         nDays=365
+                        daysInMonth=(/31,28,31,30,31,30,31,31,30,31,30,31/)
                 ! 360 day calendar
                 else if (caln==3) then
                         nDays=360
+                        daysInMonth=(/30,30,30,30,30,30,30,30,30,30,30,30/)
                 end if
                 !-----------------------------------------------------------------------------------
                 !End: determine number of days in specific year
@@ -109,16 +116,16 @@
                 if (mod(i,5)==1) then
                         j=i+4
                         k=12
-                        if (j>SendY) then 
+                        if (j>=SendY) then 
                             j=SendY 
                             k=SendM
                         end if
                         if (k>9) then
-                                write(13,"(A,I3,A,I4,A,I4,I2)")   'filenameDM[',filekDM,']=_',i,'01-',j    ,k
-                                filekDM=filekDM+1
+             write(13,"(A,I3,A,I4,A,I2,A,I4,I2,I2)")   'filenameDM[',filekDM,']=_',i,'01',daysInMonth(1),'-',j,k,daysInMonth(k)
+                        filekDM=filekDM+1
                         else 
-                                write(13,"(A,I3,A,I4,A,I4,A,I1)")  'filenameDM[',filekDM,']=_',i,'01-',j,'0',k
-                                filekDM=filekDM+1
+             write(13,"(A,I3,A,I4,A,I2,A,I4,A,I1,I2)") 'filenameDM[',filekDM,']=_',i,'01',daysInMonth(1),'-',j,'0',k,daysInMonth(k)
+                        filekDM=filekDM+1
                         end if
                 else
                         if (i==SstartY) then
@@ -131,11 +138,11 @@
                                         j=j+1
                                 end do
                         if (k>9) then
-                                write(13,"(A,I3,A,I4,I2,A,I4,A)")    'filenameDM[',filekDM,']=_',i,k,'-',j        ,'12'
-                                filekDM=filekDM+1
+             write(13,"(A,I3,A,I4,I2,I2,A,I4,A,I2)")   'filenameDM[',filekDM,']=_',i,k,daysInMonth(k),'-',j,'12',daysInMonth(12)
+                        filekDM=filekDM+1
                         else 
-                                write(13,"(A,I3,A,I4,A,I1,A,I4,A)")  'filenameDM[',filekDM,']=_',i,'0',k,'-',j    ,'12'
-                                filekDM=filekDM+1
+             write(13,"(A,I3,A,I4,A,I1,I2,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,daysInMonth(k),'-',j,'12',daysInMonth(12)
+                        filekDM=filekDM+1
                         end if
                         end if
                 end if
