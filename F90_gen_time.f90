@@ -71,9 +71,20 @@
 
 
       ! Output is writen in following files
-      open(unit=12, file="filenames_MM.txt", action="write",status="old",position="append")
-      open(unit=13, file="filenames_DM.txt", action="write",status="old",position="append")
-      open(unit=14, file="filenames_SM.txt", action="write",status="old",position="append")
+      open(unit=12, file="prepared_filenames_MM.txt", action="write",status="old",position="append")
+      open(unit=13, file="prepared_filenames_DM.txt", action="write",status="old",position="append")
+      open(unit=14, file="prepared_filenames_SM.txt", action="write",status="old",position="append")
+      
+      open(unit=22, file="prepared_time_MM.txt", action="write",status="old",position="append")
+      open(unit=23, file="prepared_time_DM.txt", action="write",status="old",position="append")
+      open(unit=24, file="prepared_time_SM.txt", action="write",status="old",position="append")
+      
+      open(unit=32, file="prepared_timebnds_MM.txt", action="write",status="old",position="append")
+      open(unit=33, file="prepared_timebnds_DM.txt", action="write",status="old",position="append")
+      open(unit=34, file="prepared_timebnds_SM.txt", action="write",status="old",position="append")
+
+
+
 
         filekMM=1
         filekDM=1
@@ -123,10 +134,12 @@
                             k=SendM
                         end if
                         if (k>9) then
-                                write(12,"(A,I3,A,I4,A,I4,I2)")   'filenameMM[',filekMM,']=_',i,'01-',j    ,k
+                                write(12,"(A,I3,A,I4,A,I4,I2)")    &
+                                'filenameMM[',filekMM,']=_',i,'01-',j    ,k
                                 filekMM=filekMM+1
                         else 
-                                write(12,"(A,I3,A,I4,A,I4,A,I1)") 'filenameMM[',filekMM,']=_',i,'01-',j,'0',k
+                                write(12,"(A,I3,A,I4,A,I4,A,I1)")  &
+                                'filenameMM[',filekMM,']=_',i,'01-',j,'0',k
                                 filekMM=filekMM+1
                         end if
                 else
@@ -140,10 +153,12 @@
                                         j=j+1
                                 end do
                         if (k>9) then
-                                write(12,"(A,I3,A,I4,I2,A,I4,A)")    'filenameMM[',filekMM,']=_',i,k,'-',j        ,'12'
+                                write(12,"(A,I3,A,I4,I2,A,I4,A)")   &
+                                'filenameMM[',filekMM,']=_',i,k,'-',j        ,'12'
                                 filekMM=filekMM+1
                         else 
-                                write(12,"(A,I3,A,I4,A,I1,A,I4,A)")  'filenameMM[',filekMM,']=_',i,'0',k,'-',j    ,'12'
+                                write(12,"(A,I3,A,I4,A,I1,A,I4,A)") &
+                                'filenameMM[',filekMM,']=_',i,'0',k,'-',j    ,'12'
                                 filekMM=filekMM+1
                         end if
                         end if
@@ -162,10 +177,12 @@
                             k=SendM
                         end if
                         if (k>9) then
-             write(13,"(A,I3,A,I4,A,I2,A,I4,I2,I2)")   'filenameDM[',filekDM,']=_',i,'01',daysInMonth(1),'-',j,k,daysInMonth(k)
+             write(13,"(A,I3,A,I4,A,I2,A,I4,I2,I2)")   & 
+             'filenameDM[',filekDM,']=_',i,'01',daysInMonth(1),'-',j,k,daysInMonth(k)
                         filekDM=filekDM+1
                         else 
-             write(13,"(A,I3,A,I4,A,I2,A,I4,A,I1,I2)") 'filenameDM[',filekDM,']=_',i,'01',daysInMonth(1),'-',j,'0',k,daysInMonth(k)
+             write(13,"(A,I3,A,I4,A,I2,A,I4,A,I1,I2)") & 
+             'filenameDM[',filekDM,']=_',i,'01',daysInMonth(1),'-',j,'0',k,daysInMonth(k)
                         filekDM=filekDM+1
                         end if
                 else
@@ -179,10 +196,12 @@
                                         j=j+1
                                 end do
                         if (k>9) then
-             write(13,"(A,I3,A,I4,I2,I2,A,I4,A,I2)")   'filenameDM[',filekDM,']=_',i,k,daysInMonth(k),'-',j,'12',daysInMonth(12)
+             write(13,"(A,I3,A,I4,I2,I2,A,I4,A,I2)")  & 
+             'filenameDM[',filekDM,']=_',i,k,daysInMonth(k),'-',j,'12',daysInMonth(12)
                         filekDM=filekDM+1
                         else 
-             write(13,"(A,I3,A,I4,A,I1,I2,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,daysInMonth(k),'-',j,'12',daysInMonth(12)
+             write(13,"(A,I3,A,I4,A,I1,I2,A,I4,A,I2)") &
+             'filenameDM[',filekDM,']=_',i,'0',k,daysInMonth(k),'-',j,'12',daysInMonth(12)
                         filekDM=filekDM+1
                         end if
                         end if
@@ -203,10 +222,12 @@
                                         j=j+1
                                 end do
                         if (k>9) then
-                                write(14,"(A,I3,A,I4,I2,A,I4,A)")    'filenameSM[',filekSM,']=_',i,k,'-',j        ,'11'
+                                write(14,"(A,I3,A,I4,I2,A,I4,A)")     &
+                                'filenameSM[',filekSM,']=_',i,k,'-',j        ,'11'
                                 filekSM=filekSM+1
                         else 
-                                write(14,"(A,I3,A,I4,A,I1,A,I4,A)")  'filenameSM[',filekSM,']=_',i,'0',k,'-',j    ,'11'
+                                write(14,"(A,I3,A,I4,A,I1,A,I4,A)")  & 
+                                'filenameSM[',filekSM,']=_',i,'0',k,'-',j    ,'11'
                                 filekSM=filekSM+1
                         end if
                 endif
@@ -218,10 +239,12 @@
                             k=SendM_LastSeason
                         end if
                         if (k>9) then
-                                write(14,"(A,I3,A,I4,A,I4,I2)")   'filenameSM[',filekSM,']=_',i,'12-',j    ,k
+                                write(14,"(A,I3,A,I4,A,I4,I2)")   & 
+                                'filenameSM[',filekSM,']=_',i,'12-',j    ,k
                                 filekSM=filekSM+1
                         else 
-                                write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
+                                write(14,"(A,I3,A,I4,A,I4,A,I1)") &
+                                'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
                                 filekSM=filekSM+1
                         end if
                 end if

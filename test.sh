@@ -1,12 +1,12 @@
 
 rm -vf a.out
 
-	rm -vf filenames_MM.txt
-	touch  filenames_MM.txt
-	rm -vf filenames_DM.txt
-	touch  filenames_DM.txt
-	rm -vf filenames_SM.txt
-	touch  filenames_SM.txt
+     for TYPE in filenames time timebnds ; do
+     for DD   in MM DM SM                ; do
+	rm -vf prepared_${TYPE}_${DD}.txt
+	touch  prepared_${TYPE}_${DD}.txt
+     done
+     done
 
 gfortran F90_gen_time.f90
 ./a.out
