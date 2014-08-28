@@ -3,17 +3,21 @@
                 !Structure
                 ! (1) enter start and end of simulation
                 ! (2) enter calendar 1 365 leap, 2 365 nonleap, 3 360
-                ! (3) compute time steps       for each DM, MM and SM file
-                ! (4) compute time step bounds for each DM, MM and SM file
-                ! (5) save txt files for other programs
+                ! (3) compute part of the filenames containing information about time
+                ! (4) compute time steps       for each DM, MM and SM file
+                ! (5) compute time step bounds for each DM, MM and SM file
+                ! (6) save txt files for other programs
 
         real(kind=4) :: Sstart, Send
         integer      :: SstartY, SstartM, SstartD, SendY, SendM, SendD
         integer      :: SstartM_FirstSeason, SendM_LastSeason
         integer      :: caln, nDays
-        integer      :: i,j,k,l
+        integer      :: i,i2,j,k,l
         integer      :: filekMM, filekDM, filekSM
+        integer      :: timeAxis, timeAxisStart, timeAxisEnd, pomocna1, pomocna2
         integer,dimension(1:12)  :: daysInMonth
+        integer, external :: numberOfDays
+        character(len=30)    :: filename
 
       print *, "Enter starting date of your simulation (YYYYMMDD):"
 !     read  *, Sstart
@@ -75,13 +79,13 @@
       open(unit=13, file="prepared_filenames_DM.txt", action="write",status="old",position="append")
       open(unit=14, file="prepared_filenames_SM.txt", action="write",status="old",position="append")
       
-      open(unit=22, file="prepared_time_MM.txt", action="write",status="old",position="append")
-      open(unit=23, file="prepared_time_DM.txt", action="write",status="old",position="append")
-      open(unit=24, file="prepared_time_SM.txt", action="write",status="old",position="append")
+!!      open(unit=22, file="prepared_time_MM.txt", action="write",status="old",position="append")
+!!      open(unit=23, file="prepared_time_DM.txt", action="write",status="old",position="append")
+!!      open(unit=24, file="prepared_time_SM.txt", action="write",status="old",position="append")
       
-      open(unit=32, file="prepared_timebnds_MM.txt", action="write",status="old",position="append")
-      open(unit=33, file="prepared_timebnds_DM.txt", action="write",status="old",position="append")
-      open(unit=34, file="prepared_timebnds_SM.txt", action="write",status="old",position="append")
+!!      open(unit=32, file="prepared_timebnds_MM.txt", action="write",status="old",position="append")
+!!      open(unit=33, file="prepared_timebnds_DM.txt", action="write",status="old",position="append")
+!!      open(unit=34, file="prepared_timebnds_SM.txt", action="write",status="old",position="append")
 
 
 
@@ -91,37 +95,25 @@
         filekSM=1
         do i=SstartY,SendY
                 !-----------------------------------------------------------------------------------
-                !Start: determine number of days in specific year
+                !Start: determine the start of the time axis
                 !-----------------------------------------------------------------------------------
-                ! 365 day leap calendar
-                if      (caln==1) then
-                        nDays=365
-                        daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
-                        if (mod(i,4)==0) then
-                                if (mod(i,100)==0) then
-                                        if (mod(i,400)==0) then
-                                                nDays=366
-                                                daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
-                                        else
-                                                nDays=365
-                                                daysInMonth=(/31,28,31,30,31,30,31,31,30,31,30,31/)
-                                        end if
-                                else
-                                        nDays=366
-                                        daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
-                                end if
-                        end if
-                ! 365 day noleap calendar
-                else if (caln==2) then
-                        nDays=365
-                        daysInMonth=(/31,28,31,30,31,30,31,31,30,31,30,31/)
-                ! 360 day calendar
-                else if (caln==3) then
-                        nDays=360
-                        daysInMonth=(/30,30,30,30,30,30,30,30,30,30,30,30/)
+                !>>> Referent time period for CORDEX (2013., 2014.) is
+                !>>> 1949-12-01 T00:00:00Z
+                !>>> Days from 1950-01-01 to current year
+                timeAxis=0
+                do i2=1950,i  
+                   timeAxis=timeAxis+numberOfDays(caln,i2)
+                enddo
+                !>>> Add number of days in 1949-12
+                if (caln==3) then
+                   timeAxis=timeAxis+30
+                else
+                   timeAxis=timeAxis+31
                 end if
+                print *,timeAxis
+ 
                 !-----------------------------------------------------------------------------------
-                !End: determine number of days in specific year
+                !End: determine the start of the time axis
                 !-----------------------------------------------------------------------------------
                 !-----------------------------------------------------------------------------------
                 !Start: Write MM filenames
@@ -169,7 +161,9 @@
                 !-----------------------------------------------------------------------------------
                 !Start: Write DM filenames
                 !-----------------------------------------------------------------------------------
-                if (mod(i,5)==1) then
+                pomocna1=0
+                pomocna2=0
+               if (mod(i,5)==1) then
                         j=i+4
                         k=12
                         if (j>=SendY) then 
@@ -185,6 +179,8 @@
              'filenameDM[',filekDM,']=_',i,'01',daysInMonth(1),'-',j,'0',k,daysInMonth(k)
                         filekDM=filekDM+1
                         end if
+                        pomocna1=i
+                        pomocna2=j
                 else
                         if (i==SstartY) then
                                 k=SstartM
@@ -199,12 +195,43 @@
              write(13,"(A,I3,A,I4,I2,I2,A,I4,A,I2)")  & 
              'filenameDM[',filekDM,']=_',i,k,daysInMonth(k),'-',j,'12',daysInMonth(12)
                         filekDM=filekDM+1
+                        pomocna1=i
+                        pomocna2=j
                         else 
              write(13,"(A,I3,A,I4,A,I1,I2,A,I4,A,I2)") &
              'filenameDM[',filekDM,']=_',i,'0',k,daysInMonth(k),'-',j,'12',daysInMonth(12)
                         filekDM=filekDM+1
+                        pomocna1=i
+                        pomocna2=j
                         end if
                         end if
+                end if
+                if (pomocna1>0) then
+                !>>> imamo pomocna1,pomocna2 tj. pocetnu i konacnu godinu u nazivu datoteke
+                !>>> Days from 1950-01-01 to current year
+                        write(filename, "('prepared_time_DM',I1.1,'.txt')") filekDM-1
+                        print *,filename
+                        open(unit=23, file=filename, action="write",status="new",position="append")
+	                timeAxisStart=0
+        	        timeAxisEnd  =0
+	                do i2=1950,pomocna1 
+        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
+        	        enddo
+        	        do i2=1950,pomocna2
+        	           timeAxisEnd  =timeAxisEnd  +numberOfDays(caln,i2)
+        	        enddo
+                !>>> Add number of days in 1949-12
+        	        if (caln==3) then
+        	           timeAxisStart=timeAxisStart+30
+        	           timeAxisEnd  =timeAxisEnd  +30
+        	        else
+        	           timeAxisStart=timeAxisStart+31
+        	           timeAxisEnd  =timeAxisEnd  +31
+        	        end if
+        	        do i2=timeAxisStart,timeAxisEnd
+                           write(23,"(I8)"),i2
+                        end do	
+                        close(unit=23)
                 end if
                 !-----------------------------------------------------------------------------------
                 !End:   Write DM filenames
@@ -253,8 +280,68 @@
                 !-----------------------------------------------------------------------------------
         end do !i years
 
+        ! Close all output files
         close(unit=12)
         close(unit=13)
         close(unit=14)
+!!       close(unit=22)
+!!       close(unit=23)
+!!       close(unit=24)
+!!       close(unit=32)
+!!       close(unit=33)
+!!       close(unit=34)
 
         end program gentime
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+        integer function numberOfDays(caln,i)
+                implicit none
+                integer,intent(in)       :: caln,i
+                integer,dimension(1:12)  :: daysInMonth
+                integer                  :: nDays
+
+                !-----------------------------------------------------------------------------------
+                !Start: determine number of days in specific year
+                !-----------------------------------------------------------------------------------
+                ! 365 day leap calendar
+                if      (caln==1) then
+                        nDays=365
+                        daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
+                        if (mod(i,4)==0) then
+                                if (mod(i,100)==0) then
+                                        if (mod(i,400)==0) then
+                                                nDays=366
+                                                daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
+                                        else
+                                                nDays=365
+                                                daysInMonth=(/31,28,31,30,31,30,31,31,30,31,30,31/)
+                                        end if
+                                else
+                                        nDays=366
+                                        daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
+                                end if
+                        end if
+                ! 365 day noleap calendar
+                else if (caln==2) then
+                        nDays=365
+                        daysInMonth=(/31,28,31,30,31,30,31,31,30,31,30,31/)
+                ! 360 day calendar
+                else if (caln==3) then
+                        nDays=360
+                        daysInMonth=(/30,30,30,30,30,30,30,30,30,30,30,30/)
+                end if
+
+                numberOfDays=nDays
+                !-----------------------------------------------------------------------------------
+                !End: determine number of days in specific year
+                !-----------------------------------------------------------------------------------
+         end function numberOfDays
