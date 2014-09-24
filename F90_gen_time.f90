@@ -106,7 +106,7 @@
                 !-----------------------------------------------------------------------------------
                 !Start: Write MM filenames
                 !-----------------------------------------------------------------------------------
-                if (mod(i,10)==1) then
+                if (mod(i,10)==1) then                         ! start the 10yr filename
                         j=i+9
                         k=12
                         if (j>SendY) then 
@@ -122,25 +122,25 @@
                                 'filenameMM[',filekMM,']=_',i,'01-',j,'0',k
                                 filekMM=filekMM+1
                         end if
-                else
-                        if (i==SstartY) then
+                else                                           ! special case for the first year
+                        if (i==SstartY) then                  
                                 k=SstartM
                                 j=i
                                 do l=i,i+10
-                                        if (mod(j,10)==0) then
-                                        cycle
-                                        end if
-                                        j=j+1
+                                     if (mod(j,10)==0) then
+                                     cycle
+                                     end if
+                                     j=j+1
                                 end do
-                        if (k>9) then
-                                write(12,"(A,I3,A,I4,I2,A,I4,A)")   &
-                                'filenameMM[',filekMM,']=_',i,k,'-',j        ,'12'
-                                filekMM=filekMM+1
-                        else 
-                                write(12,"(A,I3,A,I4,A,I1,A,I4,A)") &
-                                'filenameMM[',filekMM,']=_',i,'0',k,'-',j    ,'12'
-                                filekMM=filekMM+1
-                        end if
+                                if (k>9) then
+                                     write(12,"(A,I3,A,I4,I2,A,I4,A)")   &
+                                     'filenameMM[',filekMM,']=_',i,k,'-',j        ,'12'
+                                     filekMM=filekMM+1
+                                else 
+                                     write(12,"(A,I3,A,I4,A,I1,A,I4,A)") &
+                                     'filenameMM[',filekMM,']=_',i,'0',k,'-',j    ,'12'
+                                     filekMM=filekMM+1
+                                end if
                         end if
                 end if
                 !-----------------------------------------------------------------------------------
@@ -151,7 +151,7 @@
                 !-----------------------------------------------------------------------------------
                 pomocna1=0
                 pomocna2=0
-                if (mod(i,5)==1) then
+                if (mod(i,5)==1) then                    ! start 5yr filenames
                         j=i+4
                         k=12
                         if (j>=SendY) then 
@@ -164,12 +164,12 @@
                         filekDM=filekDM+1
                         else 
              write(13,"(A,I3,A,I4,A,I4,A,I1,I2)") & 
-             'filenameDM[',filekDM,']=_',i,'0101-',j,'0',k,daysInMonth(caln,k)
+             'filenameDM[',filekDM,']=_',i,'0101-',j,'0', k,daysInMonth(caln,k)
                         filekDM=filekDM+1
                         end if
                         pomocna1=i
                         pomocna2=j
-                else
+                else                                     ! special case for the first year
                         if (i==SstartY) then
                                 k=SstartM
                                 j=i
@@ -194,40 +194,47 @@
                         end if
                         end if
                 end if
+                !-----------------------------------------------------------------------------------
+                !End:   Write DM filenames
+                !-----------------------------------------------------------------------------------
+                !-----------------------------------------------------------------------------------
+                !Start:   Write time axis for the DM filename. This works fine if first date is 1.1. (for now)
+                !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
+                !-----------------------------------------------------------------------------------
                 if (pomocna1>0) then
-                !>>> imamo pomocna1,pomocna2 tj. pocetnu i konacnu godinu u nazivu datoteke
                 !>>> Days from 1950-01-01 to current year
                         write(filename, "('prepared_time_DM',I1.1,'.txt')") filekDM-1
                         print *,filename
                         open(unit=23, file=filename, action="write",status="new",position="append")
 	                timeAxisStart=0
         	        timeAxisEnd  =0
-	                do i2=1950,pomocna1 
+	                do i2=1950,pomocna1-1               !-1 because we want to start with 1.1. 
         	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
         	        enddo
         	        do i2=1950,pomocna2
         	           timeAxisEnd  =timeAxisEnd  +numberOfDays(caln,i2)
         	        enddo
-                !>>> Add number of days in 1949-12
+                !>>> Add number of days in 1949-12 + 1.1. of the first year
         	        if (caln==3) then
-        	           timeAxisStart=timeAxisStart+30
+        	           timeAxisStart=timeAxisStart+30+1
         	           timeAxisEnd  =timeAxisEnd  +30
         	        else
-        	           timeAxisStart=timeAxisStart+31
+        	           timeAxisStart=timeAxisStart+31+1
         	           timeAxisEnd  =timeAxisEnd  +31
         	        end if
+                !>>> Writing days from timeAxisStart to timeAxisEnd
         	        do i2=timeAxisStart,timeAxisEnd
                            write(23,"(I8)"),i2
                         end do	
                         close(unit=23)
                 end if
                 !-----------------------------------------------------------------------------------
-                !End:   Write DM filenames
+                !End:   Write time axis for the DM filename
                 !-----------------------------------------------------------------------------------
                 !-----------------------------------------------------------------------------------
                 !Start: Write SM filenames
                 !-----------------------------------------------------------------------------------
-                if (i==SstartY) then
+                if (i==SstartY) then                        ! special case for the first year
                                 k=SstartM_FirstSeason
                                 j=i
                                 do l=i,i+10
@@ -246,7 +253,7 @@
                                 filekSM=filekSM+1
                         end if
                 endif
-                if (mod(i,10)==0) then
+                if (mod(i,10)==0) then                     ! start the 10yr filaneme
                         j=i+10
                         k=11
                         if (j>SendY) then 
