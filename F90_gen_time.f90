@@ -2,7 +2,7 @@
                 implicit none
                 !Structure
                 ! (1) enter start and end of simulation
-                ! (2) enter calendar 1 365 leap, 2 365 nonleap, 3 360
+                ! (2) enter calendar: 1 for 365 leap, 2 for 365 nonleap, 3 for 360
                 ! (3) compute part of the filenames containing information about time
                 ! (4) compute time steps       for each DM, MM and SM file
                 ! (5) compute time step bounds for each DM, MM and SM file
@@ -15,16 +15,15 @@
         integer      :: i,i2,j,k,l
         integer      :: filekMM, filekDM, filekSM
         integer      :: timeAxis, timeAxisStart, timeAxisEnd, pomocna1, pomocna2
-        integer,dimension(1:12)  :: daysInMonth
-        integer, external :: numberOfDays
+        integer, external    :: numberOfDays, daysInMonth
         character(len=30)    :: filename
 
       print *, "Enter starting date of your simulation (YYYYMMDD):"
 !     read  *, Sstart
-      Sstart=19700101
+      Sstart=19890101
       print *, "Enter final    date of your simulation (YYYYMMDD):"
 !     read  *, Send
-      Send=20051130
+      Send=20081231
       print *, "Select calendar: (1) 365 leap, (2) 365 nonleap, (3) 360"
 !     read  *, caln
       caln=1
@@ -36,7 +35,7 @@
         SendY  =floor(Send/10000)
         SendM  =floor((Send-SendY*10000)/100)
         SendD  =Send-SendY*10000-SendM*100
-        ! Determine the last month of the last full season
+        ! Determine the last month of the last full season.
         if     ((SendM==12).or.(SendM==1))  then
              SendM_LastSeason=11
         elseif (SendM==2)                   then
@@ -54,7 +53,7 @@
         elseif (SendM==11)                  then
              SendM_LastSeason=11
         end if
-        ! Determine the frist month of the first full season <<< in case of very short simulations (<3mn) this should be modifed
+        ! Determine the first month of the first full season <<< in case of very short simulations (<3months) this code should be modifed
         if     (SstartM==12)                    then
                 SstartM_FirstSeason=12
         elseif ((SstartM==1).or.(SstartM==2))   then
@@ -78,17 +77,6 @@
       open(unit=12, file="prepared_filenames_MM.txt", action="write",status="old",position="append")
       open(unit=13, file="prepared_filenames_DM.txt", action="write",status="old",position="append")
       open(unit=14, file="prepared_filenames_SM.txt", action="write",status="old",position="append")
-      
-!!      open(unit=22, file="prepared_time_MM.txt", action="write",status="old",position="append")
-!!      open(unit=23, file="prepared_time_DM.txt", action="write",status="old",position="append")
-!!      open(unit=24, file="prepared_time_SM.txt", action="write",status="old",position="append")
-      
-!!      open(unit=32, file="prepared_timebnds_MM.txt", action="write",status="old",position="append")
-!!      open(unit=33, file="prepared_timebnds_DM.txt", action="write",status="old",position="append")
-!!      open(unit=34, file="prepared_timebnds_SM.txt", action="write",status="old",position="append")
-
-
-
 
         filekMM=1
         filekDM=1
@@ -163,7 +151,7 @@
                 !-----------------------------------------------------------------------------------
                 pomocna1=0
                 pomocna2=0
-               if (mod(i,5)==1) then
+                if (mod(i,5)==1) then
                         j=i+4
                         k=12
                         if (j>=SendY) then 
@@ -171,12 +159,12 @@
                             k=SendM
                         end if
                         if (k>9) then
-             write(13,"(A,I3,A,I4,A,I2,A,I4,I2,I2)")   & 
-             'filenameDM[',filekDM,']=_',i,'01',daysInMonth(1),'-',j,k,daysInMonth(k)
+             write(13,"(A,I3,A,I4,A,I4,I2,I2)")   & 
+             'filenameDM[',filekDM,']=_',i,'0101-', j,    k,daysInMonth(caln,k)
                         filekDM=filekDM+1
                         else 
-             write(13,"(A,I3,A,I4,A,I2,A,I4,A,I1,I2)") & 
-             'filenameDM[',filekDM,']=_',i,'01',daysInMonth(1),'-',j,'0',k,daysInMonth(k)
+             write(13,"(A,I3,A,I4,A,I4,A,I1,I2)") & 
+             'filenameDM[',filekDM,']=_',i,'0101-',j,'0',k,daysInMonth(caln,k)
                         filekDM=filekDM+1
                         end if
                         pomocna1=i
@@ -192,14 +180,14 @@
                                         j=j+1
                                 end do
                         if (k>9) then
-             write(13,"(A,I3,A,I4,I2,I2,A,I4,A,I2)")  & 
-             'filenameDM[',filekDM,']=_',i,k,daysInMonth(k),'-',j,'12',daysInMonth(12)
+             write(13,"(A,I3,A,I4,I2,A,I4,A,I2)")  & 
+             'filenameDM[',filekDM,']=_',i,k,'01-',j,'12',daysInMonth(caln,12)
                         filekDM=filekDM+1
                         pomocna1=i
                         pomocna2=j
                         else 
-             write(13,"(A,I3,A,I4,A,I1,I2,A,I4,A,I2)") &
-             'filenameDM[',filekDM,']=_',i,'0',k,daysInMonth(k),'-',j,'12',daysInMonth(12)
+             write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") &
+             'filenameDM[',filekDM,']=_',i,'0',k,'01-',j,'12',daysInMonth(caln,12)
                         filekDM=filekDM+1
                         pomocna1=i
                         pomocna2=j
@@ -284,12 +272,6 @@
         close(unit=12)
         close(unit=13)
         close(unit=14)
-!!       close(unit=22)
-!!       close(unit=23)
-!!       close(unit=24)
-!!       close(unit=32)
-!!       close(unit=33)
-!!       close(unit=34)
 
         end program gentime
 !----------------------------------------------------------------------------------------------------
@@ -344,4 +326,50 @@
                 !-----------------------------------------------------------------------------------
                 !End: determine number of days in specific year
                 !-----------------------------------------------------------------------------------
-         end function numberOfDays
+          end function numberOfDays
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------------------
+         integer function daysInMonth(caln,i)
+                implicit none
+                integer,intent(in)       :: caln,i  ! (1) calendar, (2) month in year
+                integer,dimension(1:12)  :: days
+
+                !-----------------------------------------------------------------------------------
+                !Start: set the number of days in specific month 
+                !-----------------------------------------------------------------------------------
+                ! 365 day leap calendar
+                if      (caln==1) then
+                        days=(/31,29,31,30,31,30,31,31,30,31,30,31/)
+                        if (mod(i,4)==0) then
+                                if (mod(i,100)==0) then
+                                        if (mod(i,400)==0) then
+                                              days=(/31,29,31,30,31,30,31,31,30,31,30,31/)
+                                        else
+                                              days=(/31,28,31,30,31,30,31,31,30,31,30,31/)
+                                        end if
+                                else
+                                              days=(/31,29,31,30,31,30,31,31,30,31,30,31/)
+                                end if
+                        end if
+                ! 365 day noleap calendar
+                else if (caln==2) then
+                        days=(/31,28,31,30,31,30,31,31,30,31,30,31/)
+                ! 360 day calendar
+                else if (caln==3) then
+                        days=(/30,30,30,30,30,30,30,30,30,30,30,30/)
+                end if
+               
+                daysInMonth=days(i)
+                !-----------------------------------------------------------------------------------
+                !End: set the number of days in specific year
+                !-----------------------------------------------------------------------------------
+         end function  daysInMonth
