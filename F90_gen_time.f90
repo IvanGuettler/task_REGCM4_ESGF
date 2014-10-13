@@ -14,7 +14,7 @@
         integer      :: caln, nDays
         integer      :: i,i2,j,k,l
         integer      :: filekMM, filekDM, filekSM
-        integer      :: timeAxis, timeAxisStart, timeAxisEnd, pomocna1, pomocna2
+        integer      :: timeAxis, timeAxisStart, timeAxisEnd, pomocna1DM, pomocna2DM, pomocna1MM, pomocna2MM
         integer, external    :: numberOfDays, daysInMonth
         character(len=30)    :: filename
 
@@ -106,6 +106,8 @@
                 !-----------------------------------------------------------------------------------
                 !Start: Write MM filenames
                 !-----------------------------------------------------------------------------------
+                pomocna1MM=0
+                pomocna2MM=0
                 if (mod(i,10)==1) then                         ! start the 10yr filename
                         j=i+9
                         k=12
@@ -122,6 +124,8 @@
                                 'filenameMM[',filekMM,']=_',i,'01-',j,'0',k
                                 filekMM=filekMM+1
                         end if
+                        pomocna1MM=i
+                        pomocna2MM=j
                 else                                           ! special case for the first year
                         if (i==SstartY) then                  
                                 k=SstartM
@@ -141,16 +145,53 @@
                                      'filenameMM[',filekMM,']=_',i,'0',k,'-',j    ,'12'
                                      filekMM=filekMM+1
                                 end if
+                                pomocna1MM=i
+                                pomocna2MM=j
                         end if
                 end if
                 !-----------------------------------------------------------------------------------
                 !End:   Write MM filenames
                 !-----------------------------------------------------------------------------------
                 !-----------------------------------------------------------------------------------
+                !Start:   Write time axis for the MM filename. This works fine if first date is 1.1. (for now)
+                !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
+                !-----------------------------------------------------------------------------------
+                if (pomocna1MM>0) then
+                !>>> Days from 1950-01-01 to current year
+                        write(filename, "('prepared_time_MM',I1.1,'.txt')") filekMM-1
+                        print *,filename
+                        open(unit=24, file=filename, action="write",status="new",position="append")
+	                timeAxisStart=0
+        	        timeAxisEnd  =0
+	                do i2=1950,pomocna1MM-1               !-1 because we want to start with 1.1. 
+        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
+        	        enddo
+        	        do i2=1950,pomocna2MM
+        	           timeAxisEnd  =timeAxisEnd  +numberOfDays(caln,i2)
+        	        enddo
+                !>>> Add number of days in 1949-12 + 1.1. of the first year
+        	        if (caln==3) then
+        	           timeAxisStart=timeAxisStart+30+1
+        	           timeAxisEnd  =timeAxisEnd  +30
+        	        else
+        	           timeAxisStart=timeAxisStart+31+1
+        	           timeAxisEnd  =timeAxisEnd  +31
+        	        end if
+                !>>> Writing days from timeAxisStart to timeAxisEnd
+        	        do i2=timeAxisStart,timeAxisEnd
+                           write(24,"(I8)"),i2 !!!!!!!!!!!!!! Pise svaki dan!!!!!! Zelim svaki Srednji dan u mjescu!!!!!!!
+                        end do	
+                        close(unit=24)
+                end if
+                !-----------------------------------------------------------------------------------
+                !End:   Write time axis for the MM filename
+                !-----------------------------------------------------------------------------------
+
+                !-----------------------------------------------------------------------------------
                 !Start: Write DM filenames
                 !-----------------------------------------------------------------------------------
-                pomocna1=0
-                pomocna2=0
+                pomocna1DM=0
+                pomocna2DM=0
                 if (mod(i,5)==1) then                    ! start 5yr filenames
                         j=i+4
                         k=12
@@ -167,8 +208,8 @@
              'filenameDM[',filekDM,']=_',i,'0101-',j,'0', k,daysInMonth(caln,k)
                         filekDM=filekDM+1
                         end if
-                        pomocna1=i
-                        pomocna2=j
+                        pomocna1DM=i
+                        pomocna2DM=j
                 else                                     ! special case for the first year
                         if (i==SstartY) then
                                 k=SstartM
@@ -183,14 +224,14 @@
              write(13,"(A,I3,A,I4,I2,A,I4,A,I2)")  & 
              'filenameDM[',filekDM,']=_',i,k,'01-',j,'12',daysInMonth(caln,12)
                         filekDM=filekDM+1
-                        pomocna1=i
-                        pomocna2=j
+                        pomocna1DM=i
+                        pomocna2DM=j
                         else 
              write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") &
              'filenameDM[',filekDM,']=_',i,'0',k,'01-',j,'12',daysInMonth(caln,12)
                         filekDM=filekDM+1
-                        pomocna1=i
-                        pomocna2=j
+                        pomocna1DM=i
+                        pomocna2DM=j
                         end if
                         end if
                 end if
@@ -201,17 +242,17 @@
                 !Start:   Write time axis for the DM filename. This works fine if first date is 1.1. (for now)
                 !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
                 !-----------------------------------------------------------------------------------
-                if (pomocna1>0) then
+                if (pomocna1DM>0) then
                 !>>> Days from 1950-01-01 to current year
                         write(filename, "('prepared_time_DM',I1.1,'.txt')") filekDM-1
                         print *,filename
                         open(unit=23, file=filename, action="write",status="new",position="append")
 	                timeAxisStart=0
         	        timeAxisEnd  =0
-	                do i2=1950,pomocna1-1               !-1 because we want to start with 1.1. 
+	                do i2=1950,pomocna1DM-1               !-1 because we want to start with 1.1. 
         	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
         	        enddo
-        	        do i2=1950,pomocna2
+        	        do i2=1950,pomocna2DM
         	           timeAxisEnd  =timeAxisEnd  +numberOfDays(caln,i2)
         	        enddo
                 !>>> Add number of days in 1949-12 + 1.1. of the first year

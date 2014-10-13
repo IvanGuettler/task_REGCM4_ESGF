@@ -2,7 +2,7 @@
 rm -vf a.out
 rm -vf prepared_*_*.txt
 
-#     for TYPE in filenames time timebnds ; do
+#    for TYPE in filenames time timebnds ; do
      for TYPE in filenames               ; do
      for DD   in MM DM SM                ; do
 	rm -vf prepared_${TYPE}_${DD}.txt
