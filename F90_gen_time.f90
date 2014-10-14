@@ -163,12 +163,7 @@
                         open(unit=24, file=filename, action="write",status="new",position="append")
 	                timeAxisStart=0
         	        timeAxisEnd  =0
-	                do i2=1950,pomocna1MM-1               !-1 because we want to start with 1.1. 
-        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
-        	        enddo
-        	        do i2=1950,pomocna2MM
-        	           timeAxisEnd  =timeAxisEnd  +numberOfDays(caln,i2)
-        	        enddo
+
                 !>>> Add number of days in 1949-12 + 1.1. of the first year
         	        if (caln==3) then
         	           timeAxisStart=timeAxisStart+30+1
@@ -176,13 +171,18 @@
         	        else
         	           timeAxisStart=timeAxisStart+31+1
         	           timeAxisEnd  =timeAxisEnd  +31
-        	        end if
-                !>>> Writing days from timeAxisStart to timeAxisEnd
-        	        do i2=timeAxisStart,timeAxisEnd
-                           write(24,"(I8)"),i2 !!!!!!!!!!!!!! Pise svaki dan!!!!!! Zelim svaki Srednji dan u mjescu!!!!!!!
-                        end do	
+        	        end if ! from caln
+
+                !>>> Define beginning > find first day of first month > write always the 15th day of the month
+	                do i2=1950,pomocna1MM-1               !-1 because we want to start with 1.1. 
+        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
+        	        enddo
+        	        do i2=pomocna1MM,pomocna2MM
+                           write(24,"(I8)"),timeAxisStart+15
+        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
+        	        enddo
                         close(unit=24)
-                end if
+                end if ! from pomocna1MM
                 !-----------------------------------------------------------------------------------
                 !End:   Write time axis for the MM filename
                 !-----------------------------------------------------------------------------------
