@@ -178,8 +178,10 @@
         	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
         	        enddo
         	        do i2=pomocna1MM,pomocna2MM
-                           write(24,"(I8)"),timeAxisStart+15
-        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
+                           do j=1,12
+                              write(24,"(I8)"),timeAxisStart+15
+         	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j)
+                           end do
         	        enddo
                         close(unit=24)
                 end if ! from pomocna1MM
@@ -201,11 +203,11 @@
                         end if
                         if (k>9) then
              write(13,"(A,I3,A,I4,A,I4,I2,I2)")   & 
-             'filenameDM[',filekDM,']=_',i,'0101-', j,    k,daysInMonth(caln,k)
+             'filenameDM[',filekDM,']=_',i,'0101-', j,    k,daysInMonth(caln,j,k)
                         filekDM=filekDM+1
                         else 
              write(13,"(A,I3,A,I4,A,I4,A,I1,I2)") & 
-             'filenameDM[',filekDM,']=_',i,'0101-',j,'0', k,daysInMonth(caln,k)
+             'filenameDM[',filekDM,']=_',i,'0101-',j,'0', k,daysInMonth(caln,j,k)
                         filekDM=filekDM+1
                         end if
                         pomocna1DM=i
@@ -222,13 +224,13 @@
                                 end do
                         if (k>9) then
              write(13,"(A,I3,A,I4,I2,A,I4,A,I2)")  & 
-             'filenameDM[',filekDM,']=_',i,k,'01-',j,'12',daysInMonth(caln,12)
+             'filenameDM[',filekDM,']=_',i,k,'01-',j,'12',daysInMonth(caln,j,12)
                         filekDM=filekDM+1
                         pomocna1DM=i
                         pomocna2DM=j
                         else 
              write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") &
-             'filenameDM[',filekDM,']=_',i,'0',k,'01-',j,'12',daysInMonth(caln,12)
+             'filenameDM[',filekDM,']=_',i,'0',k,'01-',j,'12',daysInMonth(caln,j,12)
                         filekDM=filekDM+1
                         pomocna1DM=i
                         pomocna2DM=j
@@ -386,9 +388,9 @@
 !----------------------------------------------------------------------------------------------------
 !----------------------------------------------------------------------------------------------------
 !----------------------------------------------------------------------------------------------------
-         integer function daysInMonth(caln,i)
+         integer function daysInMonth(caln,year,month)
                 implicit none
-                integer,intent(in)       :: caln,i  ! (1) calendar, (2) month in year
+                integer,intent(in)       :: caln,year,month
                 integer,dimension(1:12)  :: days
 
                 !-----------------------------------------------------------------------------------
@@ -397,9 +399,9 @@
                 ! 365 day leap calendar
                 if      (caln==1) then
                         days=(/31,29,31,30,31,30,31,31,30,31,30,31/)
-                        if (mod(i,4)==0) then
-                                if (mod(i,100)==0) then
-                                        if (mod(i,400)==0) then
+                        if (mod(year,4)==0) then
+                                if (mod(year,100)==0) then
+                                        if (mod(year,400)==0) then
                                               days=(/31,29,31,30,31,30,31,31,30,31,30,31/)
                                         else
                                               days=(/31,28,31,30,31,30,31,31,30,31,30,31/)
@@ -416,7 +418,7 @@
                         days=(/30,30,30,30,30,30,30,30,30,30,30,30/)
                 end if
                
-                daysInMonth=days(i)
+                daysInMonth=days(month)
                 !-----------------------------------------------------------------------------------
                 !End: set the number of days in specific year
                 !-----------------------------------------------------------------------------------
