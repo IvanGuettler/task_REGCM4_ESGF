@@ -141,7 +141,7 @@ write(12,"(A,I3,A,I4,A,I1,A,I4,A)") 'filenameMM[',filekMM,']=_',i,'0',k,'-',j   
                 if (pomocna1MM>0) then
                 !>>> Days from 1950-01-01 to current year
                         write(filename, "('prepared_time_MM',I1.1,'.txt')") filekMM-1
-                        print *,filename
+                        !print *,filename
                         open(unit=22, file=filename, action="write",status="new",position="append")
 	                timeAxisStart=0
 
@@ -227,7 +227,7 @@ write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,'01-'
                 !-----------------------------------------------------------------------------------
                 if (pomocna1DM>0) then
                         write(filename, "('prepared_time_DM',I1.1,'.txt')") filekDM-1
-                        print *,filename
+                        !print *,filename
                         open(unit=23, file=filename, action="write",status="new",position="append")
 	                timeAxisStart=0
         	        timeAxisEnd  =0
@@ -263,6 +263,8 @@ write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,'01-'
                 !-----------------------------------------------------------------------------------
                 !Start: Write SM filenames
                 !-----------------------------------------------------------------------------------
+                pomocna1SM=0
+                pomocna2SM=0
                 if (i==SstartY) then                        ! special case for the first year
                         k=SstartM_FirstSeason
                         j=i
@@ -283,7 +285,7 @@ write(14,"(A,I3,A,I4,A,I1,A,I4,A)") 'filenameSM[',filekSM,']=_',i,'0',k,'-',j   
                                 pomocna2SM=j
                 endif ! endif for the special case for the first year
 
-                if (mod(i,10)==0) then                     ! start the 10yr filaneme
+                if (mod(i,10)==0) then                     ! start the 10yr filename
                         j=i+10
                         k=11
                         if (j>SendY) then 
@@ -299,7 +301,7 @@ write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
                         end if ! from k
                                 pomocna1SM=i
                                 pomocna2SM=j
-                end if
+                end if ! end if for the rest of files
                 !-----------------------------------------------------------------------------------
                 !End:   Write SM filenames
                 !-----------------------------------------------------------------------------------
@@ -330,9 +332,13 @@ write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
         	        do i2=pomocna1SM,pomocna2SM
                            do j=1,12
                            !>>> Write only timeaxis of the season means: 15.1., 15.4., 15.7., 15.10.
-                           if ((j==1).or.(j==4).or.(j==7).or.(j==10)) then
-                              write(24,"(I8)"),timeAxisStart+15
-                           end if ! from j
+                              if ((j==1).or.(j==4).or.(j==7).or.(j==10)) then
+                                 if ((j==1).and.(i2==SstartY)) then
+                                      write(*,*),"---> DJF of the first year skipped"
+                                 else 
+                                      write(24,"(I8)"),timeAxisStart+15
+                                 end if ! special condition
+                              end if ! from j
          	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
                            end do
         	        enddo
@@ -341,6 +347,7 @@ write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
                 !-----------------------------------------------------------------------------------
                 !End:   Write time axis for the SM filename
                 !-----------------------------------------------------------------------------------
+
 
 
 
