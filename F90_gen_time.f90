@@ -14,7 +14,7 @@
         integer      :: caln, nDays
         integer      :: i,i2,j,k,l
         integer      :: filekMM, filekDM, filekSM
-        integer      :: timeAxis, timeAxisStart, timeAxisEnd, pomocna1DM, pomocna2DM, pomocna1MM, pomocna2MM
+        integer      :: timeAxis, timeAxisStart, timeAxisEnd, pomocna1DM, pomocna2DM, pomocna1MM, pomocna2MM, pomocna1SM, pomocna2SM
         integer, external    :: numberOfDays, daysInMonth
         character(len=30)    :: filename
 
@@ -82,27 +82,13 @@
         filekDM=1
         filekSM=1
         do i=SstartY,SendY
-                !-----------------------------------------------------------------------------------
-                !Start: determine the start of the time axis
-                !-----------------------------------------------------------------------------------
-                !>>> Referent time period for CORDEX (2013., 2014.) is
-                !>>> 1949-12-01 T00:00:00Z
-                !>>> Days from 1950-01-01 to current year
-                timeAxis=0
-                do i2=1950,i  
-                   timeAxis=timeAxis+numberOfDays(caln,i2)
-                enddo
-                !>>> Add number of days in 1949-12
-                if (caln==3) then
-                   timeAxis=timeAxis+30
-                else
-                   timeAxis=timeAxis+31
-                end if
-                !print *,timeAxis
- 
-                !-----------------------------------------------------------------------------------
-                !End: determine the start of the time axis
-                !-----------------------------------------------------------------------------------
+                !>>> Referent time period for CORDEX (2013., 2014.) is 1949-12-01 T00:00:00Z
+
+
+
+
+
+
                 !-----------------------------------------------------------------------------------
                 !Start: Write MM filenames
                 !-----------------------------------------------------------------------------------
@@ -114,16 +100,14 @@
                         if (j>SendY) then 
                             j=SendY 
                             k=SendM
-                        end if
+                        end if ! from j
                         if (k>9) then
-                                write(12,"(A,I3,A,I4,A,I4,I2)")    &
-                                'filenameMM[',filekMM,']=_',i,'01-',j    ,k
+write(12,"(A,I3,A,I4,A,I4,I2)")   'filenameMM[',filekMM,']=_',i,'01-',j    ,k
                                 filekMM=filekMM+1
                         else 
-                                write(12,"(A,I3,A,I4,A,I4,A,I1)")  &
-                                'filenameMM[',filekMM,']=_',i,'01-',j,'0',k
+write(12,"(A,I3,A,I4,A,I4,A,I1)") 'filenameMM[',filekMM,']=_',i,'01-',j,'0',k
                                 filekMM=filekMM+1
-                        end if
+                        end if ! from k
                         pomocna1MM=i
                         pomocna2MM=j
                 else                                           ! special case for the first year
@@ -137,18 +121,16 @@
                                      j=j+1
                                 end do
                                 if (k>9) then
-                                     write(12,"(A,I3,A,I4,I2,A,I4,A)")   &
-                                     'filenameMM[',filekMM,']=_',i,k,'-',j        ,'12'
+write(12,"(A,I3,A,I4,I2,A,I4,A)")   'filenameMM[',filekMM,']=_',i,k,'-',j        ,'12'
                                      filekMM=filekMM+1
                                 else 
-                                     write(12,"(A,I3,A,I4,A,I1,A,I4,A)") &
-                                     'filenameMM[',filekMM,']=_',i,'0',k,'-',j    ,'12'
+write(12,"(A,I3,A,I4,A,I1,A,I4,A)") 'filenameMM[',filekMM,']=_',i,'0',k,'-',j    ,'12'
                                      filekMM=filekMM+1
-                                end if
+                                end if ! from k
                                 pomocna1MM=i
                                 pomocna2MM=j
-                        end if
-                end if
+                        end if ! from i
+                end if ! from mod(i,10)
                 !-----------------------------------------------------------------------------------
                 !End:   Write MM filenames
                 !-----------------------------------------------------------------------------------
@@ -160,7 +142,7 @@
                 !>>> Days from 1950-01-01 to current year
                         write(filename, "('prepared_time_MM',I1.1,'.txt')") filekMM-1
                         print *,filename
-                        open(unit=24, file=filename, action="write",status="new",position="append")
+                        open(unit=22, file=filename, action="write",status="new",position="append")
 	                timeAxisStart=0
 
                 !>>> Add number of days in 1949-12 + 1.1. of the first year > and remove 1.1. for readiability
@@ -175,17 +157,21 @@
         	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
         	        enddo
         	        do i2=pomocna1MM,pomocna2MM
-                        print *,'Bilo je to godine ',i2,' koja je u veljaci imala ',daysInMonth(caln,i2,2),' dana'
                            do j=1,12
-                              write(24,"(I8)"),timeAxisStart+15
+                              write(22,"(I8)"),timeAxisStart+15
          	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
                            end do
         	        enddo
-                        close(unit=24)
+                        close(unit=22)
                 end if ! from pomocna1MM
                 !-----------------------------------------------------------------------------------
                 !End:   Write time axis for the MM filename
                 !-----------------------------------------------------------------------------------
+
+
+
+
+
 
                 !-----------------------------------------------------------------------------------
                 !Start: Write DM filenames
@@ -198,16 +184,14 @@
                         if (j>=SendY) then 
                             j=SendY 
                             k=SendM
-                        end if
+                        end if ! from j
                         if (k>9) then
-             write(13,"(A,I3,A,I4,A,I4,I2,I2)")   & 
-             'filenameDM[',filekDM,']=_',i,'0101-', j,    k,daysInMonth(caln,j,k)
-                        filekDM=filekDM+1
+write(13,"(A,I3,A,I4,A,I4,I2,I2)")   'filenameDM[',filekDM,']=_',i,'0101-', j,    k,daysInMonth(caln,j,k)
+                            filekDM=filekDM+1
                         else 
-             write(13,"(A,I3,A,I4,A,I4,A,I1,I2)") & 
-             'filenameDM[',filekDM,']=_',i,'0101-',j,'0', k,daysInMonth(caln,j,k)
-                        filekDM=filekDM+1
-                        end if
+write(13,"(A,I3,A,I4,A,I4,A,I1,I2)") 'filenameDM[',filekDM,']=_',i,'0101-',j,'0', k,daysInMonth(caln,j,k)
+                            filekDM=filekDM+1
+                        end if ! fom k
                         pomocna1DM=i
                         pomocna2DM=j
                 else                                     ! special case for the first year
@@ -217,33 +201,31 @@
                                 do l=i,i+5
                                         if (mod(j,5)==0) then
                                         cycle
-                                        end if
+                                        end if ! from mod(j,5)
                                         j=j+1
                                 end do
-                        if (k>9) then
-             write(13,"(A,I3,A,I4,I2,A,I4,A,I2)")  & 
-             'filenameDM[',filekDM,']=_',i,k,'01-',j,'12',daysInMonth(caln,j,12)
-                        filekDM=filekDM+1
-                        pomocna1DM=i
-                        pomocna2DM=j
-                        else 
-             write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") &
-             'filenameDM[',filekDM,']=_',i,'0',k,'01-',j,'12',daysInMonth(caln,j,12)
-                        filekDM=filekDM+1
-                        pomocna1DM=i
-                        pomocna2DM=j
+                                if (k>9) then
+write(13,"(A,I3,A,I4,I2,A,I4,A,I2)")   'filenameDM[',filekDM,']=_',i,k,'01-',j,'12',daysInMonth(caln,j,12)
+                                   filekDM=filekDM+1
+                                   pomocna1DM=i
+                                   pomocna2DM=j
+                                else 
+write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,'01-',j,'12',daysInMonth(caln,j,12)
+                                   filekDM=filekDM+1
+                                   pomocna1DM=i
+                                   pomocna2DM=j
+                                end if ! from k
                         end if
-                        end if
-                end if
+                end if ! from mod(i,5)
                 !-----------------------------------------------------------------------------------
                 !End:   Write DM filenames
                 !-----------------------------------------------------------------------------------
                 !-----------------------------------------------------------------------------------
                 !Start:   Write time axis for the DM filename. This works fine if first date is 1.1. (for now)
+                !         We deliberatelly select thet 15th as the mean date (ignoring different length of different months)
                 !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
                 !-----------------------------------------------------------------------------------
                 if (pomocna1DM>0) then
-                !>>> Days from 1950-01-01 to current year
                         write(filename, "('prepared_time_DM',I1.1,'.txt')") filekDM-1
                         print *,filename
                         open(unit=23, file=filename, action="write",status="new",position="append")
@@ -272,28 +254,35 @@
                 !-----------------------------------------------------------------------------------
                 !End:   Write time axis for the DM filename
                 !-----------------------------------------------------------------------------------
+
+
+
+
+
+
                 !-----------------------------------------------------------------------------------
                 !Start: Write SM filenames
                 !-----------------------------------------------------------------------------------
                 if (i==SstartY) then                        ! special case for the first year
-                                k=SstartM_FirstSeason
-                                j=i
-                                do l=i,i+10
-                                        if (mod(j,10)==0) then
-                                        cycle
-                                        end if
-                                        j=j+1
-                                end do
+                        k=SstartM_FirstSeason
+                        j=i
+                        do l=i,i+10
+                                  if (mod(j,10)==0) then
+                                  cycle
+                                  end if
+                                  j=j+1
+                        end do
                         if (k>9) then
-                                write(14,"(A,I3,A,I4,I2,A,I4,A)")     &
-                                'filenameSM[',filekSM,']=_',i,k,'-',j        ,'11'
+write(14,"(A,I3,A,I4,I2,A,I4,A)")   'filenameSM[',filekSM,']=_',i,k,'-',j        ,'11'
                                 filekSM=filekSM+1
                         else 
-                                write(14,"(A,I3,A,I4,A,I1,A,I4,A)")  & 
-                                'filenameSM[',filekSM,']=_',i,'0',k,'-',j    ,'11'
+write(14,"(A,I3,A,I4,A,I1,A,I4,A)") 'filenameSM[',filekSM,']=_',i,'0',k,'-',j    ,'11'
                                 filekSM=filekSM+1
                         end if
-                endif
+                                pomocna1SM=i
+                                pomocna2SM=j
+                endif ! endif for the special case for the first year
+
                 if (mod(i,10)==0) then                     ! start the 10yr filaneme
                         j=i+10
                         k=11
@@ -302,19 +291,63 @@
                             k=SendM_LastSeason
                         end if
                         if (k>9) then
-                                write(14,"(A,I3,A,I4,A,I4,I2)")   & 
-                                'filenameSM[',filekSM,']=_',i,'12-',j    ,k
+write(14,"(A,I3,A,I4,A,I4,I2)")   'filenameSM[',filekSM,']=_',i,'12-',j    ,k
                                 filekSM=filekSM+1
                         else 
-                                write(14,"(A,I3,A,I4,A,I4,A,I1)") &
-                                'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
+write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
                                 filekSM=filekSM+1
-                        end if
+                        end if ! from k
+                                pomocna1SM=i
+                                pomocna2SM=j
                 end if
                 !-----------------------------------------------------------------------------------
                 !End:   Write SM filenames
                 !-----------------------------------------------------------------------------------
+                !-----------------------------------------------------------------------------------
+                !Start:   Write time axis for the SM filename. This works fine if first date is 1.1. (for now)
+                !         We deliberatelly select thet 15th as the mean date (ignoring different length of different months)
+                !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
+                !-----------------------------------------------------------------------------------
+                if (pomocna1SM>0) then
+                        write(filename, "('prepared_time_SM',I1.1,'.txt')") filekSM-1
+                        print *,filename
+                        open(unit=24, file=filename, action="write",status="new",position="append")
+	                timeAxisStart=0
+
+                !>>> Add number of days in 1949-12 + 1.1. of the first year > and remove 1.1. for readiability
+        	        if (caln==3) then
+        	           timeAxisStart=timeAxisStart+30+1-1
+        	        else
+        	           timeAxisStart=timeAxisStart+31+1-1
+        	        end if ! from caln
+
+                !>>> Define beginning > find first day of first month > write always the 15th day of the month
+                !>>> Since the referent time to the start of our simulation
+	                do i2=1950,pomocna1SM-1               !-1 because we want to start with 1.1. 
+        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
+        	        enddo
+                !>>> Since the start of our simulation up to the end
+        	        do i2=pomocna1SM,pomocna2SM
+                           do j=1,12
+                           !>>> Write only timeaxis of the season means: 15.1., 15.4., 15.7., 15.10.
+                           if ((j==1).or.(j==4).or.(j==7).or.(j==10)) then
+                              write(24,"(I8)"),timeAxisStart+15
+                           end if ! from j
+         	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
+                           end do
+        	        enddo
+                        close(unit=24)
+                end if ! from pomocna1SM
+                !-----------------------------------------------------------------------------------
+                !End:   Write time axis for the SM filename
+                !-----------------------------------------------------------------------------------
+
+
+
+
         end do !i years
+
+
 
         ! Close all output files
         close(unit=12)
@@ -322,11 +355,6 @@
         close(unit=14)
 
         end program gentime
-!----------------------------------------------------------------------------------------------------
-!----------------------------------------------------------------------------------------------------
-!----------------------------------------------------------------------------------------------------
-!----------------------------------------------------------------------------------------------------
-!----------------------------------------------------------------------------------------------------
 !----------------------------------------------------------------------------------------------------
 !----------------------------------------------------------------------------------------------------
 !----------------------------------------------------------------------------------------------------
@@ -375,11 +403,6 @@
                 !End: determine number of days in specific year
                 !-----------------------------------------------------------------------------------
           end function numberOfDays
-!----------------------------------------------------------------------------------------------------
-!----------------------------------------------------------------------------------------------------
-!----------------------------------------------------------------------------------------------------
-!----------------------------------------------------------------------------------------------------
-!----------------------------------------------------------------------------------------------------
 !----------------------------------------------------------------------------------------------------
 !----------------------------------------------------------------------------------------------------
 !----------------------------------------------------------------------------------------------------
