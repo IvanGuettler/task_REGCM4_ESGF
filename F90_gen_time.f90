@@ -98,7 +98,7 @@
                 else
                    timeAxis=timeAxis+31
                 end if
-                print *,timeAxis
+                !print *,timeAxis
  
                 !-----------------------------------------------------------------------------------
                 !End: determine the start of the time axis
@@ -162,15 +162,12 @@
                         print *,filename
                         open(unit=24, file=filename, action="write",status="new",position="append")
 	                timeAxisStart=0
-        	        timeAxisEnd  =0
 
-                !>>> Add number of days in 1949-12 + 1.1. of the first year
+                !>>> Add number of days in 1949-12 + 1.1. of the first year > and remove 1.1. for readiability
         	        if (caln==3) then
-        	           timeAxisStart=timeAxisStart+30+1
-        	           timeAxisEnd  =timeAxisEnd  +30
+        	           timeAxisStart=timeAxisStart+30+1-1
         	        else
-        	           timeAxisStart=timeAxisStart+31+1
-        	           timeAxisEnd  =timeAxisEnd  +31
+        	           timeAxisStart=timeAxisStart+31+1-1
         	        end if ! from caln
 
                 !>>> Define beginning > find first day of first month > write always the 15th day of the month
@@ -178,9 +175,10 @@
         	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
         	        enddo
         	        do i2=pomocna1MM,pomocna2MM
+                        print *,'Bilo je to godine ',i2,' koja je u veljaci imala ',daysInMonth(caln,i2,2),' dana'
                            do j=1,12
                               write(24,"(I8)"),timeAxisStart+15
-         	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j)
+         	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
                            end do
         	        enddo
                         close(unit=24)
@@ -347,7 +345,7 @@
                 ! 365 day leap calendar
                 if      (caln==1) then
                         nDays=365
-                        daysInMonth=(/31,29,31,30,31,30,31,31,30,31,30,31/)
+                        daysInMonth=(/31,28,31,30,31,30,31,31,30,31,30,31/)
                         if (mod(i,4)==0) then
                                 if (mod(i,100)==0) then
                                         if (mod(i,400)==0) then
@@ -398,7 +396,7 @@
                 !-----------------------------------------------------------------------------------
                 ! 365 day leap calendar
                 if      (caln==1) then
-                        days=(/31,29,31,30,31,30,31,31,30,31,30,31/)
+                        days=(/31,28,31,30,31,30,31,31,30,31,30,31/)
                         if (mod(year,4)==0) then
                                 if (mod(year,100)==0) then
                                         if (mod(year,400)==0) then
