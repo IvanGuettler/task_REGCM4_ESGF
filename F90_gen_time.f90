@@ -158,7 +158,7 @@ write(12,"(A,I3,A,I4,A,I1,A,I4,A)") 'filenameMM[',filekMM,']=_',i,'0',k,'-',j   
         	        enddo
         	        do i2=pomocna1MM,pomocna2MM
                            do j=1,12
-                              write(22,"(I8)"),timeAxisStart+15
+                              write(22,"(I8)"),timeAxisStart+15+0.5
          	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
                            end do
         	        enddo
@@ -247,7 +247,7 @@ write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,'01-'
         	        end if
                 !>>> Writing days from timeAxisStart to timeAxisEnd
         	        do i2=timeAxisStart,timeAxisEnd
-                           write(23,"(I8)"),i2
+                           write(23,"(I8)"),i2+0.5
                         end do	
                         close(unit=23)
                 end if
@@ -336,7 +336,7 @@ write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
                                  if ((j==1).and.(i2==SstartY)) then
                                       write(*,*),"---> DJF of the first year skipped"
                                  else 
-                                      write(24,"(I8)"),timeAxisStart+15
+                                      write(24,"(I8)"),timeAxisStart+15+0.5
                                  end if ! special condition
                               end if ! from j
          	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
