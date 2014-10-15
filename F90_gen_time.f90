@@ -12,7 +12,7 @@
         integer      :: SstartY, SstartM, SstartD, SendY, SendM, SendD
         integer      :: SstartM_FirstSeason, SendM_LastSeason
         integer      :: caln, nDays
-        integer      :: i,i2,j,k,l
+        integer      :: i,i2,j,k,l, temp
         integer      :: filekMM, filekDM, filekSM
         integer      :: timeAxis, timeAxisStart, timeAxisEnd, pomocna1DM, pomocna2DM, pomocna1MM, pomocna2MM, pomocna1SM, pomocna2SM
         integer, external    :: numberOfDays, daysInMonth
@@ -140,9 +140,10 @@ write(12,"(A,I3,A,I4,A,I1,A,I4,A)") 'filenameMM[',filekMM,']=_',i,'0',k,'-',j   
                 !-----------------------------------------------------------------------------------
                 if (pomocna1MM>0) then
                 !>>> Days from 1950-01-01 to current year
-                        write(filename, "('prepared_time_MM',I1.1,'.txt')") filekMM-1
-                        !print *,filename
+                        write(filename, "('prepared_time_MM',I1.1,'.txt')")     filekMM-1
                         open(unit=22, file=filename, action="write",status="new",position="append")
+                        write(filename, "('prepared_timebnds_MM',I1.1,'.txt')") filekMM-1
+                        open(unit=221, file=filename, action="write",status="new",position="append")
 	                timeAxisStart=0
 
                 !>>> Add number of days in 1949-12 + 1.1. of the first year > and remove 1.1. for readiability
@@ -158,11 +159,13 @@ write(12,"(A,I3,A,I4,A,I1,A,I4,A)") 'filenameMM[',filekMM,']=_',i,'0',k,'-',j   
         	        enddo
         	        do i2=pomocna1MM,pomocna2MM
                            do j=1,12
-                              write(22,"(I8)"),timeAxisStart+15+0.5
+write(22 ,"(F8.1)"), timeAxisStart+15+0.5
+write(221,"(I8,A,I8)"), timeAxisStart,',',timeAxisStart+daysInMonth(caln,i2,j)
          	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
                            end do
         	        enddo
                         close(unit=22)
+                        close(unit=221)
                 end if ! from pomocna1MM
                 !-----------------------------------------------------------------------------------
                 !End:   Write time axis for the MM filename
@@ -226,9 +229,11 @@ write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,'01-'
                 !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
                 !-----------------------------------------------------------------------------------
                 if (pomocna1DM>0) then
-                        write(filename, "('prepared_time_DM',I1.1,'.txt')") filekDM-1
-                        !print *,filename
-                        open(unit=23, file=filename, action="write",status="new",position="append")
+                        write(filename, "('prepared_time_DM',I1.1,'.txt')")     filekDM-1
+                        open(unit=23,  file=filename, action="write",status="new",position="append")
+                        write(filename, "('prepared_timebnds_DM',I1.1,'.txt')") filekDM-1
+                        open(unit=231, file=filename, action="write",status="new",position="append")
+
 	                timeAxisStart=0
         	        timeAxisEnd  =0
 	                do i2=1950,pomocna1DM-1               !-1 because we want to start with 1.1. 
@@ -247,9 +252,11 @@ write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,'01-'
         	        end if
                 !>>> Writing days from timeAxisStart to timeAxisEnd
         	        do i2=timeAxisStart,timeAxisEnd
-                           write(23,"(I8)"),i2+0.5
+write(23, "(F8.1)"),i2+0.5
+write(231,"(I8,A,I8)"),i2,',',i2+1
                         end do	
                         close(unit=23)
+                        close(unit=231)
                 end if
                 !-----------------------------------------------------------------------------------
                 !End:   Write time axis for the DM filename
@@ -311,9 +318,11 @@ write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
                 !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
                 !-----------------------------------------------------------------------------------
                 if (pomocna1SM>0) then
-                        write(filename, "('prepared_time_SM',I1.1,'.txt')") filekSM-1
-                        print *,filename
+                        write(filename, "('prepared_time_SM',I1.1,'.txt')")     filekSM-1
                         open(unit=24, file=filename, action="write",status="new",position="append")
+                        write(filename, "('prepared_timebnds_SM',I1.1,'.txt')") filekSM-1
+                        open(unit=241, file=filename, action="write",status="new",position="append")
+
 	                timeAxisStart=0
 
                 !>>> Add number of days in 1949-12 + 1.1. of the first year > and remove 1.1. for readiability
@@ -334,15 +343,23 @@ write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
                            !>>> Write only timeaxis of the season means: 15.1., 15.4., 15.7., 15.10.
                               if ((j==1).or.(j==4).or.(j==7).or.(j==10)) then
                                  if ((j==1).and.(i2==SstartY)) then
-                                      write(*,*),"---> DJF of the first year skipped"
+write(*,*),"---> DJF of the first year skipped"
                                  else 
-                                      write(24,"(I8)"),timeAxisStart+15+0.5
+write(24,"(F8.1)"), timeAxisStart+15+0.5
+                                      temp=daysInMonth(caln,i2,j)+daysInMonth(caln,i2,j+1)
+                                      if (j>1) then
+write(241,"(I8,A,I8)"),timeAxisStart-daysInMonth(caln,i2,j-1),  ',',timeAxisStart+temp
+                                      else
+                                      temp=daysInMonth(caln,i2,j)+daysInMonth(caln,i2,j+1)
+write(241,"(I8,A,I8)"),timeAxisStart-daysInMonth(caln,i2-1, 12),',',timeAxisStart+temp
+                                      end if ! from j
                                  end if ! special condition
                               end if ! from j
          	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
                            end do
         	        enddo
                         close(unit=24)
+                        close(unit=241)
                 end if ! from pomocna1SM
                 !-----------------------------------------------------------------------------------
                 !End:   Write time axis for the SM filename
