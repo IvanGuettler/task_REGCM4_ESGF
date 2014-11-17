@@ -1,10 +1,21 @@
 #!/bin/bash
 
-#-- VARIABLE source
-sourceDIR[ 1]='../EUROPE_STS'
-sourceDIR[ 2]='../EUROPE_STS'
-sourceDIR[ 3]='../EUROPE_STS'
-sourceDIR[ 4]='../EUROPE_STS'
+#-- Years to ingest
+	STARTyyy=1989
+	  ENDyyy=2008
+
+
+#-- VARIABLE source DIR
+sourceDIR[ 1]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 2]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 3]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 4]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+#-- VARIABLE source FILE
+sourceFILE[ 1]='EUROPE_STS'
+sourceFILE[ 2]='EUROPE_STS'
+sourceFILE[ 3]='EUROPE_STS'
+sourceFILE[ 4]='EUROPE_STS'
+
 
 #-- VARIABLE RegCM name
 varalica[ 1]='t2avg'
