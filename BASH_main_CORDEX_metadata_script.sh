@@ -18,7 +18,8 @@ interpolate=0 #Interpolate to regular e.g. 0.5 deg grid
     source ./CORDEX_metadata_common
 #Load meta data from separate file for specific experiment you are working on
     source ./CORDEX_metadata_specific_50km_ERAIN
-
+#All temporary output in
+    tempTarget=/work/regcm/temp/test_CORDEX
 
 #==================================================
 #STEP: prepare variable
@@ -26,30 +27,40 @@ interpolate=0 #Interpolate to regular e.g. 0.5 deg grid
 if [ ${collect} == 1 ] ; then
     echo 'Collecting variable...'
 
+    #---
     #Collect specific variable from RegCM output or separately prepared quantities
-    for YEAR in {${STARTyyy}..${ENDyyy}} ; do
-    echo ${YEAR}
-            for MNTH in 0 1 2 3 4 5 6 7 8 9 10 11 ; do
-	    echo ${MNTH}
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                           \
-           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
-           ${targetDIR[${INDX}]}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
-            done #<<< MNTH
-    done #<<< YEAR
+    #---
+#    for YEAR in $(seq ${STARTyyy} ${ENDyyy}); do
+#    echo ${YEAR}
+#            for MNTH in 0 1 2 3 4 5 6 7 8 9 10 11 ; do#
+#	    echo ${MNTH}
+#${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                           \
+#           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
+#                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
+#            done #<<< MNTH
+#    done #<<< YEAR
 
-     #Join all files into one file
-     ${NCO_PATH}/ncrcat   -h ${name[${INDX}]}_??????0100.nc        ${name[${INDX}]}.nc
-     rm -vf ${name[${INDX}]}.nc_??????0100.nc
+#    #---
+#     #Join all files into one file
+#    #---
+#     ${NCO_PATH}/ncrcat   -h ${tempTarget}/${name[${INDX}]}_??????0100.nc        ${tempTarget}/${name[${INDX}]}.nc
+      rm -vf ${tempTarget}/${name[${INDX}]}_??????0100.nc
+#
+#    #---
+#     #Rename original RegCM variable to CORDEX variable
+#    #---
+#     ${NCO_PATH}/ncrename -v ${varalica[${INDX}]},${name[${INDX}]} ${tempTarget}/${name[${INDX}]}.nc
 
-     #Rename original RegCM variable to CORDEX variable
-     ${NCO_PATH}/ncrename -v ${varalica[${INDX}]},${name[${INDX}]} ${name[${INDX}]}.nc
-
+    #---
      #Set specific _FillValue and missing_value
-     ${NCO_PATH}/ncatted  -O -a    _FillValue,${name[${INDX}]},c,f,${_FillValue}    \
-                             -a missing_value,${name[${INDX}]},c,f,${missing_values} ${name[${INDX}]}.nc
+    #---
+     ${NCO_PATH}/ncatted  -O -a    _FillValue,${name[${INDX}]},c,f,1e+20    \
+                             -a missing_value,${name[${INDX}]},c,f,1e+20 ${tempTarget}/${name[${INDX}]}.nc
 
+    #---
      #Delete all global metadata
-     ${NCO_PATH}/ncatted -a ,global,d,, ${name[${INDX}]}.nc
+    #---
+     ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${tempTarget}/${name[${INDX}]}.nc
      
 fi
 
