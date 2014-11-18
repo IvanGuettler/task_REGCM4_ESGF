@@ -256,7 +256,7 @@ if [ ${split} == 1 ] ; then
 #--
 #Fixing some names
 #--
-    	${NCO_PATH}/ncrename -O -h -d   y,iy -d   x,jx                        ${FILE1}${filenameDM[${j}]}.nc
+        ${NCO_PATH}/ncrename -O -h -d   y,iy -d   x,jx                        ${FILE1}${filenameDM[${j}]}.nc
 	${NCO_PATH}/ncks     -A -h -v  iy,jx                 ${FILE1}_all.nc  ${FILE1}${filenameDM[${j}]}.nc
 #---
 #Delete all global metadata
@@ -270,20 +270,21 @@ if [ ${split} == 1 ] ; then
 #--
     j=1
     while [ ${j} -le ${NFILES_MM} ] ; do
-	cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2}_all.nc    ${FILE2}${filenameMM[${j}]}.nc
-	cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2i}_all.nc  ${FILE2i}${filenameMM[${j}]}.nc
+cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2}_all.nc    ${FILE2}${filenameMM[${j}]}.nc
+
+	###cdo settaxis,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-15,12:00:00,1month -seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2i}_all.nc  ${FILE2i}${filenameMM[${j}]}.nc
 
 #--
 #Fixing some names
 #--
-        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE2}${filenameMM[${j}]}.nc
-        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE2}_all.nc   ${FILE2}${filenameMM[${j}]}.nc
+#        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE2}${filenameMM[${j}]}.nc
+#        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE2}_all.nc   ${FILE2}${filenameMM[${j}]}.nc
 
 #---
 #Delete all global metadata
 #---
-        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE2}${filenameMM[${j}]}.nc
-        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE2i}${filenameMM[${j}]}.nc
+#        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE2}${filenameMM[${j}]}.nc
+#        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE2i}${filenameMM[${j}]}.nc
 
         j=$((j+1))
     done # j loop
@@ -291,25 +292,25 @@ if [ ${split} == 1 ] ; then
 #--
 #Splitting seasonal data
 #--
-    j=1
-    while [ ${j} -le ${NFILES_SM} ] ; do
-	cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3}_all.nc    ${FILE3}${filenameSM[${j}]}.nc
-	cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3i}_all.nc  ${FILE3i}${filenameSM[${j}]}.nc
+#    j=1
+#    while [ ${j} -le ${NFILES_SM} ] ; do
+#	cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3}_all.nc    ${FILE3}${filenameSM[${j}]}.nc
+#	cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3i}_all.nc  ${FILE3i}${filenameSM[${j}]}.nc
 
 #--
 #Fixing some names
 #--
-        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE3}${filenameSM[${j}]}.nc
-        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE3}_all.nc   ${FILE3}${filenameSM[${j}]}.nc
+#        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE3}${filenameSM[${j}]}.nc
+#        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE3}_all.nc   ${FILE3}${filenameSM[${j}]}.nc
 
 #---
 #Delete all global metadata
 #---
-        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE3}${filenameSM[${j}]}.nc
-        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE3i}${filenameSM[${j}]}.nc
-
-       j=$((j+1))
-   done # j loop
+#        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE3}${filenameSM[${j}]}.nc
+#        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE3i}${filenameSM[${j}]}.nc
+#
+#       j=$((j+1))
+#   done # j loop
 
 
 fi

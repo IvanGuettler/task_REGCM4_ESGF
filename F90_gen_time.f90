@@ -159,7 +159,8 @@ write(12,"(A,I3,A,I4,A,I1,A,I4,A)") 'filenameMM[',filekMM,']=_',i,'0',k,'-',j   
         	        enddo
         	        do i2=pomocna1MM,pomocna2MM
                            do j=1,12
-write(22 ,"(F8.1)"), timeAxisStart+15+0.5
+write(22 ,"(F8.1,A)"), timeAxisStart+15+0.5
+!Alternative write(22 ,"(F8.1,A)",advance='no'), timeAxisStart+15+0.5,','
 write(221,"(I8,A,I8)"), timeAxisStart,',',timeAxisStart+daysInMonth(caln,i2,j)
          	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
                            end do
@@ -253,7 +254,7 @@ write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,'01-'
                 !>>> Writing days from timeAxisStart to timeAxisEnd
         	        do i2=timeAxisStart,timeAxisEnd
 write(23, "(F8.1)"),i2+0.5-1
-write(231,"(I8,A,I8)"),i2,',',i2+1
+write(231,"(I8,A,I8)"),i2-1,',',i2+1-1
                         end do	
                         close(unit=23)
                         close(unit=231)
