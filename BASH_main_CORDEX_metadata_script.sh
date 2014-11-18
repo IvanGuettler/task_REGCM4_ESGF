@@ -1,15 +1,19 @@
 #!/bin/bash
 
+#Assumptions:
+	#(1) original files are allready daily means (or daily min/max). If not, first prepare these files separately.
+        #(2) cdo & nco installed on your system
+        #(3) F90_gen_time.f90 successfully used
+
 #The location of nco
 #DHMZ vihor
 NCO_PATH=/home1/regcm/regcmlibs_my_gfortran/bin/
 
-
        INDX=1 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=1 #Collect variable from various sources        
+    collect=0 #Collect variable from various sources        
       means=0 #Calculate daily, monthly and seasonal means  
   rm_buffer=0 #Remove buffer zone e.g. 11 grid cells        
-interpolate=0 #Interpolate to regular e.g. 0.5 deg grid     
+interpolate=1 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
       split=0 #Split files into specific groups             
    metadata=0 #Edit meta-data                              
     convert=0 #Convert from netcdf3 > netcdf4 if needed
@@ -30,35 +34,35 @@ if [ ${collect} == 1 ] ; then
     #---
     #Collect specific variable from RegCM output or separately prepared quantities
     #---
-#    for YEAR in $(seq ${STARTyyy} ${ENDyyy}); do
-#    echo ${YEAR}
-#            for MNTH in 0 1 2 3 4 5 6 7 8 9 10 11 ; do#
-#	    echo ${MNTH}
-#${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                           \
-#           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
-#                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
-#            done #<<< MNTH
-#    done #<<< YEAR
-
-#    #---
-#     #Join all files into one file
-#    #---
-#     ${NCO_PATH}/ncrcat   -h ${tempTarget}/${name[${INDX}]}_??????0100.nc        ${tempTarget}/${name[${INDX}]}.nc
-      rm -vf ${tempTarget}/${name[${INDX}]}_??????0100.nc
-#
-#    #---
-#     #Rename original RegCM variable to CORDEX variable
-#    #---
-#     ${NCO_PATH}/ncrename -v ${varalica[${INDX}]},${name[${INDX}]} ${tempTarget}/${name[${INDX}]}.nc
+    for YEAR in $(seq ${STARTyyy} ${ENDyyy}); do
+    echo ${YEAR}
+            for MNTH in 0 1 2 3 4 5 6 7 8 9 10 11 ; do 
+	    echo ${MNTH}
+${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                           \
+           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
+                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
+            done #<<< MNTH
+    done #<<< YEAR
 
     #---
-     #Set specific _FillValue and missing_value
+    #Join all files into one file
+    #---
+     ${NCO_PATH}/ncrcat   -h ${tempTarget}/${name[${INDX}]}_??????0100.nc        ${tempTarget}/${name[${INDX}]}.nc
+      rm -vf ${tempTarget}/${name[${INDX}]}_??????0100.nc
+
+    #---
+    #Rename original RegCM variable to CORDEX variable
+    #---
+     ${NCO_PATH}/ncrename -v ${varalica[${INDX}]},${name[${INDX}]} ${tempTarget}/${name[${INDX}]}.nc
+
+    #---
+    #Set specific _FillValue and missing_value
     #---
      ${NCO_PATH}/ncatted  -O -a    _FillValue,${name[${INDX}]},c,f,1e+20    \
                              -a missing_value,${name[${INDX}]},c,f,1e+20 ${tempTarget}/${name[${INDX}]}.nc
 
     #---
-     #Delete all global metadata
+    #Delete all global metadata
     #---
      ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${tempTarget}/${name[${INDX}]}.nc
      
@@ -74,42 +78,55 @@ fi
 #==================================================
 #STEP: DM,MM and SM
 #==================================================
-    DOMAIN=${CORDEX_domain}
-    INSTITUTE=${institude_id}
-    GCMModelName=${driving_model_id}
-    CMIP5ExperimentName=${driving_experiment_name}
-    CMIP5EnsembleMember=${driving_model_ensemble_member}
-    RCMModelName=DHMZ-REGCM42
-    RCMVersionID=${RCM_version_id}
-    frequency1=day
-    frequency2=mon
-    frequency3=sem
 
-    FILE1=tas_${DOMAIN}_${GCMModelName}_${CMIP5ExperimentName}_${CMIP5EnsembleMember}_${RCMModelName}_${RCMVersionID}_${frequency1}
-    FILE2=tas_${DOMAIN}_${GCMModelName}_${CMIP5ExperimentName}_${CMIP5EnsembleMember}_${RCMModelName}_${RCMVersionID}_${frequency2}
-    FILE3=tas_${DOMAIN}_${GCMModelName}_${CMIP5ExperimentName}_${CMIP5EnsembleMember}_${RCMModelName}_${RCMVersionID}_${frequency3}
-    FILE1i=tas_${DOMAIN}i_${GCMModelName}_${CMIP5ExperimentName}_${CMIP5EnsembleMember}_${RCMModelName}_${RCMVersionID}_${frequency1}
-    FILE2i=tas_${DOMAIN}i_${GCMModelName}_${CMIP5ExperimentName}_${CMIP5EnsembleMember}_${RCMModelName}_${RCMVersionID}_${frequency2}
-    FILE3i=tas_${DOMAIN}i_${GCMModelName}_${CMIP5ExperimentName}_${CMIP5EnsembleMember}_${RCMModelName}_${RCMVersionID}_${frequency3}
+#---
+# Define filenames: DM, MM and SM: original an interpolated
+#---
+    FILE1=${tempTarget}/${name[${INDX}]}_${CORDEX_domain}_${driving_model_id}_${driving_experiment_name}_${driving_model_ensemble_member}_${model_id}_${rcm_version_id}_day
+    FILE2=${tempTarget}/${name[${INDX}]}_${CORDEX_domain}_${driving_model_id}_${driving_experiment_name}_${driving_model_ensemble_member}_${model_id}_${rcm_version_id}_mon
+    FILE3=${tempTarget}/${name[${INDX}]}_${CORDEX_domain}_${driving_model_id}_${driving_experiment_name}_${driving_model_ensemble_member}_${model_id}_${rcm_version_id}_sem
+    FILE1i=${tempTarget}/${name[${INDX}]}_${CORDEX_domain}i_${driving_model_id}_${driving_experiment_name}_${driving_model_ensemble_member}_${model_id}_${rcm_version_id}_day
+    FILE2i=${tempTarget}/${name[${INDX}]}_${CORDEX_domain}i_${driving_model_id}_${driving_experiment_name}_${driving_model_ensemble_member}_${model_id}_${rcm_version_id}_mon
+    FILE3i=${tempTarget}/${name[${INDX}]}_${CORDEX_domain}i_${driving_model_id}_${driving_experiment_name}_${driving_model_ensemble_member}_${model_id}_${rcm_version_id}_sem
+
 
 if [ ${means} == 1 ] ; then
-    echo 'DM, MM and SM...'
-cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,360days -settunits,days           tas.nc ${FILE1}_all.nc
-cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,360days -settunits,days -monmean  tas.nc ${FILE2}_all.nc
-cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,360days -settunits,days -seasmean tas.nc ${FILE3}_all.nc
+#---
+# Perform averaging
+#---
+echo 'DM, MM and SM...'
+cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days           ${tempTarget}/${name[${INDX}]}.nc ${FILE1}_all.nc
+cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -monmean  ${tempTarget}/${name[${INDX}]}.nc ${FILE2}_all.nc
+cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -seasmean ${tempTarget}/${name[${INDX}]}.nc ${FILE3}_all.nc
 
+#---
+# Rename dimension x,y into jx,iy
+#---
     ${NCO_PATH}/ncrename -O -h -d x,jx -d y,iy     ${FILE1}_all.nc
     ${NCO_PATH}/ncrename -O -h -d x,jx -d y,iy     ${FILE2}_all.nc
     ${NCO_PATH}/ncrename -O -h -d x,jx -d y,iy     ${FILE3}_all.nc
 
-    ${NCO_PATH}/ncks     -A -h -v iy,jx   tas.nc   ${FILE1}_all.nc
-    ${NCO_PATH}/ncks     -A -h -v iy,jx   tas.nc   ${FILE2}_all.nc
-    ${NCO_PATH}/ncks     -A -h -v iy,jx   tas.nc   ${FILE3}_all.nc
+#---
+# cdo did not copy varialbes iy,jx. (Recheck this step with new cdo version)
+#---
+    ${NCO_PATH}/ncks     -A -h -v iy,jx   ${tempTarget}/${name[${INDX}]}.nc   ${FILE1}_all.nc
+    ${NCO_PATH}/ncks     -A -h -v iy,jx   ${tempTarget}/${name[${INDX}]}.nc   ${FILE2}_all.nc
+    ${NCO_PATH}/ncks     -A -h -v iy,jx   ${tempTarget}/${name[${INDX}]}.nc   ${FILE3}_all.nc
 
-    ${NCO_PATH}/ncatted  -O -a _FillValue,tas,c,f,1e+20 -a  missing_value,tas,c,f,1e+20 ${FILE1}_all.nc
-    ${NCO_PATH}/ncatted  -O -a _FillValue,tas,c,f,1e+20 -a  missing_value,tas,c,f,1e+20 ${FILE2}_all.nc
-    ${NCO_PATH}/ncatted  -O -a _FillValue,tas,c,f,1e+20 -a  missing_value,tas,c,f,1e+20 ${FILE3}_all.nc
-    mv tas.nc ./temp
+#---
+#Set specific _FillValue and missing_value
+#---
+    ${NCO_PATH}/ncatted  -O -a _FillValue,${name[${INDX}]},c,f,1e+20 -a  missing_value,${name[${INDX}]},c,f,1e+20 ${FILE1}_all.nc
+    ${NCO_PATH}/ncatted  -O -a _FillValue,${name[${INDX}]},c,f,1e+20 -a  missing_value,${name[${INDX}]},c,f,1e+20 ${FILE2}_all.nc
+    ${NCO_PATH}/ncatted  -O -a _FillValue,${name[${INDX}]},c,f,1e+20 -a  missing_value,${name[${INDX}]},c,f,1e+20 ${FILE3}_all.nc
+
+#---
+#Delete all global metadata
+#---
+     ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE1}_all.nc
+     ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE2}_all.nc
+     ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE3}_all.nc
+
 fi
 
 
@@ -125,17 +142,15 @@ fi
 #==================================================
 if [ ${rm_buffer} == 1 ] ; then
     echo 'Remove buffer zone...'
-
-    #My grid is 142 x 142 cells
-    #Buffer zone includes 11 cells
-    NXstart=12
-    NXendic=131
-    NYstart=12
-    NYendic=131
-    ${NCO_PATH}/ncks -O -a -d jx,${NXstart},${NXendic} -d  iy,${NYstart},${NYendic} ${FILE1}_all.nc ${FILE1}_all_rmBuffer.nc
-    ${NCO_PATH}/ncks -O -a -d jx,${NXstart},${NXendic} -d  iy,${NYstart},${NYendic} ${FILE2}_all.nc ${FILE2}_all_rmBuffer.nc
-    ${NCO_PATH}/ncks -O -a -d jx,${NXstart},${NXendic} -d  iy,${NYstart},${NYendic} ${FILE3}_all.nc ${FILE3}_all_rmBuffer.nc
-
+#---
+# Remove the buffer zone
+#---
+    ${NCO_PATH}/ncks -O -h -d jx,${NXstart},${NXendic} -d  iy,${NYstart},${NYendic} ${FILE1}_all.nc ${FILE1}_all_rmBuffer.nc
+    ${NCO_PATH}/ncks -O -h -d jx,${NXstart},${NXendic} -d  iy,${NYstart},${NYendic} ${FILE2}_all.nc ${FILE2}_all_rmBuffer.nc
+    ${NCO_PATH}/ncks -O -h -d jx,${NXstart},${NXendic} -d  iy,${NYstart},${NYendic} ${FILE3}_all.nc ${FILE3}_all_rmBuffer.nc
+#---
+# Overwrite full domain
+#---
     mv ${FILE1}_all_rmBuffer.nc ${FILE1}_all.nc
     mv ${FILE2}_all_rmBuffer.nc ${FILE2}_all.nc
     mv ${FILE3}_all_rmBuffer.nc ${FILE3}_all.nc

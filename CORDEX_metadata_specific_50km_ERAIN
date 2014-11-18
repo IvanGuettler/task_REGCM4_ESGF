@@ -3,7 +3,19 @@
 #-- Years to ingest
 	STARTyyy=1989
 	  ENDyyy=2008
-
+#-- Region to consider
+ #   For this exp grid is 142 x 142 cells
+ #   Buffer zone includes 11 cells. After removing the buffer zone, the grid includes 120 x 120 cells
+ #   Important: nco considers indexes by default 0:141 (not 1:142). To use 1:142 index counting in nco one can select -F.
+ #   NXstart=12 -1
+ #   NXendic=131-1
+ #   NYstart=12 -1
+ #   NYendic=131-1
+    NXstart=11
+    NXendic=130
+    NYstart=11
+    NYendic=130
+ 
 
 #-- VARIABLE source DIR
 sourceDIR[ 1]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
@@ -15,8 +27,6 @@ sourceFILE[ 1]='EUROPE_STS'
 sourceFILE[ 2]='EUROPE_STS'
 sourceFILE[ 3]='EUROPE_STS'
 sourceFILE[ 4]='EUROPE_STS'
-
-
 #-- VARIABLE RegCM name
 varalica[ 1]='t2avg'
 varalica[ 2]='t2max'
@@ -28,7 +38,7 @@ varalica[ 4]='pcpavg'
 #-------- Global attributes
 	Conventions="CF-1.4"
 	contact="ivan.guettler@cirus.dhz.hr"
-	creation_date="2014-07-15"
+	creation_date="2014-11-15"
 	experiment="Evaluation run with reanalysis forcing"
 	experiment_id="evaluation"
 	driving_experiment="ECMWF-ERAINT, evaluation, r1i1p1"
