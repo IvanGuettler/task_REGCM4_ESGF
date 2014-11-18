@@ -4,17 +4,20 @@
 	#(1) original files are allready daily means (or daily min/max). If not, first prepare these files separately.
         #(2) cdo & nco installed on your system
         #(3) F90_gen_time.f90 successfully used
+        #(4) Selected stages of preparing interpolated fileds: DM, MM, SM computed --> Domain reduced --> bilinear interpolation performed.
 
-#The location of nco
-#DHMZ vihor
+#The location of cdo & nco 
+#--> DHMZ vihor
+CDO_PATH='version 1.6.0 installed on the system (November 2014)'
 NCO_PATH=/home1/regcm/regcmlibs_my_gfortran/bin/
 
+#--> Select activities
        INDX=1 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
     collect=0 #Collect variable from various sources        
       means=0 #Calculate daily, monthly and seasonal means  
   rm_buffer=0 #Remove buffer zone e.g. 11 grid cells        
-interpolate=1 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=0 #Split files into specific groups             
+interpolate=0 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=1 #Split files into specific groups             
    metadata=0 #Edit meta-data                              
     convert=0 #Convert from netcdf3 > netcdf4 if needed
 
@@ -22,8 +25,16 @@ interpolate=1 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
     source ./CORDEX_metadata_common
 #Load meta data from separate file for specific experiment you are working on
     source ./CORDEX_metadata_specific_50km_ERAIN
-#All temporary output in
+#All temporary output in the following directory
     tempTarget=/work/regcm/temp/test_CORDEX
+
+
+
+
+
+
+
+
 
 #==================================================
 #STEP: prepare variable
@@ -67,6 +78,7 @@ ${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2
      ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${tempTarget}/${name[${INDX}]}.nc
      
 fi
+
 
 
 
@@ -162,30 +174,52 @@ fi
 
 
 
+
+
 #==================================================
 #STEP: interpolation
 #==================================================
 if [ ${interpolate} == 1 ] ; then
     echo 'Interpolating...'
 
-    cdo remapbil,CORDEX_latlon_grid.txt ${FILE1}_all.nc ${FILE1i}_all.nc
-    cdo remapbil,CORDEX_latlon_grid.txt ${FILE2}_all.nc ${FILE2i}_all.nc
-    cdo remapbil,CORDEX_latlon_grid.txt ${FILE3}_all.nc ${FILE3i}_all.nc
+#---
+# Interpolate MM and SM (According to "CORDEX Archive Design" Version 3.1 only MM and SM are needed on regular grid
+#---
+    cdo remapbil,${RegularGrid} ${FILE2}_all.nc ${FILE2i}_all.nc
+    cdo remapbil,${RegularGrid} ${FILE3}_all.nc ${FILE3i}_all.nc
 
-    ${NCO_PATH}/ncrename -O -h -d lon,jx -d lat,iy    ${FILE1i}_all.nc
+#---
+# Rename dimensions lon,lat into jx,iy
+#---
     ${NCO_PATH}/ncrename -O -h -d lon,jx -d lat,iy    ${FILE2i}_all.nc
     ${NCO_PATH}/ncrename -O -h -d lon,jx -d lat,iy    ${FILE3i}_all.nc
 
+#---
+# After performing interpolation using cdo, variables xlon,xlat can be renamed to lon,lat
+#---
     ${NCO_PATH}/ncrename -O -h -v xlon,lon -v xlat,lat ${FILE1}_all.nc
     ${NCO_PATH}/ncrename -O -h -v xlon,lon -v xlat,lat ${FILE2}_all.nc
     ${NCO_PATH}/ncrename -O -h -v xlon,lon -v xlat,lat ${FILE3}_all.nc
 
-    ${NCO_PATH}/ncatted  -O -h -a coordinates,tas,m,c,"lon lat"  ${FILE1}_all.nc
-    ${NCO_PATH}/ncatted  -O -h -a coordinates,tas,m,c,"lon lat"  ${FILE2}_all.nc
-    ${NCO_PATH}/ncatted  -O -h -a coordinates,tas,m,c,"lon lat"  ${FILE3}_all.nc
-    ${NCO_PATH}/ncatted  -O -h -a coordinates,tas,c,c,"lon lat"  ${FILE1i}_all.nc
-    ${NCO_PATH}/ncatted  -O -h -a coordinates,tas,c,c,"lon lat"  ${FILE2i}_all.nc
-    ${NCO_PATH}/ncatted  -O -h -a coordinates,tas,c,c,"lon lat"  ${FILE3i}_all.nc
+#--
+# Rename information concering the coordinates in the local metadata
+#--
+    ${NCO_PATH}/ncatted  -O -h -a coordinates,${name[${INDX}]},m,c,"lon lat"  ${FILE1}_all.nc
+    ${NCO_PATH}/ncatted  -O -h -a coordinates,${name[${INDX}]},m,c,"lon lat"  ${FILE2}_all.nc
+    ${NCO_PATH}/ncatted  -O -h -a coordinates,${name[${INDX}]},m,c,"lon lat"  ${FILE3}_all.nc 
+    
+    ${NCO_PATH}/ncatted  -O -h -a coordinates,${name[${INDX}]},c,c,"lon lat"  ${FILE2i}_all.nc
+    ${NCO_PATH}/ncatted  -O -h -a coordinates,${name[${INDX}]},c,c,"lon lat"  ${FILE3i}_all.nc
+
+#---
+#Delete all global metadata
+#---
+     ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE1}_all.nc
+     ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE2}_all.nc
+     ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE3}_all.nc
+
+     ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE2i}_all.nc
+     ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE3i}_all.nc
 
 fi
 
@@ -196,138 +230,88 @@ fi
 
 
 
+
 #==================================================
-#STEP: splitting
+#STEP: splitting entire DM, MM, SM files into smaller chunks according to the CORDEX Archive Design requirements
 #==================================================
 
-#This part is sensitive to details of time axis. Add and modify it carefully!
-#Datumi koji ce pisati u nazivu datoteke
-    DAYstrt[1]=19700101
-    DAYendi[1]=19701230
-    DAYstrt[2]=19710101
-    DAYendi[2]=19751230
-    DAYstrt[3]=19760101
-    DAYendi[3]=19801230
-    DAYstrt[4]=19810101
-    DAYendi[4]=19851230
-    DAYstrt[5]=19860101
-    DAYendi[5]=19901230
-    DAYstrt[6]=19910101
-    DAYendi[6]=19951230
-    DAYstrt[7]=19960101
-    DAYendi[7]=20001230
-    DAYstrt[8]=20010101
-    DAYendi[8]=20051130
-#Datumi koji su mi potrebni za ispravno definiranje intervala
-    DAYendX[1]=19710101 #cdo uzima unutar intervala pa moramo prilagoditi ovako
-    DAYendX[2]=19760101
-    DAYendX[3]=19810101
-    DAYendX[4]=19860101
-    DAYendX[5]=19910101
-    DAYendX[6]=19960101
-    DAYendX[7]=20010101
-    DAYendX[8]=20051201
-
-
-
-
-
-#Datumi koji ce pisati u nazivu datoteke
-    MONstrt[1]=197001
-    MONendi[1]=197012
-    MONstrt[2]=197101
-    MONendi[2]=198012
-    MONstrt[3]=198101
-    MONendi[3]=199012
-    MONstrt[4]=199101
-    MONendi[4]=200012
-    MONstrt[5]=200101
-    MONendi[5]=200511
-#Datumi koji su mi potrebni za ispravno definiranje intervala
-    YEARSforMON[1]='1970'
-    YEARSforMON[2]='1971,1972,1973,1974,1975,1976,1977,1978,1979,1980'
-    YEARSforMON[3]='1981,1982,1983,1984,1985,1986,1987,1988,1989,1990'
-    YEARSforMON[4]='1991,1992,1993,1994,1995,1996,1997,1998,1999,2000'
-    YEARSforMON[5]='2001,2002,2003,2004,2005'
-
-
-
-
-
-
-
-
-
-
-#Datumi koji ce pisati u nazivu datoteke
-    SEMstrt[1]=197003
-    SEMendi[1]=197011
-    SEMstrt[2]=197012
-    SEMendi[2]=198011
-    SEMstrt[3]=198012
-    SEMendi[3]=199011
-    SEMstrt[4]=199012
-    SEMendi[4]=200011
-    SEMstrt[5]=200012
-    SEMendi[5]=200511
-
-#Datumi koji su mi potrebni za ispravno definiranje intervala
-    SEMstrX[1]=19700530
-    SEMendX[1]=19701230
-
-    SEMstrX[2]=19710230
-    SEMendX[2]=19801230
-
-    SEMstrX[3]=19810230
-    SEMendX[3]=19901230
-
-    SEMstrX[4]=19910230
-    SEMendX[4]=20001230
-
-    SEMstrX[5]=20010230
-    SEMendX[5]=20051230
-
-
+# This part of the code assumes everything was fine with the F90_gen_time.f90. Test carefully and send possible bug details to ivan.guettler@gmail.com.
+#--
+# Ingest files containg parts of the filenames (start-end)
+#--
+	source ./prepared_filenames_DM.txt
+	source ./prepared_filenames_MM.txt
+	source ./prepared_filenames_SM.txt
 
 if [ ${split} == 1 ] ; then
     echo 'Splitting files...'
 
-    j=1
-    while [ ${j} -le 8 ] ; do
-
+#--
 #Splitting daily data
-cdo setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,360days -settunits,days -seldate,${DAYstrt[${j}]},${DAYendX[${j}]} ${FILE1}_all.nc   ${FILE1}_${DAYstrt[${j}]}-${DAYendi[${j}]}.nc
-cdo setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,360days -settunits,days -seldate,${DAYstrt[${j}]},${DAYendX[${j}]} ${FILE1i}_all.nc  ${FILE1i}_${DAYstrt[${j}]}-${DAYendi[${j}]}.nc
+#--
+    j=1
+    while [ ${j} -le ${NFILES_DM} ] ; do
+    	cdo seldate,${filenameDM[${j}]:1:4}-${filenameDM[${j}]:5:2}-${filenameDM[${j}]:7:4}T00:00:00,${filenameDM[${j}]:10:4}-${filenameDM[${j}]:14:2}-${filenameDM[${j}]:16:2}T23:59:59 ${FILE1}_all.nc   ${FILE1}${filenameDM[${j}]}.nc
 
-    ${NCO_PATH}/ncrename -O -h -d   y,iy -d   x,jx                           ${FILE1}_${DAYstrt[${j}]}-${DAYendi[${j}]}.nc
-    ${NCO_PATH}/ncrename -O -h -d lat,iy -d lon,jx                           ${FILE1i}_${DAYstrt[${j}]}-${DAYendi[${j}]}.nc
-    ${NCO_PATH}/ncks     -A -h -v iy,jx,lon,lat             ${FILE1}_all.nc  ${FILE1}_${DAYstrt[${j}]}-${DAYendi[${j}]}.nc
+#--
+#Fixing some names
+#--
+    	${NCO_PATH}/ncrename -O -h -d   y,iy -d   x,jx                        ${FILE1}${filenameDM[${j}]}.nc
+	${NCO_PATH}/ncks     -A -h -v  iy,jx                 ${FILE1}_all.nc  ${FILE1}${filenameDM[${j}]}.nc
+#---
+#Delete all global metadata
+#---
+        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE1}${filenameDM[${j}]}.nc
+        j=$((j+1))
+    done # j loop
 
-
-
-    if [ ${j} -le 5 ] ; then
-
+#--
 #Splitting monthly data
-cdo setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,360days -setday,15 -settunits,days   -selyear,${YEARSforMON[${j}]} ${FILE2}_all.nc   ${FILE2}_${MONstrt[${j}]}-${MONendi[${j}]}.nc
-cdo setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,360days -setday,15 -settunits,days   -selyear,${YEARSforMON[${j}]} ${FILE2i}_all.nc  ${FILE2i}_${MONstrt[${j}]}-${MONendi[${j}]}.nc
+#--
+    j=1
+    while [ ${j} -le ${NFILES_MM} ] ; do
+	cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2}_all.nc    ${FILE2}${filenameMM[${j}]}.nc
+	cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2i}_all.nc  ${FILE2i}${filenameMM[${j}]}.nc
 
-    ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                           ${FILE2}_${MONstrt[${j}]}-${MONendi[${j}]}.nc
-    ${NCO_PATH}/ncrename -O -h -d lat,iy -d lon,jx                           ${FILE2i}_${MONstrt[${j}]}-${MONendi[${j}]}.nc
-    ${NCO_PATH}/ncks     -A -h -v iy,jx,lon,lat             ${FILE2}_all.nc  ${FILE2}_${MONstrt[${j}]}-${MONendi[${j}]}.nc
+#--
+#Fixing some names
+#--
+        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE2}${filenameMM[${j}]}.nc
+        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE2}_all.nc   ${FILE2}${filenameMM[${j}]}.nc
 
+#---
+#Delete all global metadata
+#---
+        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE2}${filenameMM[${j}]}.nc
+        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE2i}${filenameMM[${j}]}.nc
 
+        j=$((j+1))
+    done # j loop
+
+#--
 #Splitting seasonal data
-cdo setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,360days -setday,15 -shifttime,-1month -settunits,days  -seldate,${SEMstrX[${j}]},${SEMendX[${j}]} ${FILE3}_all.nc   ${FILE3}_${SEMstrt[${j}]}-${SEMendi[${j}]}.nc
-cdo setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,360days -setday,15 -shifttime,-1month -settunits,days  -seldate,${SEMstrX[${j}]},${SEMendX[${j}]} ${FILE3i}_all.nc  ${FILE3i}_${SEMstrt[${j}]}-${SEMendi[${j}]}.nc
+#--
+    j=1
+    while [ ${j} -le ${NFILES_SM} ] ; do
+	cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3}_all.nc    ${FILE3}${filenameSM[${j}]}.nc
+	cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3i}_all.nc  ${FILE3i}${filenameSM[${j}]}.nc
 
-    ${NCO_PATH}/ncrename -O -h -d x,iy    -d   y,jx                          ${FILE3}_${SEMstrt[${j}]}-${SEMendi[${j}]}.nc
-    ${NCO_PATH}/ncrename -O -h -d lat,iy  -d lon,jx                          ${FILE3i}_${SEMstrt[${j}]}-${SEMendi[${j}]}.nc
-    ${NCO_PATH}/ncks     -A -h -v iy,jx,lon,lat             ${FILE3}_all.nc  ${FILE3}_${SEMstrt[${j}]}-${SEMendi[${j}]}.nc
+#--
+#Fixing some names
+#--
+        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE3}${filenameSM[${j}]}.nc
+        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE3}_all.nc   ${FILE3}${filenameSM[${j}]}.nc
 
-    fi
-    j=$((j+1))
-    done
-    mv ${name[${INDEX}]}*all.nc  ./temp
+#---
+#Delete all global metadata
+#---
+        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE3}${filenameSM[${j}]}.nc
+        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE3i}${filenameSM[${j}]}.nc
+
+       j=$((j+1))
+   done # j loop
+
+
 fi
 
 
@@ -483,6 +467,15 @@ if [ ${metadata} == 1 ] ; then
     file=$((file+1))
     done
 fi
+
+
+
+
+
+
+
+
+
 
 #==================================================
 #STEP: convert

@@ -4,18 +4,20 @@
 	STARTyyy=1989
 	  ENDyyy=2008
 #-- Region to consider
- #   For this exp grid is 142 x 142 cells
- #   Buffer zone includes 11 cells. After removing the buffer zone, the grid includes 120 x 120 cells
+ #   For this exp grid is 142 x 142 cell. Buffer zone includes 11 cells. After removing the buffer zone, the grid includes 120 x 120 cells
  #   Important: nco considers indexes by default 0:141 (not 1:142). To use 1:142 index counting in nco one can select -F.
  #   NXstart=12 -1
  #   NXendic=131-1
  #   NYstart=12 -1
  #   NYendic=131-1
+
     NXstart=11
     NXendic=130
     NYstart=11
     NYendic=130
- 
+
+#-- Details of the regular grid are from "Table 2 Regular CORDEX grids" in "CORDEX Archive Design" document, version 3.1
+    RegularGrid=./CORDEX_metadata_05_grid.txt
 
 #-- VARIABLE source DIR
 sourceDIR[ 1]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
@@ -120,23 +122,6 @@ varalica[ 4]='pcpavg'
 #======================================================================================
 #======================================================================================
 
-#This is needed for spliting files in HadGEM HIST
-    DAYstrt[1]=19700101
-        DAYendi[1]=19701230
-            DAYstrt[2]=19710101
-                DAYendi[2]=19751230
-                    DAYstrt[3]=19760101
-                        DAYendi[3]=19801230
-                            DAYstrt[4]=19810101
-                                DAYendi[4]=19851230
-                                    DAYstrt[5]=19860101
-                                        DAYendi[5]=19901230
-                                            DAYstrt[6]=19910101
-                                                DAYendi[6]=19951230
-                                                    DAYstrt[7]=19960101
-                                                        DAYendi[7]=20001230
-                                                            DAYstrt[8]=20010101
-                                                                DAYendi[8]=20051130
 #Datumi koji su mi potrebni za ispravno definiranje intervala
     DAYendX[1]=19710101 #cdo uzima unutar intervala pa moramo prilagoditi ovako
         DAYendX[2]=19760101
@@ -147,18 +132,6 @@ varalica[ 4]='pcpavg'
                             DAYendX[7]=20010101
                                 DAYendX[8]=20051201
 
-#Datumi koji ce pisati u nazivu datoteke
-
-    MONstrt[1]=197001
-        MONendi[1]=197012
-            MONstrt[2]=197101
-                MONendi[2]=198012
-                    MONstrt[3]=198101
-                        MONendi[3]=199012
-                            MONstrt[4]=199101
-                                MONendi[4]=200012
-                                    MONstrt[5]=200101
-                                        MONendi[5]=200511
 
 #Datumi koji su mi potrebni za ispravno definiranje intervala
     MONstrX[1]=19700101
@@ -172,24 +145,6 @@ varalica[ 4]='pcpavg'
                                     MONstrX[5]=20010101
                                        MONendX[5]=20051201
 
-#Datumi koji su mi potrebni za ispravno definiranje intervala
-#    YEARSforMON[1]='1970'
-#        YEARSforMON[2]='1971,1972,1973,1974,1975,1976,1977,1978,1979,1980'
-#            YEARSforMON[3]='1981,1982,1983,1984,1985,1986,1987,1988,1989,1990'
-#                YEARSforMON[4]='1991,1992,1993,1994,1995,1996,1997,1998,1999,2000'
-#                    YEARSforMON[5]='2001,2002,2003,2004,2005'
-
-#Datumi koji ce pisati u nazivu datoteke
-    SEMstrt[1]=197003
-        SEMendi[1]=197011
-            SEMstrt[2]=197012
-                SEMendi[2]=198011
-                    SEMstrt[3]=198012
-                        SEMendi[3]=199011
-                            SEMstrt[4]=199012
-                                SEMendi[4]=200011
-                                    SEMstrt[5]=200012
-                                        SEMendi[5]=200511
 
 #Datumi koji su mi potrebni za ispravno definiranje intervala
     SEMstrX[1]=19700530
@@ -203,6 +158,3 @@ varalica[ 4]='pcpavg'
                                     SEMstrX[5]=20010230
                                        SEMendX[5]=20051130
 
-#======================================================================================
-#======================================================================================
-#======================================================================================

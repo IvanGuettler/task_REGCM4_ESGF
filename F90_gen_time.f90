@@ -252,7 +252,7 @@ write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,'01-'
         	        end if
                 !>>> Writing days from timeAxisStart to timeAxisEnd
         	        do i2=timeAxisStart,timeAxisEnd
-write(23, "(F8.1)"),i2+0.5
+write(23, "(F8.1)"),i2+0.5-1
 write(231,"(I8,A,I8)"),i2,',',i2+1
                         end do	
                         close(unit=23)
@@ -373,7 +373,13 @@ write(241,"(I8,A,I8)"),timeAxisStart-daysInMonth(caln,i2-1, 12),',',timeAxisStar
 
 
 
-        ! Close all output files
+        ! Write the number of DM, MM, SM files and  Close all output files
+if ((filekMM-1)<10) write(12,"(A,I1)") 'NFILES_MM=',filekMM-1
+if ((filekMM-1)> 9) write(12,"(A,I2)") 'NFILES_MM=',filekMM-1
+if ((filekDM-1)<10) write(13,"(A,I1)") 'NFILES_DM=',filekDM-1
+if ((filekDM-1)> 9) write(13,"(A,I2)") 'NFILES_DM=',filekDM-1
+if ((filekSM-1)<10) write(14,"(A,I1)") 'NFILES_SM=',filekSM-1
+if ((filekSM-1)> 9) write(14,"(A,I2)") 'NFILES_SM=',filekSM-1
         close(unit=12)
         close(unit=13)
         close(unit=14)
