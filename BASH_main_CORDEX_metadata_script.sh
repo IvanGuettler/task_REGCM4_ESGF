@@ -2,14 +2,14 @@
 
 #Assumptions:
 	#(1) original files are allready daily means (or daily min/max). If not, first prepare these files separately.
-        #(2) cdo & nco installed on your system
+        #(2) cdo & nco installed on your system. Important: ncap2 tool from the nco suit is needed.
         #(3) F90_gen_time.f90 successfully used
         #(4) Selected stages of preparing interpolated fileds: DM, MM, SM computed --> Domain reduced --> bilinear interpolation performed.
 
 #The location of cdo & nco 
 #--> DHMZ vihor
 CDO_PATH='version 1.6.0 installed on the system (November 2014)'
-NCO_PATH=/home1/regcm/regcmlibs_my_gfortran/bin/
+NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
        INDX=1 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
@@ -272,19 +272,28 @@ if [ ${split} == 1 ] ; then
     while [ ${j} -le ${NFILES_MM} ] ; do
 cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2}_all.nc    ${FILE2}${filenameMM[${j}]}.nc
 
-	###cdo settaxis,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-15,12:00:00,1month -seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2i}_all.nc  ${FILE2i}${filenameMM[${j}]}.nc
+cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2i}_all.nc  ${FILE2i}${filenameMM[${j}]}.nc
+
+#--
+#Time step has to be centered between two time_bnds. This is great idea from Grigory Nikulin:
+#--
+${NCO_PATH}/ncap2 -s "time=((time_bnds(:,0)+time_bnds(:,1))/2.0)" ${FILE2}${filenameMM[${j}]}.nc ${tempTarget}/temp.nc
+mv ${tempTarget}/temp.nc ${FILE2}${filenameMM[${j}]}.nc
+${NCO_PATH}/ncap2 -s "time=((time_bnds(:,0)+time_bnds(:,1))/2.0)" ${FILE2i}${filenameMM[${j}]}.nc ${tempTarget}/temp.nc
+mv ${tempTarget}/temp.nc ${FILE2i}${filenameMM[${j}]}.nc
+
 
 #--
 #Fixing some names
 #--
-#        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE2}${filenameMM[${j}]}.nc
-#        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE2}_all.nc   ${FILE2}${filenameMM[${j}]}.nc
+        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE2}${filenameMM[${j}]}.nc
+        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE2}_all.nc   ${FILE2}${filenameMM[${j}]}.nc
 
 #---
 #Delete all global metadata
 #---
-#        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE2}${filenameMM[${j}]}.nc
-#        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE2i}${filenameMM[${j}]}.nc
+        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE2}${filenameMM[${j}]}.nc
+        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE2i}${filenameMM[${j}]}.nc
 
         j=$((j+1))
     done # j loop
@@ -292,25 +301,33 @@ cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filena
 #--
 #Splitting seasonal data
 #--
-#    j=1
-#    while [ ${j} -le ${NFILES_SM} ] ; do
-#	cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3}_all.nc    ${FILE3}${filenameSM[${j}]}.nc
-#	cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3i}_all.nc  ${FILE3i}${filenameSM[${j}]}.nc
+    j=1
+    while [ ${j} -le ${NFILES_SM} ] ; do
+cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3}_all.nc    ${FILE3}${filenameSM[${j}]}.nc
+cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3i}_all.nc  ${FILE3i}${filenameSM[${j}]}.nc
+
+#--
+#Time step has to be centered between two time_bnds. This is great idea from Grigory Nikulin:
+#--
+${NCO_PATH}/ncap2 -s "time=((time_bnds(:,0)+time_bnds(:,1))/2.0)"  ${FILE3}${filenameSM[${j}]}.nc ${tempTarget}/temp.nc
+mv ${tempTarget}/temp.nc ${FILE3}${filenameSM[${j}]}.nc
+${NCO_PATH}/ncap2 -s "time=((time_bnds(:,0)+time_bnds(:,1))/2.0)" ${FILE3i}${filenameSM[${j}]}.nc ${tempTarget}/temp.nc
+mv ${tempTarget}/temp.nc ${FILE3i}${filenameSM[${j}]}.nc
 
 #--
 #Fixing some names
 #--
-#        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE3}${filenameSM[${j}]}.nc
-#        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE3}_all.nc   ${FILE3}${filenameSM[${j}]}.nc
+        ${NCO_PATH}/ncrename -O -h -d y,iy   -d   x,jx                            ${FILE3}${filenameSM[${j}]}.nc
+        ${NCO_PATH}/ncks     -A -h -v iy,jx                     ${FILE3}_all.nc   ${FILE3}${filenameSM[${j}]}.nc
 
 #---
 #Delete all global metadata
 #---
-#        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE3}${filenameSM[${j}]}.nc
-#        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE3i}${filenameSM[${j}]}.nc
-#
-#       j=$((j+1))
-#   done # j loop
+        ${NCO_PATH}/ncatted -O -h -a ,global,d,,  ${FILE3}${filenameSM[${j}]}.nc
+        ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${FILE3i}${filenameSM[${j}]}.nc
+
+       j=$((j+1))
+   done # j loop
 
 
 fi

@@ -4,8 +4,8 @@
                 ! (1) enter start and end of simulation
                 ! (2) enter calendar: 1 for 365 leap, 2 for 365 nonleap, 3 for 360
                 ! (3) compute part of the filenames containing information about time
-                ! (4) compute time steps       for each DM, MM and SM file
-                ! (5) compute time step bounds for each DM, MM and SM file
+                ! (4) compute time steps       for each DM, MM and SM file. <--- SKIP. ncap2 is used instead
+                ! (5) compute time step bounds for each DM, MM and SM file. <--- SKIP. ncap2 is used instead
                 ! (6) save txt files for other programs
 
         real(kind=4) :: Sstart, Send
@@ -135,42 +135,42 @@ write(12,"(A,I3,A,I4,A,I1,A,I4,A)") 'filenameMM[',filekMM,']=_',i,'0',k,'-',j   
                 !End:   Write MM filenames
                 !-----------------------------------------------------------------------------------
                 !-----------------------------------------------------------------------------------
-                !Start:   Write time axis for the MM filename. This works fine if first date is 1.1. (for now)
-                !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
-                !-----------------------------------------------------------------------------------
-                if (pomocna1MM>0) then
-                !>>> Days from 1950-01-01 to current year
-                        write(filename, "('prepared_time_MM',I1.1,'.txt')")     filekMM-1
-                        open(unit=22, file=filename, action="write",status="new",position="append")
-                        write(filename, "('prepared_timebnds_MM',I1.1,'.txt')") filekMM-1
-                        open(unit=221, file=filename, action="write",status="new",position="append")
-	                timeAxisStart=0
-
-                !>>> Add number of days in 1949-12 + 1.1. of the first year > and remove 1.1. for readiability
-        	        if (caln==3) then
-        	           timeAxisStart=timeAxisStart+30+1-1
-        	        else
-        	           timeAxisStart=timeAxisStart+31+1-1
-        	        end if ! from caln
-
-                !>>> Define beginning > find first day of first month > write always the 15th day of the month
-	                do i2=1950,pomocna1MM-1               !-1 because we want to start with 1.1. 
-        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
-        	        enddo
-        	        do i2=pomocna1MM,pomocna2MM
-                           do j=1,12
-write(22 ,"(F8.1,A)"), timeAxisStart+15+0.5
-!Alternative write(22 ,"(F8.1,A)",advance='no'), timeAxisStart+15+0.5,','
-write(221,"(I8,A,I8)"), timeAxisStart,',',timeAxisStart+daysInMonth(caln,i2,j)
-         	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
-                           end do
-        	        enddo
-                        close(unit=22)
-                        close(unit=221)
-                end if ! from pomocna1MM
-                !-----------------------------------------------------------------------------------
-                !End:   Write time axis for the MM filename
-                !-----------------------------------------------------------------------------------
+!                !Start:   Write time axis for the MM filename. This works fine if first date is 1.1. (for now)
+!                !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
+!                !-----------------------------------------------------------------------------------
+!                if (pomocna1MM>0) then
+!                !>>> Days from 1950-01-01 to current year
+!                        write(filename, "('prepared_time_MM',I1.1,'.txt')")     filekMM-1
+!                        open(unit=22, file=filename, action="write",status="new",position="append")
+!                        write(filename, "('prepared_timebnds_MM',I1.1,'.txt')") filekMM-1
+!                        open(unit=221, file=filename, action="write",status="new",position="append")
+!	                timeAxisStart=0
+!
+!                !>>> Add number of days in 1949-12 + 1.1. of the first year > and remove 1.1. for readiability
+!        	        if (caln==3) then
+!        	           timeAxisStart=timeAxisStart+30+1-1
+!        	        else
+!        	           timeAxisStart=timeAxisStart+31+1-1
+!        	        end if ! from caln
+!
+!                !>>> Define beginning > find first day of first month > write always the 15th day of the month
+!	                do i2=1950,pomocna1MM-1               !-1 because we want to start with 1.1. 
+!        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
+!        	        enddo
+!        	        do i2=pomocna1MM,pomocna2MM
+!                           do j=1,12
+!write(22 ,"(F8.1,A)"), timeAxisStart+15+0.5
+!!Alternative write(22 ,"(F8.1,A)",advance='no'), timeAxisStart+15+0.5,','
+!write(221,"(I8,A,I8)"), timeAxisStart,',',timeAxisStart+daysInMonth(caln,i2,j)
+!         	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
+!                           end do
+!        	        enddo
+!                        close(unit=22)
+!                        close(unit=221)
+!                end if ! from pomocna1MM
+!                !-----------------------------------------------------------------------------------
+!                !End:   Write time axis for the MM filename
+!                !-----------------------------------------------------------------------------------
 
 
 
@@ -225,43 +225,43 @@ write(13,"(A,I3,A,I4,A,I1,A,I4,A,I2)") 'filenameDM[',filekDM,']=_',i,'0',k,'01-'
                 !End:   Write DM filenames
                 !-----------------------------------------------------------------------------------
                 !-----------------------------------------------------------------------------------
-                !Start:   Write time axis for the DM filename. This works fine if first date is 1.1. (for now)
-                !         We deliberatelly select thet 15th as the mean date (ignoring different length of different months)
-                !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
-                !-----------------------------------------------------------------------------------
-                if (pomocna1DM>0) then
-                        write(filename, "('prepared_time_DM',I1.1,'.txt')")     filekDM-1
-                        open(unit=23,  file=filename, action="write",status="new",position="append")
-                        write(filename, "('prepared_timebnds_DM',I1.1,'.txt')") filekDM-1
-                        open(unit=231, file=filename, action="write",status="new",position="append")
-
-	                timeAxisStart=0
-        	        timeAxisEnd  =0
-	                do i2=1950,pomocna1DM-1               !-1 because we want to start with 1.1. 
-        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
-        	        enddo
-        	        do i2=1950,pomocna2DM
-        	           timeAxisEnd  =timeAxisEnd  +numberOfDays(caln,i2)
-        	        enddo
-                !>>> Add number of days in 1949-12 + 1.1. of the first year
-        	        if (caln==3) then
-        	           timeAxisStart=timeAxisStart+30+1
-        	           timeAxisEnd  =timeAxisEnd  +30
-        	        else
-        	           timeAxisStart=timeAxisStart+31+1
-        	           timeAxisEnd  =timeAxisEnd  +31
-        	        end if
-                !>>> Writing days from timeAxisStart to timeAxisEnd
-        	        do i2=timeAxisStart,timeAxisEnd
-write(23, "(F8.1)"),i2+0.5-1
-write(231,"(I8,A,I8)"),i2-1,',',i2+1-1
-                        end do	
-                        close(unit=23)
-                        close(unit=231)
-                end if
-                !-----------------------------------------------------------------------------------
-                !End:   Write time axis for the DM filename
-                !-----------------------------------------------------------------------------------
+!               !Start:   Write time axis for the DM filename. This works fine if first date is 1.1. (for now)
+!               !         We deliberatelly select thet 15th as the mean date (ignoring different length of different months)
+!                !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
+!                !-----------------------------------------------------------------------------------
+!                if (pomocna1DM>0) then
+!                        write(filename, "('prepared_time_DM',I1.1,'.txt')")     filekDM-1
+!                        open(unit=23,  file=filename, action="write",status="new",position="append")
+!                        write(filename, "('prepared_timebnds_DM',I1.1,'.txt')") filekDM-1
+!                        open(unit=231, file=filename, action="write",status="new",position="append")
+!
+!	                timeAxisStart=0
+!        	        timeAxisEnd  =0
+!	                do i2=1950,pomocna1DM-1               !-1 because we want to start with 1.1. 
+!        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
+!        	        enddo
+!        	        do i2=1950,pomocna2DM
+!        	           timeAxisEnd  =timeAxisEnd  +numberOfDays(caln,i2)
+!        	        enddo
+!                !>>> Add number of days in 1949-12 + 1.1. of the first year
+!        	        if (caln==3) then
+!        	           timeAxisStart=timeAxisStart+30+1
+!        	           timeAxisEnd  =timeAxisEnd  +30
+!        	        else
+!        	           timeAxisStart=timeAxisStart+31+1
+!        	           timeAxisEnd  =timeAxisEnd  +31
+!        	        end if
+!                !>>> Writing days from timeAxisStart to timeAxisEnd
+!        	        do i2=timeAxisStart,timeAxisEnd
+!write(23, "(F8.1)"),i2+0.5-1
+!write(231,"(I8,A,I8)"),i2-1,',',i2+1-1
+!                        end do	
+!                        close(unit=23)
+!                        close(unit=231)
+!                end if
+!                !-----------------------------------------------------------------------------------
+!                !End:   Write time axis for the DM filename
+!                !-----------------------------------------------------------------------------------
 
 
 
@@ -313,58 +313,58 @@ write(14,"(A,I3,A,I4,A,I4,A,I1)") 'filenameSM[',filekSM,']=_',i,'12-',j,'0',k
                 !-----------------------------------------------------------------------------------
                 !End:   Write SM filenames
                 !-----------------------------------------------------------------------------------
-                !-----------------------------------------------------------------------------------
-                !Start:   Write time axis for the SM filename. This works fine if first date is 1.1. (for now)
-                !         We deliberatelly select thet 15th as the mean date (ignoring different length of different months)
-                !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
-                !-----------------------------------------------------------------------------------
-                if (pomocna1SM>0) then
-                        write(filename, "('prepared_time_SM',I1.1,'.txt')")     filekSM-1
-                        open(unit=24, file=filename, action="write",status="new",position="append")
-                        write(filename, "('prepared_timebnds_SM',I1.1,'.txt')") filekSM-1
-                        open(unit=241, file=filename, action="write",status="new",position="append")
-
-	                timeAxisStart=0
-
-                !>>> Add number of days in 1949-12 + 1.1. of the first year > and remove 1.1. for readiability
-        	        if (caln==3) then
-        	           timeAxisStart=timeAxisStart+30+1-1
-        	        else
-        	           timeAxisStart=timeAxisStart+31+1-1
-        	        end if ! from caln
-
-                !>>> Define beginning > find first day of first month > write always the 15th day of the month
-                !>>> Since the referent time to the start of our simulation
-	                do i2=1950,pomocna1SM-1               !-1 because we want to start with 1.1. 
-        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
-        	        enddo
-                !>>> Since the start of our simulation up to the end
-        	        do i2=pomocna1SM,pomocna2SM
-                           do j=1,12
-                           !>>> Write only timeaxis of the season means: 15.1., 15.4., 15.7., 15.10.
-                              if ((j==1).or.(j==4).or.(j==7).or.(j==10)) then
-                                 if ((j==1).and.(i2==SstartY)) then
-write(*,*),"---> DJF of the first year skipped"
-                                 else 
-write(24,"(F8.1)"), timeAxisStart+15+0.5
-                                      temp=daysInMonth(caln,i2,j)+daysInMonth(caln,i2,j+1)
-                                      if (j>1) then
-write(241,"(I8,A,I8)"),timeAxisStart-daysInMonth(caln,i2,j-1),  ',',timeAxisStart+temp
-                                      else
-                                      temp=daysInMonth(caln,i2,j)+daysInMonth(caln,i2,j+1)
-write(241,"(I8,A,I8)"),timeAxisStart-daysInMonth(caln,i2-1, 12),',',timeAxisStart+temp
-                                      end if ! from j
-                                 end if ! special condition
-                              end if ! from j
-         	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
-                           end do
-        	        enddo
-                        close(unit=24)
-                        close(unit=241)
-                end if ! from pomocna1SM
-                !-----------------------------------------------------------------------------------
-                !End:   Write time axis for the SM filename
-                !-----------------------------------------------------------------------------------
+!                !-----------------------------------------------------------------------------------
+!                !Start:   Write time axis for the SM filename. This works fine if first date is 1.1. (for now)
+!                !         We deliberatelly select thet 15th as the mean date (ignoring different length of different months)
+!                !Advice:  use for testing e.g. http://www.wolframalpha.com/input/?i=days+from+1949-12-01+to+2008-12-31
+!                !-----------------------------------------------------------------------------------
+!                if (pomocna1SM>0) then
+!                        write(filename, "('prepared_time_SM',I1.1,'.txt')")     filekSM-1
+!                        open(unit=24, file=filename, action="write",status="new",position="append")
+!                        write(filename, "('prepared_timebnds_SM',I1.1,'.txt')") filekSM-1
+!                        open(unit=241, file=filename, action="write",status="new",position="append")
+!
+!	                timeAxisStart=0
+!
+!                !>>> Add number of days in 1949-12 + 1.1. of the first year > and remove 1.1. for readiability
+!        	        if (caln==3) then
+!        	           timeAxisStart=timeAxisStart+30+1-1
+!        	        else
+!        	           timeAxisStart=timeAxisStart+31+1-1
+!        	        end if ! from caln
+!
+!                !>>> Define beginning > find first day of first month > write always the 15th day of the month
+!                !>>> Since the referent time to the start of our simulation
+!	                do i2=1950,pomocna1SM-1               !-1 because we want to start with 1.1. 
+!        	           timeAxisStart=timeAxisStart+numberOfDays(caln,i2)
+!        	        enddo
+!                !>>> Since the start of our simulation up to the end
+!        	        do i2=pomocna1SM,pomocna2SM
+!                           do j=1,12
+!                           !>>> Write only timeaxis of the season means: 15.1., 15.4., 15.7., 15.10.
+!                              if ((j==1).or.(j==4).or.(j==7).or.(j==10)) then
+!                                 if ((j==1).and.(i2==SstartY)) then
+!write(*,*),"---> DJF of the first year skipped"
+!                                 else 
+!write(24,"(F8.1)"), timeAxisStart+15+0.5
+!                                      temp=daysInMonth(caln,i2,j)+daysInMonth(caln,i2,j+1)
+!                                      if (j>1) then
+!write(241,"(I8,A,I8)"),timeAxisStart-daysInMonth(caln,i2,j-1),  ',',timeAxisStart+temp
+!                                      else
+!                                      temp=daysInMonth(caln,i2,j)+daysInMonth(caln,i2,j+1)
+!write(241,"(I8,A,I8)"),timeAxisStart-daysInMonth(caln,i2-1, 12),',',timeAxisStart+temp
+!                                      end if ! from j
+!                                 end if ! special condition
+!                              end if ! from j
+!         	              timeAxisStart=timeAxisStart+daysInMonth(caln,i2,j) !Lets go to the next month
+!                           end do
+!        	        enddo
+!                        close(unit=24)
+!                        close(unit=241)
+!                end if ! from pomocna1SM
+!                !-----------------------------------------------------------------------------------
+!                !End:   Write time axis for the SM filename
+!                !-----------------------------------------------------------------------------------
 
 
 
