@@ -1,0 +1,14 @@
+#PBS -S /bin/bash
+#PBS -N CORDEX_metadata
+#PBS -l select=1:ncpus=1:mem=14gb
+#PBS -q mono
+#PBS -j oe
+#PBS -m bae
+#PBS -M ivan.guettler@gmail.com
+#PBS -r n
+#PBS -l cput=01:00:00
+
+cd /home1/regcm/DIR_ivan/work/2014_CORDEX_METADATA_WORLD
+
+
+./BASH_main_CORDEX_metadata_script.sh
