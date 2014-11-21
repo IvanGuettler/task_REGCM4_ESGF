@@ -361,8 +361,8 @@ if [ ${metadata} == 1 ] ; then
     FILENUMBER=$((FILENUMBER-1))
 
     file=0
-#    while [ ${file} -le ${FILENUMBER} ] ; do
-    while [ ${file} -le 0 ] ; do
+    while [ ${file} -le ${FILENUMBER} ] ; do
+#   while [ ${file} -le 0 ] ; do
           echo ${EDITIN[${file}]}
        EDITING=${EDITIN[${file}]} #This is the file we will work on
 
@@ -414,27 +414,44 @@ if [ ${metadata} == 1 ] ; then
                               -a project_id,global,c,c,"${project_id}"                                         \
                               -a CORDEX_domain,global,c,c,"${CORDEX_domain}"                                   \
                               -a product,global,c,c,"${product}"                                               \
-                              -a references,global,c,c,"${references}" $EDITING
+                              -a references,global,c,c,"${references}" ${EDITING}
     #---
-    #PHASE 3: rename dimensions m2,x,y,xlon,xlat
+    #PHASE 3: rename dimensions
     #---
-#    ${NCO_PATH}/ncrename -O -h -d m2,lev \
-#                               -v m2,height \
-#                               -d iy,yc \
-#                               -d jx,xc $EDITING
-#    if [ ${INTERPI} == 0 ]; then
-#    ${NCO_PATH}/ncrename -O -h -v iy,yc \
-#                               -v jx,xc $EDITING
-#    fi
+    if [ ${INTERPI} == 0 ]; then
+    ${NCO_PATH}/ncrename -O -h -v iy,y \
+                               -v jx,x \
+                               -d iy,y \
+                               -d jx,x \
+                               -d m2,lev ${EDITING}
+    fi
+    if [ ${INTERPI} == 1 ]; then
+    ${NCO_PATH}/ncrename -O -h -v lat,y \
+                               -v lon,x \
+                               -d lat,y \
+                               -d lon,x \
+                               -d m2,lev ${EDITING}
+    fi
 
     #---
     #PHASE 4: edit local attributes of variables and variable-dimnesion
     #---
-#    ${NCO_PATH}/ncatted -O -h -a     long_name,${name[${INDEX}]},m,c,"${long_name[${INDEX}]}" \
-#                              -a standard_name,${name[${INDEX}]},m,c,"${stand_name[${INDEX}]}" \
-#                              -a   coordinates,${name[${INDEX}]},m,c,"lon lat" \
-#                              -a         units,${name[${INDEX}]},m,c,"${units[${INDEX}]}" \
-#                              -a  cell_methods,${name[${INDEX}]},m,c,"time: ${cellMethod[${INDEX}]}" $EDITING
+    ${NCO_PATH}/ncatted -O -h -a     long_name,${name[${INDX}]},c,c,"${long_name[${INDX}]}"  \
+                              -a standard_name,${name[${INDX}]},c,c,"${stand_name[${INDX}]}" \
+                              -a   coordinates,${name[${INDX}]},c,c,"lon lat"                \
+                              -a         units,${name[${INDX}]},c,c,"${units[${INDX}]}"      \
+                              -a       _FillValue,${name[${INDX}]},c,f,1e+20                 \
+                              -a    missing_value,${name[${INDX}]},c,f,1e+20                 ${EDITING}
+     if [ ${FREQ} == 'day' ]; then
+	${NCO_PATH}/ncatted -O -h -a     cell_methods,${name[${INDX}]},c,c,"${cellMethodDM[${INDX}]}"    ${EDITING}
+     fi
+     if [ ${FREQ} == 'mon' ]; then
+	${NCO_PATH}/ncatted -O -h -a     cell_methods,${name[${INDX}]},c,c,"${cellMethodMMSM[${INDX}]}"  ${EDITING}
+     fi
+     if [ ${FREQ} == 'sem' ]; then
+	${NCO_PATH}/ncatted -O -h -a     cell_methods,${name[${INDX}]},c,c,"${cellMethodMMSM[${INDX}]}"  ${EDITING}
+     fi
+
 #
 #    ${NCO_PATH}/ncap -O -h -s "height=double(2);lon=double(lon);lat=double(lat)"  $EDITING test.nc
 #    mv test.nc $EDITING
@@ -468,11 +485,6 @@ if [ ${metadata} == 1 ] ; then
 #                              -a standard_name,time,c,c,${time_standard_name}  \
 #                              -a axis,time,c,c,${time_axis} $EDITING
 
-    #---
-    #PHASE 6: editing missing values one more time
-    #---
-#    ${NCO_PATH}/ncatted -O -h -a _FillValue,${name[${INDEX}]},c,f,1e+20    $EDITING
-#    ${NCO_PATH}/ncatted -O -h -a missing_value,${name[${INDEX}]},c,f,1e+20 $EDITING
 
     file=$((file+1))
     done
