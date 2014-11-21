@@ -6,6 +6,15 @@
         #(3) F90_gen_time.f90 successfully used
         #(4) Selected stages of preparing interpolated fileds: DM, MM, SM computed --> Domain reduced --> bilinear interpolation performed.
 
+#-----------------
+#-----------------
+#-----------------
+# Possible cdo bug? all time_bnds values are same after using the seasmean
+#-----------------
+#-----------------
+#-----------------
+
+
 #The location of cdo & nco 
 #--> DHMZ vihor
 CDO_PATH='version 1.6.0 installed on the system (November 2014)'
@@ -17,8 +26,8 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
       means=0 #Calculate daily, monthly and seasonal means  
   rm_buffer=0 #Remove buffer zone e.g. 11 grid cells        
 interpolate=0 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1 #Split files into specific groups             
-   metadata=0 #Edit meta-data                              
+      split=0 #Split files into specific groups             
+   metadata=1 #Edit meta-data                              
     convert=0 #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
@@ -347,134 +356,117 @@ fi
 if [ ${metadata} == 1 ] ; then
     echo 'Editing meta-data...'
 
-    EDITIN=(${name[${INDEX}]}*nc)
+    EDITIN=(${tempTarget}/${name[${INDEX}]}*nc)
+    FILENUMBER=${#EDITIN[@]}
+    FILENUMBER=$((FILENUMBER-1))
 
     file=0
-    while [ ${file} -le 35 ] ; do #jer je 35+1 datoteka koju treba obraditi
-        echo ${EDITIN[${file}]}
-        EDITING=${EDITIN[${file}]} #Datoteka na kojoj radim
-        part1=${EDITING:8:3}       #Jel li osnovna mreza ili interpolirano. 8 znak, 3 unaprijed. Ovisit ce o varijabli
-        if [ ${part1} == '44_' ] ; then
-            INTERPI=0 #Originalni grid
-            FREQ=${EDITING:61:3}
-        fi
-        if [ ${part1} == '44i' ] ; then
-            INTERPI=1 #Interpolirano
-            FREQ=${EDITING:62:3}
-        fi
-
-
+#    while [ ${file} -le ${FILENUMBER} ] ; do
+    while [ ${file} -le 0 ] ; do
+          echo ${EDITIN[${file}]}
+       EDITING=${EDITIN[${file}]} #This is the file we will work on
 
     #---
-    #PHASE 1: delete many unnecessar global atributes
+    #PREPHASE 1: determine grid type from the filename
     #---
-    ${NCO_PATH}/ncatted -O -h -a CDI,global,d,,     \
-                           -a history,global,d,, \
-                           -a title,global,d,,   \
-                           -a model_timestep_in_hours_boundary_input,global,d,, \
-                           -a model_timestep_in_hours_radiation_calc,global,d,, \
-                           -a model_timestep_in_seconds_bats_calc,global,d,, \
-                           -a model_timestep_in_minutes_solar_rad_calc,global,d,, \
-                           -a model_timestep_in_seconds,global,d,, \
-                           -a model_simulation_is_a_restart,global,d,, \
-                           -a model_simulation_expected_end,global,d,, \
-                           -a model_simulation_start,global,d,, \
-                           -a model_simulation_initial_start,global,d,, \
-                           -a model_seasonal_desert_albedo_effect,global,d,, \
-                           -a model_seaice_effect,global,d,, \
-                           -a model_diurnal_cycle_sst,global,d,, \
-                           -a model_chemistry,global,d,, \
-                           -a model_use_lake_model,global,d,, \
-                           -a model_use_emission_factor,global,d,, \
-                           -a model_pressure_gradient_force_scheme,global,d,, \
-                           -a model_ocean_flux_scheme,global,d,, \
-                           -a model_moist_physics_scheme,global,d,, \
-                           -a model_boundary_layer_scheme,global,d,, \
-                           -a model_cumulous_convection_scheme,global,d,, \
-                           -a model_boundary_conditions,global,d,, \
-                           -a model_IPCC_scenario,global,d,, \
-                           -a projection,global,d,, \
-                           -a grid_mapping_name,global,d,, \
-                           -a grid_size_in_meters,global,d,, \
-                           -a latitude_of_projection_origin,global,d,, \
-                           -a longitude_of_projection_origin,global,d,,  \
-                           -a longitude_of_central_meridian,global,d,, \
-                           -a standard_parallel,global,d,, \
-                           -a NCO,global,d,,     \
-                           -a CDO,global,d,,     $EDITING
+       if  grep -q "44_"  <<< "${EDITING}"  ; then
+            INTERPI=0     #--------------------------> Original grid
+       fi
+       if  grep -q "44i_" <<< "${EDITING}"  ; then
+            INTERPI=1     #--------------------------> Interpolated grid
+       fi
     #---
-    #PHASE 2: add global atributes needed by CORDEX (some are modified, some are created)
+    #PREPHASE 2: determine grid type from the filaname day mon sem
     #---
-    ${NCO_PATH}/ncatted -O -h -a contact,global,c,c,"${contact}" \
-                              -a comment,global,c,c,"${comment}" \
-                              -a creation_date,global,c,c,"${creation_date}" \
-                              -a experiment_id,global,c,c,"${experiment_id}" \
-                              -a experiment,global,m,c,"${experiment}"       \
-                              -a driving_experiment,global,c,c,"${driving_experiment}" \
-                              -a driving_model_id,global,c,c,"${driving_model_id}"     \
+       if  grep -q "_day_"  <<< "${EDITING}"  ; then
+            FREQ='day'
+       fi
+       if  grep -q "_mon_"  <<< "${EDITING}"  ; then
+            FREQ='mon'
+       fi
+       if  grep -q "_sem_"  <<< "${EDITING}"  ; then
+            FREQ='sem'
+       fi
+
+
+    #---
+    #PHASE 1: remove all global&local atributes
+    #---
+    ${NCO_PATH}/ncatted -O -h -a ,global,d,,     $EDITING
+    ${NCO_PATH}/ncatted -O -h -a ,,d,,           $EDITING
+
+
+    #---
+    #PHASE 2: add global atributes needed by CORDEX
+    #---
+    ${NCO_PATH}/ncatted -O -h -a contact,global,c,c,"${contact}"                                               \
+                              -a creation_date,global,c,c,"${creation_date}"                                   \
+                              -a experiment,global,c,c,"${experiment}"                                         \
+                              -a experiment_id,global,c,c,"${experiment_id}"                                   \
+                              -a driving_model_id,global,c,c,"${driving_model_id}"                             \
                               -a driving_model_ensemble_member,global,c,c,"${driving_model_ensemble_member}"   \
-                              -a driving_experiment_name,global,c,c,"${driving_experiment_name}"  \
-                              -a frequency,global,c,c,"${FREQ}" \
-                              -a institude_id,global,c,c,"${institude_id}" \
-                              -a institution,global,m,c,"${institution}" \
-                              -a model_id,global,c,c,"${model_id}" \
-                              -a project_id,global,c,c,"${project_id}" \
-                              -a CORDEX_domain,global,c,c,"${CORDEX_domain}" \
-                              -a RCM_version_id,global,c,c,"${RCM_version_id}" \
-                              -a product,global,c,c,"${product}" \
-                              -a references,global,m,c,"${references}" $EDITING
+                              -a driving_experiment_name,global,c,c,"${driving_experiment_name}"               \
+                              -a frequency,global,c,c,"${FREQ}"                                                \
+                              -a institute_id,global,c,c,"${institute_id}"                                     \
+                              -a institution,global,c,c,"${institution}"                                       \
+                              -a model_id,global,c,c,"${model_id}"                                             \
+                              -a rcm_version_id,global,c,c,"${rcm_version_id}"                                 \
+                              -a project_id,global,c,c,"${project_id}"                                         \
+                              -a CORDEX_domain,global,c,c,"${CORDEX_domain}"                                   \
+                              -a product,global,c,c,"${product}"                                               \
+                              -a references,global,c,c,"${references}" $EDITING
     #---
     #PHASE 3: rename dimensions m2,x,y,xlon,xlat
     #---
-    ${NCO_PATH}/ncrename -O -h -d m2,lev \
-                               -v m2,height \
-                               -d iy,yc \
-                               -d jx,xc $EDITING
-    if [ ${INTERPI} == 0 ]; then
-    ${NCO_PATH}/ncrename -O -h -v iy,yc \
-                               -v jx,xc $EDITING
-    fi
+#    ${NCO_PATH}/ncrename -O -h -d m2,lev \
+#                               -v m2,height \
+#                               -d iy,yc \
+#                               -d jx,xc $EDITING
+#    if [ ${INTERPI} == 0 ]; then
+#    ${NCO_PATH}/ncrename -O -h -v iy,yc \
+#                               -v jx,xc $EDITING
+#    fi
 
     #---
     #PHASE 4: edit local attributes of variables and variable-dimnesion
     #---
-    ${NCO_PATH}/ncatted -O -h -a     long_name,${name[${INDEX}]},m,c,"${long_name[${INDEX}]}" \
-                              -a standard_name,${name[${INDEX}]},m,c,"${stand_name[${INDEX}]}" \
-                              -a   coordinates,${name[${INDEX}]},m,c,"lon lat" \
-                              -a         units,${name[${INDEX}]},m,c,"${units[${INDEX}]}" \
-                              -a  cell_methods,${name[${INDEX}]},m,c,"time: ${cellMethod[${INDEX}]}" $EDITING
-
-    ${NCO_PATH}/ncap -O -h -s "height=double(2);lon=double(lon);lat=double(lat)"  $EDITING test.nc
-    mv test.nc $EDITING
-
-    ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname} \
-                              -a standard_name,height,c,c,${H2_standardname} \
-                              -a units,height,c,c,${H2_units} \
-                              -a axis,height,c,c,${H2_axis} \
-                              -a positive,height,c,c,${H2_positive} \
-                              -a axis,lon,c,c,"Y" \
-                              -a axis,lat,c,c,"X" \
-                              -a units,lon,c,c,"degrees_east" \
-                              -a units,lat,c,c,"degrees_north"  \
-                              -a long_name,lon,c,c,"longitude" \
-                              -a long_name,lat,c,c,"latitude"  \
-                              -a standard_name,lon,c,c,"longitude" \
-                              -a standard_name,lat,c,c,"latitude" $EDITING
+#    ${NCO_PATH}/ncatted -O -h -a     long_name,${name[${INDEX}]},m,c,"${long_name[${INDEX}]}" \
+#                              -a standard_name,${name[${INDEX}]},m,c,"${stand_name[${INDEX}]}" \
+#                              -a   coordinates,${name[${INDEX}]},m,c,"lon lat" \
+#                              -a         units,${name[${INDEX}]},m,c,"${units[${INDEX}]}" \
+#                              -a  cell_methods,${name[${INDEX}]},m,c,"time: ${cellMethod[${INDEX}]}" $EDITING
+#
+#    ${NCO_PATH}/ncap -O -h -s "height=double(2);lon=double(lon);lat=double(lat)"  $EDITING test.nc
+#    mv test.nc $EDITING
+#
+#    ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname} \
+#                              -a standard_name,height,c,c,${H2_standardname} \
+#                              -a units,height,c,c,${H2_units} \
+#                              -a axis,height,c,c,${H2_axis} \
+#                              -a positive,height,c,c,${H2_positive} \
+#                              -a axis,lon,c,c,"X" \
+#                              -a axis,lat,c,c,"Y" \
+#                              -a units,lon,c,c,"degrees_east" \
+#                              -a units,lat,c,c,"degrees_north"  \
+#                              -a long_name,lon,c,c,"longitude" \
+#                              -a long_name,lat,c,c,"latitude"  \
+#                              -a standard_name,lon,c,c,"longitude" \
+#                              -a standard_name,lat,c,c,"latitude" $EDITING
 
     #---
     #PHASE 5: edit projection related stuff
     #---
-    if [ ${INTERPI} == 0 ]; then
-    ${NCO_PATH}/ncatted -O -h -a  grid_mapping,${name[${INDEX}]},c,c,"${projection_name}" $EDITING
-    ${NCO_PATH}/ncks -A -h -v ${projection_name} map.nc $EDITING
-    fi
+#    if [ ${INTERPI} == 0 ]; then
+#    ${NCO_PATH}/ncatted -O -h -a  grid_mapping,${name[${INDEX}]},c,c,"${projection_name}" $EDITING
+#    ${NCO_PATH}/ncks -A -h -v ${projection_name} map.nc $EDITING
+#    fi
 
     #---
     #PHASE 5: edit time related stuff
     #---
-    ${NCO_PATH}/ncatted -O -h -a long_name,time,c,c,${time_long_name} \
-                              -a standard_name,time,c,c,${time_standard_name}  \
-                              -a axis,time,c,c,${time_axis} $EDITING
+#    ${NCO_PATH}/ncatted -O -h -a long_name,time,c,c,${time_long_name} \
+#                              -a standard_name,time,c,c,${time_standard_name}  \
+#                              -a axis,time,c,c,${time_axis} $EDITING
 
     #---
     #PHASE 6: editing missing values one more time
@@ -534,10 +526,6 @@ if [ ${convert} == 1 ] ; then
         mkdir -p ./netcdf3/${DIR}
         mkdir -p ./netcdf4/${DIR}
 
-      ${NCO_PATH}/ncatted -O -h -a axis,lon,c,c,'X' \
-                                -a axis,lon,m,c,'X' \
-                                -a axis,lat,c,c,'Y' \
-                                -a axis,lat,m,c,'Y' ${EDITING}
         mv ${EDITING} ./netcdf3/${DIR}
 
         ${NCCOPY_NETCDF4}/nccopy -k 4 -d 1 ${DIRIN}/${EDITING} ${DIROUT}/${EDITING}
