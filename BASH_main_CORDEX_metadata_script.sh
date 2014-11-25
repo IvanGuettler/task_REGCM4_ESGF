@@ -338,6 +338,11 @@ mv ${tempTarget}/temp.nc ${FILE3i}${filenameSM[${j}]}.nc
        j=$((j+1))
    done # j loop
 
+#---
+#Move unsplitted data to temp directory
+#---
+
+	mv ${tempTarget}/*_all.nc ${tempTarget}/temp
 
 fi
 
@@ -356,7 +361,7 @@ fi
 if [ ${metadata} == 1 ] ; then
     echo 'Editing meta-data...'
 
-    EDITIN=(${tempTarget}/${name[${INDEX}]}*nc)
+    EDITIN=(${tempTarget}/${name[${INDEX}]}*${CORDEX_domain}*nc)
     FILENUMBER=${#EDITIN[@]}
     FILENUMBER=$((FILENUMBER-1))
 
@@ -427,9 +432,7 @@ echo "--------------------------------------------------------------------------
                                -d m2,lev ${EDITING}
     fi
     if [ ${INTERPI} == 1 ]; then
-    ${NCO_PATH}/ncrename -O -h -v lat,y \
-                               -v lon,x \
-                               -d lat,y \
+    ${NCO_PATH}/ncrename -O -h -d lat,y \
                                -d lon,x \
                                -d m2,lev ${EDITING}
     fi
@@ -525,7 +528,6 @@ fi
 if [ ${convert} == 1 ] ; then
     echo 'Converting netcdf3 > netcdf4...'
 
-    NCCOPY_NETCDF4=/disk2/home/regcm/ivan/PROGRAM_GFORTRAN_HDF5/bin
     EDITIN=(${name[${INDEX}]}*nc)
 
     file=0
