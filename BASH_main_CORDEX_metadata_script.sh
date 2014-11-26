@@ -23,12 +23,12 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 #--> Select activities
        INDX=1 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
     collect=0 #Collect variable from various sources        
-      means=1 #Calculate daily, monthly and seasonal means  
-  rm_buffer=1 #Remove buffer zone e.g. 11 grid cells        
-interpolate=1 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1 #Split files into specific groups             
-   metadata=1 #Edit meta-data                              
-    convert=0 #Convert from netcdf3 > netcdf4 if needed
+      means=0 #Calculate daily, monthly and seasonal means  
+  rm_buffer=0 #Remove buffer zone e.g. 11 grid cells        
+interpolate=0 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=0 #Split files into specific groups             
+   metadata=0 #Edit meta-data                              
+    convert=1 #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
@@ -528,40 +528,40 @@ fi
 if [ ${convert} == 1 ] ; then
     echo 'Converting netcdf3 > netcdf4...'
 
-    EDITIN=(${name[${INDEX}]}*nc)
+    cd ${tempTarget}
+    EDITIN=(${name[${INDEX}]}*${CORDEX_domain}*nc)
+    FILENUMBER=${#EDITIN[@]}
+    FILENUMBER=$((FILENUMBER-1))
 
     file=0
-    while [ ${file} -le 35 ] ; do #jer je 35+1 datoteka koju treba obraditi
-        echo ${EDITIN[${file}]}
-        EDITING=${EDITIN[${file}]}
-        part1=${EDITING:8:3}       #Jel li osnovna mreza ili  interpolirano. 8 znak, 3 unaprijed. Ovisit ce o varijabli
-        if [ ${part1} == '44_' ] ; then
-                INTERPI=0 #Originalni grid
-                FREQ=${EDITING:61:3}
-        fi
-        if [ ${part1} == '44i' ] ; then
-                INTERPI=1 #Interpolirano
-                FREQ=${EDITING:62:3}
-        fi
+     while [ ${file} -le ${FILENUMBER} ] ; do
+          echo ${EDITIN[${file}]}
+       EDITING=${EDITIN[${file}]} #This is the file we will work on
+    #---
+    #PREPHASE 1: determine grid type from the filename day mon sem
+    #---
+       if  grep -q "_day_"  <<< "${EDITING}"  ; then
+            FREQ='day'
+       fi
+       if  grep -q "_mon_"  <<< "${EDITING}"  ; then
+            FREQ='mon'
+       fi
+       if  grep -q "_sem_"  <<< "${EDITING}"  ; then
+            FREQ='sem'
+       fi
 
-        DOMAIN=${CORDEX_domain}
-        INSTITUTE=${institude_id}
-        GCMModelName=${driving_model_id}
-        CMIP5ExperimentName=${driving_experiment_name}
-        CMIP5EnsembleMember=${driving_model_ensemble_member}
-        RCMModelName=DHMZ-REGCM42
-        RCMVersionID=${RCM_version_id}
-        DIR=/${DOMAIN}/${INSTITUTE}/${GCMModelName}/${CMIP5ExperimentName}/${CMIP5EnsembleMember}/${RCMModelName}/${RCMVersionID}/${FREQ}/${name[${INDEX}]}
+        
+        DIR=/${CORDEX_domain}/${institute_id}/${driving_model_id}/${driving_experiment_name}/${driving_model_ensemble_member}/${model_id}/${rcm_version_id}/${FREQ}/${name[${INDX}]}
 
          DIRIN=./netcdf3/${DIR}
         DIROUT=./netcdf4/${DIR}
 
-        mkdir -p ./netcdf3/${DIR}
-        mkdir -p ./netcdf4/${DIR}
+        mkdir -p  ${DIRIN}
+        mkdir -p ${DIROUT}
 
-        mv ${EDITING} ./netcdf3/${DIR}
+        mv ${EDITING} ${DIRIN}
 
-        ${NCCOPY_NETCDF4}/nccopy -k 4 -d 1 ${DIRIN}/${EDITING} ${DIROUT}/${EDITING}
+        nccopy -k 4 -d 1 ${DIRIN}/${EDITING} ${DIROUT}/${EDITING}
 
         file=$((file+1))
     done
