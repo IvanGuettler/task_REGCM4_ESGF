@@ -53,6 +53,7 @@ varalica[ 4]='pcpavg'
 	rcm_version_id="v1"
 	project_id="CORDEX"
 	CORDEX_domain="EUR-44"
+        CORDEX_domain_i="EUR-44i"
 	product="output"
 	references="http://gforge.ictp.it/gf/project/regcm/"
 #-------- Global attributes
@@ -109,7 +110,7 @@ varalica[ 4]='pcpavg'
         time_long_name="time"
         time_standard_name="time"
         time_axis="T"
-        time_units="days since 1949-12-01T00:00:00Z"
+        time_units="days since 1949-12-01 00:00:00Z"
         time_calendar="proleptic_gregorian"
         time_bounds="time_bnds"
 #-----------------------------------------
@@ -117,44 +118,4 @@ varalica[ 4]='pcpavg'
 #-----------------------------------------
 #-----------------------------------------
 #-----------------------------------------
-
-#======================================================================================
-#======================================================================================
-#======================================================================================
-
-#Datumi koji su mi potrebni za ispravno definiranje intervala
-    DAYendX[1]=19710101 #cdo uzima unutar intervala pa moramo prilagoditi ovako
-        DAYendX[2]=19760101
-            DAYendX[3]=19810101
-                DAYendX[4]=19860101
-                    DAYendX[5]=19910101
-                        DAYendX[6]=19960101
-                            DAYendX[7]=20010101
-                                DAYendX[8]=20051201
-
-
-#Datumi koji su mi potrebni za ispravno definiranje intervala
-    MONstrX[1]=19700101
-        MONendX[1]=19710101
-            MONstrX[2]=19710101
-                MONendX[2]=19810101
-                    MONstrX[3]=19810101
-                        MONendX[3]=19910101
-                            MONstrX[4]=19910101
-                                MONendX[4]=20010101
-                                    MONstrX[5]=20010101
-                                       MONendX[5]=20051201
-
-
-#Datumi koji su mi potrebni za ispravno definiranje intervala
-    SEMstrX[1]=19700530
-        SEMendX[1]=19701230
-            SEMstrX[2]=19710230
-                SEMendX[2]=19801230
-                    SEMstrX[3]=19810230
-                        SEMendX[3]=19901230
-                            SEMstrX[4]=19910230
-                                SEMendX[4]=20001230
-                                    SEMstrX[5]=20010230
-                                       SEMendX[5]=20051130
 

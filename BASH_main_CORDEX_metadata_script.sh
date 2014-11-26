@@ -411,15 +411,17 @@ echo "--------------------------------------------------------------------------
                               -a driving_model_id,global,c,c,"${driving_model_id}"                             \
                               -a driving_model_ensemble_member,global,c,c,"${driving_model_ensemble_member}"   \
                               -a driving_experiment_name,global,c,c,"${driving_experiment_name}"               \
+                              -a driving_experiment,global,c,c,"${driving_experiment}"                         \
                               -a frequency,global,c,c,"${FREQ}"                                                \
                               -a institute_id,global,c,c,"${institute_id}"                                     \
                               -a institution,global,c,c,"${institution}"                                       \
                               -a model_id,global,c,c,"${model_id}"                                             \
                               -a rcm_version_id,global,c,c,"${rcm_version_id}"                                 \
                               -a project_id,global,c,c,"${project_id}"                                         \
-                              -a CORDEX_domain,global,c,c,"${CORDEX_domain}"                                   \
                               -a product,global,c,c,"${product}"                                               \
                               -a references,global,c,c,"${references}" ${EDITING}
+                         
+
 echo "-----------------------------------------------------------------------------3"
     #---
     #PHASE 3: rename dimensions
@@ -430,11 +432,13 @@ echo "--------------------------------------------------------------------------
                                -d iy,y \
                                -d jx,x \
                                -d m2,lev ${EDITING}
+    ${NCO_PATH}/ncatted -O -h -a CORDEX_domain,global,c,c,"${CORDEX_domain}"   ${EDITING}
     fi
     if [ ${INTERPI} == 1 ]; then
     ${NCO_PATH}/ncrename -O -h -d lat,y \
                                -d lon,x \
                                -d m2,lev ${EDITING}
+    ${NCO_PATH}/ncatted -O -h -a CORDEX_domain,global,c,c,"${CORDEX_domain_i}" ${EDITING}
     fi
 
 echo "-----------------------------------------------------------------------------4"
@@ -501,12 +505,12 @@ echo "--------------------------------------------------------------------------
     #---
     #PHASE 7: edit time related stuff
     #---
-    ${NCO_PATH}/ncatted -O -h -a long_name,time,c,c,${time_long_name}           \
-                              -a standard_name,time,c,c,${time_standard_name}   \
-                              -a axis,time,c,c,${time_axis}                     \
-                              -a units,time,c,c,"days since 1949-12-01T00:00:00Z"                   \
-                              -a calendar,time,c,c,${time_calendar}             \
-                              -a time_bounds,time,c,c,${time_bounds}            ${EDITING}
+    ${NCO_PATH}/ncatted -O -h -a long_name,time,c,c,${time_long_name}             \
+                              -a standard_name,time,c,c,${time_standard_name}     \
+                              -a axis,time,c,c,${time_axis}                       \
+                              -a units,time,c,c,"days since 1949-12-01 00:00:00Z" \
+                              -a calendar,time,c,c,${time_calendar}               \
+                              -a time_bounds,time,c,c,${time_bounds}              ${EDITING}
     
     file=$((file+1))
     done
