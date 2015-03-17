@@ -6,28 +6,20 @@
         #(3) F90_gen_time.f90 successfully used
         #(4) Selected stages of preparing interpolated fileds: DM, MM, SM computed --> Domain reduced --> bilinear interpolation performed.
 
-#-----------------
-#-----------------
-#-----------------
-# Possible cdo bug? all time_bnds values are same after using the seasmean
-#-----------------
-#-----------------
-#-----------------
-
 
 #The location of cdo & nco 
 #--> DHMZ vihor
-CDO_PATH='version 1.6.0 installed on the system (November 2014)'
+CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
        INDX=1 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=0 #Collect variable from various sources        
-      means=0 #Calculate daily, monthly and seasonal means  
-  rm_buffer=0 #Remove buffer zone e.g. 11 grid cells        
-interpolate=0 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=0 #Split files into specific groups             
-   metadata=0 #Edit meta-data                              
+    collect=1 #Collect variable from various sources        
+      means=1 #Calculate daily, monthly and seasonal means  
+  rm_buffer=1 #Remove buffer zone e.g. 11 grid cells        
+interpolate=1 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=1 #Split files into specific groups             
+   metadata=1 #Edit meta-data                              
     convert=1 #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
@@ -116,9 +108,9 @@ if [ ${means} == 1 ] ; then
 # Perform averaging
 #---
 echo 'DM, MM and SM...'
-cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days           ${tempTarget}/${name[${INDX}]}.nc ${FILE1}_all.nc
-cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -monmean  ${tempTarget}/${name[${INDX}]}.nc ${FILE2}_all.nc
-cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -seasmean ${tempTarget}/${name[${INDX}]}.nc ${FILE3}_all.nc
+${CDO_PATH}/cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days           ${tempTarget}/${name[${INDX}]}.nc ${FILE1}_all.nc
+${CDO_PATH}/cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -monmean  ${tempTarget}/${name[${INDX}]}.nc ${FILE2}_all.nc
+${CDO_PATH}/cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -seasmean ${tempTarget}/${name[${INDX}]}.nc ${FILE3}_all.nc
 
 #---
 # Rename dimension x,y into jx,iy
@@ -194,8 +186,8 @@ if [ ${interpolate} == 1 ] ; then
 #---
 # Interpolate MM and SM (According to "CORDEX Archive Design" Version 3.1 only MM and SM are needed on regular grid
 #---
-    cdo remapbil,${RegularGrid} ${FILE2}_all.nc ${FILE2i}_all.nc
-    cdo remapbil,${RegularGrid} ${FILE3}_all.nc ${FILE3i}_all.nc
+    ${CDO_PATH}/cdo remapbil,${RegularGrid} ${FILE2}_all.nc ${FILE2i}_all.nc
+    ${CDO_PATH}/cdo remapbil,${RegularGrid} ${FILE3}_all.nc ${FILE3i}_all.nc
 
 #---
 # Rename dimensions lon,lat into jx,iy
@@ -260,7 +252,7 @@ if [ ${split} == 1 ] ; then
 #--
     j=1
     while [ ${j} -le ${NFILES_DM} ] ; do
-    	cdo seldate,${filenameDM[${j}]:1:4}-${filenameDM[${j}]:5:2}-${filenameDM[${j}]:7:4}T00:00:00,${filenameDM[${j}]:10:4}-${filenameDM[${j}]:14:2}-${filenameDM[${j}]:16:2}T23:59:59 ${FILE1}_all.nc   ${FILE1}${filenameDM[${j}]}.nc
+    	${CDO_PATH}/cdo seldate,${filenameDM[${j}]:1:4}-${filenameDM[${j}]:5:2}-${filenameDM[${j}]:7:4}T00:00:00,${filenameDM[${j}]:10:4}-${filenameDM[${j}]:14:2}-${filenameDM[${j}]:16:2}T23:59:59 ${FILE1}_all.nc   ${FILE1}${filenameDM[${j}]}.nc
 
 #--
 #Fixing some names
@@ -279,9 +271,9 @@ if [ ${split} == 1 ] ; then
 #--
     j=1
     while [ ${j} -le ${NFILES_MM} ] ; do
-cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2}_all.nc    ${FILE2}${filenameMM[${j}]}.nc
+${CDO_PATH}/cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2}_all.nc    ${FILE2}${filenameMM[${j}]}.nc
 
-cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2i}_all.nc  ${FILE2i}${filenameMM[${j}]}.nc
+${CDO_PATH}/cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2i}_all.nc  ${FILE2i}${filenameMM[${j}]}.nc
 
 #--
 #Time step has to be centered between two time_bnds. This is great idea from Grigory Nikulin:
@@ -312,8 +304,8 @@ mv ${tempTarget}/temp.nc ${FILE2i}${filenameMM[${j}]}.nc
 #--
     j=1
     while [ ${j} -le ${NFILES_SM} ] ; do
-cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3}_all.nc    ${FILE3}${filenameSM[${j}]}.nc
-cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3i}_all.nc  ${FILE3i}${filenameSM[${j}]}.nc
+${CDO_PATH}/cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3}_all.nc    ${FILE3}${filenameSM[${j}]}.nc
+${CDO_PATH}/cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3i}_all.nc  ${FILE3i}${filenameSM[${j}]}.nc
 
 #--
 #Time step has to be centered between two time_bnds. This is great idea from Grigory Nikulin:
@@ -435,10 +427,8 @@ echo "--------------------------------------------------------------------------
     ${NCO_PATH}/ncatted -O -h -a CORDEX_domain,global,c,c,"${CORDEX_domain}"   ${EDITING}
     fi
     if [ ${INTERPI} == 1 ]; then
-    ${NCO_PATH}/ncrename -O -h -d lat,y \
-                               -d lon,x \
-                               -d m2,lev ${EDITING}
-    ${NCO_PATH}/ncatted -O -h -a CORDEX_domain,global,c,c,"${CORDEX_domain_i}" ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -d m2,lev ${EDITING}
+    ${NCO_PATH}/ncatted -O  -h -a CORDEX_domain,global,c,c,"${CORDEX_domain_i}" ${EDITING}
     fi
 
 echo "-----------------------------------------------------------------------------4"
@@ -467,7 +457,7 @@ echo "--------------------------------------------------------------------------
     #---
 
     ${NCO_PATH}/ncrename -O -h -v m2,height                                           ${EDITING}
-    ${NCO_PATH}/ncap2    -O -h -s "height=double(2);lon=double(lon);lat=double(lat)"  ${EDITING} ${tempTarget}/test.nc
+    ${NCO_PATH}/ncap2    -O -h -s "height(0)=double(2);lon=double(lon);lat=double(lat)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
 
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
@@ -510,7 +500,8 @@ echo "--------------------------------------------------------------------------
                               -a axis,time,c,c,${time_axis}                       \
                               -a units,time,c,c,"days since 1949-12-01 00:00:00Z" \
                               -a calendar,time,c,c,${time_calendar}               \
-                              -a time_bounds,time,c,c,${time_bounds}              ${EDITING}
+                              -a bounds,time,c,c,${time_bounds}                   ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -d nb2,bnds                                        ${EDITING}
     
     file=$((file+1))
     done
