@@ -297,6 +297,76 @@ units[63]='%'
 units[64]='%'
 units[65]='kg m-2'
 units[66]='m'
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+#------ Height (m/hPa)
+heights[ 1]=2
+heights[ 2]=2
+heights[ 3]=2
+heights[ 4]=0
+heights[ 5]=0
+heights[ 6]=0
+heights[ 7]=2
+heights[ 8]=10
+heights[ 9]=10
+heights[10]=0
+heights[11]=0
+heights[12]=0
+heights[13]=0
+heights[14]=0
+heights[15]=0
+heights[16]=0
+heights[17]=0
+heights[18]=0
+heights[19]=0
+heights[20]=0
+heights[21]=0
+heights[22]=0
+heights[23]=0
+heights[24]=0
+heights[25]=0
+heights[26]=0
+heights[27]=0
+heights[28]=0
+heights[29]=0
+heights[30]=0
+heights[31]=10
+heights[32]=10
+heights[33]=0
+heights[34]=0
+heights[35]=0
+heights[36]=0
+heights[37]=0
+heights[38]=0
+heights[39]=0
+heights[40]=0
+heights[41]=850
+heights[42]=850
+heights[43]=850
+heights[44]=850
+heights[45]=500
+heights[46]=500
+heights[47]=500
+heights[48]=500
+heights[49]=200
+heights[50]=200
+heights[51]=200
+heights[52]=200
+heights[53]=0
+heights[54]=0
+heights[55]=0
+heights[56]=0
+heights[57]=0
+heights[58]=0
+heights[59]=0
+heights[60]=0
+heights[61]=0
+heights[62]=0
+heights[63]=0
+heights[64]=0
+heights[65]=0
+heights[66]=0
 #------ Units
 #-----------------------------------------
 #-----------------------------------------

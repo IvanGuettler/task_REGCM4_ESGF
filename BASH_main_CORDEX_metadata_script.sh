@@ -13,13 +13,13 @@ CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
-       INDX=1 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=1 #Collect variable from various sources        
-      means=1 #Calculate daily, monthly and seasonal means  
-  rm_buffer=1 #Remove buffer zone e.g. 11 grid cells        
-interpolate=1 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1 #Split files into specific groups             
-   metadata=1 #Edit meta-data                              
+       INDX=4 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+    collect=0 #Collect variable from various sources        
+      means=0 #Calculate daily, monthly and seasonal means  
+  rm_buffer=0 #Remove buffer zone e.g. 11 grid cells        
+interpolate=0 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=0 #Split files into specific groups             
+   metadata=0 #Edit meta-data                              
     convert=1 #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
@@ -50,9 +50,16 @@ if [ ${collect} == 1 ] ; then
     echo ${YEAR}
             for MNTH in 0 1 2 3 4 5 6 7 8 9 10 11 ; do 
 	    echo ${MNTH}
+            if [ ${heights[${INDX}]} == 0 ] ; then
+${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat                              \
+           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
+                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
+            fi
+            if [ ${heights[${INDX}]} == 2 ] ; then
 ${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                           \
            ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
                          ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
+            fi
             done #<<< MNTH
     done #<<< YEAR
 
@@ -333,9 +340,9 @@ mv ${tempTarget}/temp.nc ${FILE3i}${filenameSM[${j}]}.nc
 #---
 #Move unsplitted data to temp directory
 #---
-
-	mv ${tempTarget}/*_all.nc ${tempTarget}/temp
-
+        mkdir -p                             ${tempTarget}/temp
+	mv ${tempTarget}/*_all.nc            ${tempTarget}/temp
+        mv ${tempTarget}/${name[${INDX}]}.nc ${tempTarget}/temp
 fi
 
 
@@ -422,14 +429,16 @@ echo "--------------------------------------------------------------------------
     ${NCO_PATH}/ncrename -O -h -v iy,y \
                                -v jx,x \
                                -d iy,y \
-                               -d jx,x \
-                               -d m2,lev ${EDITING}
+                               -d jx,x ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a CORDEX_domain,global,c,c,"${CORDEX_domain}"   ${EDITING}
     fi
     if [ ${INTERPI} == 1 ]; then
-    ${NCO_PATH}/ncrename -O -h -d m2,lev ${EDITING}
     ${NCO_PATH}/ncatted -O  -h -a CORDEX_domain,global,c,c,"${CORDEX_domain_i}" ${EDITING}
     fi
+    if [ ${heights[${INDX}]} == 2 ]; then
+    ${NCO_PATH}/ncrename -O -h -d m2,lev ${EDITING}
+    fi
+   
 
 echo "-----------------------------------------------------------------------------4"
     #---
@@ -455,9 +464,10 @@ echo "--------------------------------------------------------------------------
     #---
     #PHASE 5: edit height (this has to be generalized)
     #---
-
-    ${NCO_PATH}/ncrename -O -h -v m2,height                                           ${EDITING}
-    ${NCO_PATH}/ncap2    -O -h -s "height(0)=double(2);lon=double(lon);lat=double(lat)"  ${EDITING} ${tempTarget}/test.nc
+    if [ ${heights[${INDX}]} == 2 ]; then
+    
+    ${NCO_PATH}/ncrename -O -h -v m2,height              ${EDITING}
+    ${NCO_PATH}/ncap2    -O -h -s "height(0)=double(2)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
 
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
@@ -465,11 +475,20 @@ echo "--------------------------------------------------------------------------
                               -a units,height,c,c,${H2_units}                \
                               -a axis,height,c,c,${H2_axis}                  \
                               -a positive,height,c,c,${H2_positive}          ${EDITING}
+    fi
+
+echo "-----------------------------------------------------------------------------5"
+    #---
+    #PHASE 6: lon/lat float > double
+    #---
+
+    ${NCO_PATH}/ncap2    -O -h -s "lon=double(lon);lat=double(lat)"  ${EDITING} ${tempTarget}/test.nc
+    mv ${tempTarget}/test.nc ${EDITING}
 
 
 echo "-----------------------------------------------------------------------------6"
     #---
-    #PHASE 6: edit projection related stuff
+    #PHASE 7: edit projection related stuff
     #---
     ${NCO_PATH}/ncatted -O -h -a axis,lon,c,c,"X"                  \
                               -a axis,lat,c,c,"Y"                  \
@@ -493,7 +512,7 @@ echo "--------------------------------------------------------------------------
 echo "-----------------------------------------------------------------------------7"
   
     #---
-    #PHASE 7: edit time related stuff
+    #PHASE 8: edit time related stuff
     #---
     ${NCO_PATH}/ncatted -O -h -a long_name,time,c,c,${time_long_name}             \
                               -a standard_name,time,c,c,${time_standard_name}     \
