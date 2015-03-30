@@ -13,13 +13,13 @@ CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
-       INDX=4 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+       INDX=5 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
     collect=0 #Collect variable from various sources        
-      means=0 #Calculate daily, monthly and seasonal means  
-  rm_buffer=0 #Remove buffer zone e.g. 11 grid cells        
-interpolate=0 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=0 #Split files into specific groups             
-   metadata=0 #Edit meta-data                              
+      means=1 #Calculate daily, monthly and seasonal means  
+  rm_buffer=1 #Remove buffer zone e.g. 11 grid cells        
+interpolate=1 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=1 #Split files into specific groups             
+   metadata=1 #Edit meta-data                              
     convert=1 #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
@@ -63,6 +63,7 @@ ${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2
             done #<<< MNTH
     done #<<< YEAR
 
+
     #---
     #Join all files into one file
     #---
@@ -79,12 +80,21 @@ ${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2
     #---
      ${NCO_PATH}/ncatted  -O -a    _FillValue,${name[${INDX}]},c,f,1e+20    \
                              -a missing_value,${name[${INDX}]},c,f,1e+20 ${tempTarget}/${name[${INDX}]}.nc
+    #---
+    #Change units if needed
+    #---
+    # ps (hPa) --> ps (Pa)
+    if [ ${INDX} == 5 ] ; then
+	    ${NCO_PATH}/ncap2    -O -h -s "ps=ps*100"  ${tempTarget}/${name[${INDX}]}.nc  ${tempTarget}/test.nc
+	    mv ${tempTarget}/test.nc                   ${tempTarget}/${name[${INDX}]}.nc
+    fi
 
     #---
     #Delete all global metadata
     #---
      ${NCO_PATH}/ncatted -O -h -a ,global,d,, ${tempTarget}/${name[${INDX}]}.nc
      
+
 fi
 
 
