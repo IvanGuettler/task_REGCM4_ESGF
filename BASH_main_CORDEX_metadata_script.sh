@@ -13,14 +13,14 @@ CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
-       INDX=5 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=0 #Collect variable from various sources        
-      means=1 #Calculate daily, monthly and seasonal means  
-  rm_buffer=1 #Remove buffer zone e.g. 11 grid cells        
-interpolate=1 #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1 #Split files into specific groups             
-   metadata=1 #Edit meta-data                              
-    convert=1 #Convert from netcdf3 > netcdf4 if needed
+       INDX=10 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+    collect=0  #Collect variable from various sources        
+      means=0  #Calculate daily, monthly and seasonal means  
+  rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
+interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=0  #Split files into specific groups             
+   metadata=0  #Edit meta-data                              
+    convert=1  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
@@ -57,6 +57,11 @@ ${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat   
             fi
             if [ ${heights[${INDX}]} == 2 ] ; then
 ${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                           \
+           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
+                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
+            fi
+            if [ ${heights[${INDX}]} == 10 ] ; then
+${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m10                          \
            ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
                          ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
             fi
@@ -448,6 +453,9 @@ echo "--------------------------------------------------------------------------
     if [ ${heights[${INDX}]} == 2 ]; then
     ${NCO_PATH}/ncrename -O -h -d m2,lev ${EDITING}
     fi
+    if [ ${heights[${INDX}]} == 10 ]; then
+    ${NCO_PATH}/ncrename -O -h -d m10,lev ${EDITING}
+    fi
    
 
 echo "-----------------------------------------------------------------------------4"
@@ -475,11 +483,19 @@ echo "--------------------------------------------------------------------------
     #PHASE 5: edit height (this has to be generalized)
     #---
     if [ ${heights[${INDX}]} == 2 ]; then
-    
     ${NCO_PATH}/ncrename -O -h -v m2,height              ${EDITING}
     ${NCO_PATH}/ncap2    -O -h -s "height(0)=double(2)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
-
+    ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
+                              -a standard_name,height,c,c,${H2_standardname} \
+                              -a units,height,c,c,${H2_units}                \
+                              -a axis,height,c,c,${H2_axis}                  \
+                              -a positive,height,c,c,${H2_positive}          ${EDITING}
+    fi
+    if [ ${heights[${INDX}]} == 10 ]; then
+    ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
+    ${NCO_PATH}/ncap2    -O -h -s "height(0)=double(10)"  ${EDITING} ${tempTarget}/test.nc
+    mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
                               -a standard_name,height,c,c,${H2_standardname} \
                               -a units,height,c,c,${H2_units}                \

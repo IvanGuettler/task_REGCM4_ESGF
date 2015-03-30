@@ -25,18 +25,24 @@ sourceDIR[ 2]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES
 sourceDIR[ 3]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
 sourceDIR[ 4]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
 sourceDIR[ 5]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 9]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
+sourceDIR[10]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
 #-- VARIABLE source FILE
 sourceFILE[ 1]='EUROPE_STS'
 sourceFILE[ 2]='EUROPE_STS'
 sourceFILE[ 3]='EUROPE_STS'
 sourceFILE[ 4]='EUROPE_STS'
 sourceFILE[ 5]='EUROPE_STS'
+sourceFILE[ 9]='EUROPE_rotatedWind_sfcwind'
+sourceFILE[10]='EUROPE_STS'
 #-- VARIABLE RegCM name
 varalica[ 1]='t2avg'
 varalica[ 2]='t2max'
 varalica[ 3]='t2min'
 varalica[ 4]='pcpavg'
 varalica[ 5]='ps'
+varalica[ 9]='sfcwind'
+varalica[10]='w10max'
 
 
 
