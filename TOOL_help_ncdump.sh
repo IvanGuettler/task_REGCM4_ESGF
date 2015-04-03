@@ -3,7 +3,7 @@
 DIR1=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/EUR-44/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/day/
 DIR2=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/EUR-44/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/mon/
 DIR3=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/EUR-44/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/sem/
-VAR=sfcWindmax
+VAR=vas
 text1=EUR-44_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
 text2=EUR-44i_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
 

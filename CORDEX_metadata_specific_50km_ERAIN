@@ -27,6 +27,9 @@ sourceDIR[ 4]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES
 sourceDIR[ 5]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
 sourceDIR[ 9]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
 sourceDIR[10]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[32]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
+sourceDIR[33]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
+sourceDIR[38]='/home1/regcm/DISK_zemlja/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_SRF/DM'
 #-- VARIABLE source FILE
 sourceFILE[ 1]='EUROPE_STS'
 sourceFILE[ 2]='EUROPE_STS'
@@ -35,6 +38,9 @@ sourceFILE[ 4]='EUROPE_STS'
 sourceFILE[ 5]='EUROPE_STS'
 sourceFILE[ 9]='EUROPE_rotatedWind_sfcwind'
 sourceFILE[10]='EUROPE_STS'
+sourceFILE[32]='EUROPE_rotatedWind_uas'
+sourceFILE[33]='EUROPE_rotatedWind_vas'
+sourceFILE[38]='EUROPE_zpbl'
 #-- VARIABLE RegCM name
 varalica[ 1]='t2avg'
 varalica[ 2]='t2max'
@@ -43,8 +49,9 @@ varalica[ 4]='pcpavg'
 varalica[ 5]='ps'
 varalica[ 9]='sfcwind'
 varalica[10]='w10max'
-
-
+varalica[32]='uas'
+varalica[33]='vas'
+varalica[38]='zpbl'
 
 #-------- Global attributes
 	Conventions="CF-1.4"
