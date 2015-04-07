@@ -14,19 +14,20 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
        INDX=1 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=1  #Collect variable from various sources        
+    collect=0  #Collect variable from various sources        
       means=0  #Calculate daily, monthly and seasonal means  
   rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
 interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=0  #Split files into specific groups             
-   metadata=0  #Edit meta-data                              
-    convert=0  #Convert from netcdf3 > netcdf4 if needed
+      split=1  #Split files into specific groups             
+   metadata=1  #Edit meta-data                              
+    convert=1  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
 #Load meta data from separate file for specific experiment you are working on
     #source ./CORDEX_metadata_specific_50km_ERAIN
     source ./CORDEX_metadata_specific_12km_ERAIN
+    export HDF5_DISABLE_VERSION_CHECK=1
 #All temporary output in the following directory
     tempTarget=/work/regcm/temp/test_CORDEX
 
@@ -389,10 +390,10 @@ if [ ${metadata} == 1 ] ; then
     #---
     #PREPHASE 1: determine grid type from the filename
     #---
-       if  grep -q "44_"  <<< "${EDITING}"  ; then
+       if  [ grep -q "44_" ] || [ grep -q "11_" ]  <<< "${EDITING}"  ; then
             INTERPI=0     #--------------------------> Original grid
        fi
-       if  grep -q "44i_" <<< "${EDITING}"  ; then
+       if [ grep -q "44i_" ] || [ grep -q "11i_" ] <<< "${EDITING}"  ; then
             INTERPI=1     #--------------------------> Interpolated grid
        fi
     #---
