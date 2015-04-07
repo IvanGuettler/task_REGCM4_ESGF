@@ -1,0 +1,342 @@
+netcdf ts_EUR-44_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1_mon_198901-199012 {
+dimensions:
+	y = 120 ;
+	x = 120 ;
+	time = UNLIMITED ; // (24 currently)
+	bnds = 2 ;
+variables:
+	double lon(y, x) ;
+		lon:axis = "X" ;
+		lon:units = "degrees_east" ;
+		lon:long_name = "longitude" ;
+		lon:standard_name = "longitude" ;
+	double lat(y, x) ;
+		lat:axis = "Y" ;
+		lat:units = "degrees_north" ;
+		lat:long_name = "latitude" ;
+		lat:standard_name = "latitude" ;
+	double time(time) ;
+		time:long_name = "time" ;
+		time:standard_name = "time" ;
+		time:axis = "T" ;
+		time:units = "days since 1949-12-01 00:00:00Z" ;
+		time:calendar = "proleptic_gregorian" ;
+		time:bounds = "time_bnds" ;
+	double time_bnds(time, bnds) ;
+	float ts(time, y, x) ;
+		ts:long_name = "Surface Temperature" ;
+		ts:standard_name = "surface_temperature" ;
+		ts:coordinates = "lon lat" ;
+		ts:units = "K" ;
+		ts:_FillValue = 1.e+20f ;
+		ts:missing_value = 1.e+20f ;
+		ts:cell_methods = "time: mean" ;
+		ts:grid_mapping = "Lambert_Conformal" ;
+	double y(y) ;
+	double x(x) ;
+	char Lambert_Conformal ;
+		Lambert_Conformal:grid_mapping_name = "lambert_conformal_conic" ;
+		Lambert_Conformal:standard_parallel = 30.f, 65.f ;
+		Lambert_Conformal:longitude_of_central_meridian = 9.75f ;
+		Lambert_Conformal:latitude_of_projection_origin = 49.68f ;
+
+// global attributes:
+		:contact = "ivan.guettler@cirus.dhz.hr" ;
+		:creation_date = "2014-11-15" ;
+		:experiment = "Evaluation run with reanalysis forcing" ;
+		:experiment_id = "evaluation" ;
+		:driving_model_id = "ECMWF-ERAINT" ;
+		:driving_model_ensemble_member = "r1i1p1" ;
+		:driving_experiment_name = "evaluation" ;
+		:driving_experiment = "ECMWF-ERAINT, evaluation, r1i1p1" ;
+		:frequency = "mon" ;
+		:institute_id = "DHMZ" ;
+		:institution = "Meteorological and Hydrological Service of Croatia" ;
+		:model_id = "DHMZ-RegCM4-2" ;
+		:rcm_version_id = "v1" ;
+		:project_id = "CORDEX" ;
+		:product = "output" ;
+		:references = "http://gforge.ictp.it/gf/project/regcm/" ;
+		:CORDEX_domain = "EUR-44" ;
+}
+netcdf ts_EUR-44_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1_mon_199101-200012 {
+dimensions:
+	y = 120 ;
+	x = 120 ;
+	time = UNLIMITED ; // (120 currently)
+	bnds = 2 ;
+variables:
+	double lon(y, x) ;
+		lon:axis = "X" ;
+		lon:units = "degrees_east" ;
+		lon:long_name = "longitude" ;
+		lon:standard_name = "longitude" ;
+	double lat(y, x) ;
+		lat:axis = "Y" ;
+		lat:units = "degrees_north" ;
+		lat:long_name = "latitude" ;
+		lat:standard_name = "latitude" ;
+	double time(time) ;
+		time:long_name = "time" ;
+		time:standard_name = "time" ;
+		time:axis = "T" ;
+		time:units = "days since 1949-12-01 00:00:00Z" ;
+		time:calendar = "proleptic_gregorian" ;
+		time:bounds = "time_bnds" ;
+	double time_bnds(time, bnds) ;
+	float ts(time, y, x) ;
+		ts:long_name = "Surface Temperature" ;
+		ts:standard_name = "surface_temperature" ;
+		ts:coordinates = "lon lat" ;
+		ts:units = "K" ;
+		ts:_FillValue = 1.e+20f ;
+		ts:missing_value = 1.e+20f ;
+		ts:cell_methods = "time: mean" ;
+		ts:grid_mapping = "Lambert_Conformal" ;
+	double y(y) ;
+	double x(x) ;
+	char Lambert_Conformal ;
+		Lambert_Conformal:grid_mapping_name = "lambert_conformal_conic" ;
+		Lambert_Conformal:standard_parallel = 30.f, 65.f ;
+		Lambert_Conformal:longitude_of_central_meridian = 9.75f ;
+		Lambert_Conformal:latitude_of_projection_origin = 49.68f ;
+
+// global attributes:
+		:contact = "ivan.guettler@cirus.dhz.hr" ;
+		:creation_date = "2014-11-15" ;
+		:experiment = "Evaluation run with reanalysis forcing" ;
+		:experiment_id = "evaluation" ;
+		:driving_model_id = "ECMWF-ERAINT" ;
+		:driving_model_ensemble_member = "r1i1p1" ;
+		:driving_experiment_name = "evaluation" ;
+		:driving_experiment = "ECMWF-ERAINT, evaluation, r1i1p1" ;
+		:frequency = "mon" ;
+		:institute_id = "DHMZ" ;
+		:institution = "Meteorological and Hydrological Service of Croatia" ;
+		:model_id = "DHMZ-RegCM4-2" ;
+		:rcm_version_id = "v1" ;
+		:project_id = "CORDEX" ;
+		:product = "output" ;
+		:references = "http://gforge.ictp.it/gf/project/regcm/" ;
+		:CORDEX_domain = "EUR-44" ;
+}
+netcdf ts_EUR-44_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1_mon_200101-200812 {
+dimensions:
+	y = 120 ;
+	x = 120 ;
+	time = UNLIMITED ; // (96 currently)
+	bnds = 2 ;
+variables:
+	double lon(y, x) ;
+		lon:axis = "X" ;
+		lon:units = "degrees_east" ;
+		lon:long_name = "longitude" ;
+		lon:standard_name = "longitude" ;
+	double lat(y, x) ;
+		lat:axis = "Y" ;
+		lat:units = "degrees_north" ;
+		lat:long_name = "latitude" ;
+		lat:standard_name = "latitude" ;
+	double time(time) ;
+		time:long_name = "time" ;
+		time:standard_name = "time" ;
+		time:axis = "T" ;
+		time:units = "days since 1949-12-01 00:00:00Z" ;
+		time:calendar = "proleptic_gregorian" ;
+		time:bounds = "time_bnds" ;
+	double time_bnds(time, bnds) ;
+	float ts(time, y, x) ;
+		ts:long_name = "Surface Temperature" ;
+		ts:standard_name = "surface_temperature" ;
+		ts:coordinates = "lon lat" ;
+		ts:units = "K" ;
+		ts:_FillValue = 1.e+20f ;
+		ts:missing_value = 1.e+20f ;
+		ts:cell_methods = "time: mean" ;
+		ts:grid_mapping = "Lambert_Conformal" ;
+	double y(y) ;
+	double x(x) ;
+	char Lambert_Conformal ;
+		Lambert_Conformal:grid_mapping_name = "lambert_conformal_conic" ;
+		Lambert_Conformal:standard_parallel = 30.f, 65.f ;
+		Lambert_Conformal:longitude_of_central_meridian = 9.75f ;
+		Lambert_Conformal:latitude_of_projection_origin = 49.68f ;
+
+// global attributes:
+		:contact = "ivan.guettler@cirus.dhz.hr" ;
+		:creation_date = "2014-11-15" ;
+		:experiment = "Evaluation run with reanalysis forcing" ;
+		:experiment_id = "evaluation" ;
+		:driving_model_id = "ECMWF-ERAINT" ;
+		:driving_model_ensemble_member = "r1i1p1" ;
+		:driving_experiment_name = "evaluation" ;
+		:driving_experiment = "ECMWF-ERAINT, evaluation, r1i1p1" ;
+		:frequency = "mon" ;
+		:institute_id = "DHMZ" ;
+		:institution = "Meteorological and Hydrological Service of Croatia" ;
+		:model_id = "DHMZ-RegCM4-2" ;
+		:rcm_version_id = "v1" ;
+		:project_id = "CORDEX" ;
+		:product = "output" ;
+		:references = "http://gforge.ictp.it/gf/project/regcm/" ;
+		:CORDEX_domain = "EUR-44" ;
+}
+netcdf ts_EUR-44i_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1_mon_198901-199012 {
+dimensions:
+	lon = 221 ;
+	lat = 103 ;
+	time = UNLIMITED ; // (24 currently)
+	bnds = 2 ;
+variables:
+	double lon(lon) ;
+		lon:axis = "X" ;
+		lon:units = "degrees_east" ;
+		lon:long_name = "longitude" ;
+		lon:standard_name = "longitude" ;
+	double lat(lat) ;
+		lat:axis = "Y" ;
+		lat:units = "degrees_north" ;
+		lat:long_name = "latitude" ;
+		lat:standard_name = "latitude" ;
+	double time(time) ;
+		time:long_name = "time" ;
+		time:standard_name = "time" ;
+		time:axis = "T" ;
+		time:units = "days since 1949-12-01 00:00:00Z" ;
+		time:calendar = "proleptic_gregorian" ;
+		time:bounds = "time_bnds" ;
+	double time_bnds(time, bnds) ;
+	float ts(time, lat, lon) ;
+		ts:long_name = "Surface Temperature" ;
+		ts:standard_name = "surface_temperature" ;
+		ts:coordinates = "lon lat" ;
+		ts:units = "K" ;
+		ts:_FillValue = 1.e+20f ;
+		ts:missing_value = 1.e+20f ;
+		ts:cell_methods = "time: mean" ;
+
+// global attributes:
+		:contact = "ivan.guettler@cirus.dhz.hr" ;
+		:creation_date = "2014-11-15" ;
+		:experiment = "Evaluation run with reanalysis forcing" ;
+		:experiment_id = "evaluation" ;
+		:driving_model_id = "ECMWF-ERAINT" ;
+		:driving_model_ensemble_member = "r1i1p1" ;
+		:driving_experiment_name = "evaluation" ;
+		:driving_experiment = "ECMWF-ERAINT, evaluation, r1i1p1" ;
+		:frequency = "mon" ;
+		:institute_id = "DHMZ" ;
+		:institution = "Meteorological and Hydrological Service of Croatia" ;
+		:model_id = "DHMZ-RegCM4-2" ;
+		:rcm_version_id = "v1" ;
+		:project_id = "CORDEX" ;
+		:product = "output" ;
+		:references = "http://gforge.ictp.it/gf/project/regcm/" ;
+		:CORDEX_domain = "EUR-44i" ;
+}
+netcdf ts_EUR-44i_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1_mon_199101-200012 {
+dimensions:
+	lon = 221 ;
+	lat = 103 ;
+	time = UNLIMITED ; // (120 currently)
+	bnds = 2 ;
+variables:
+	double lon(lon) ;
+		lon:axis = "X" ;
+		lon:units = "degrees_east" ;
+		lon:long_name = "longitude" ;
+		lon:standard_name = "longitude" ;
+	double lat(lat) ;
+		lat:axis = "Y" ;
+		lat:units = "degrees_north" ;
+		lat:long_name = "latitude" ;
+		lat:standard_name = "latitude" ;
+	double time(time) ;
+		time:long_name = "time" ;
+		time:standard_name = "time" ;
+		time:axis = "T" ;
+		time:units = "days since 1949-12-01 00:00:00Z" ;
+		time:calendar = "proleptic_gregorian" ;
+		time:bounds = "time_bnds" ;
+	double time_bnds(time, bnds) ;
+	float ts(time, lat, lon) ;
+		ts:long_name = "Surface Temperature" ;
+		ts:standard_name = "surface_temperature" ;
+		ts:coordinates = "lon lat" ;
+		ts:units = "K" ;
+		ts:_FillValue = 1.e+20f ;
+		ts:missing_value = 1.e+20f ;
+		ts:cell_methods = "time: mean" ;
+
+// global attributes:
+		:contact = "ivan.guettler@cirus.dhz.hr" ;
+		:creation_date = "2014-11-15" ;
+		:experiment = "Evaluation run with reanalysis forcing" ;
+		:experiment_id = "evaluation" ;
+		:driving_model_id = "ECMWF-ERAINT" ;
+		:driving_model_ensemble_member = "r1i1p1" ;
+		:driving_experiment_name = "evaluation" ;
+		:driving_experiment = "ECMWF-ERAINT, evaluation, r1i1p1" ;
+		:frequency = "mon" ;
+		:institute_id = "DHMZ" ;
+		:institution = "Meteorological and Hydrological Service of Croatia" ;
+		:model_id = "DHMZ-RegCM4-2" ;
+		:rcm_version_id = "v1" ;
+		:project_id = "CORDEX" ;
+		:product = "output" ;
+		:references = "http://gforge.ictp.it/gf/project/regcm/" ;
+		:CORDEX_domain = "EUR-44i" ;
+}
+netcdf ts_EUR-44i_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1_mon_200101-200812 {
+dimensions:
+	lon = 221 ;
+	lat = 103 ;
+	time = UNLIMITED ; // (96 currently)
+	bnds = 2 ;
+variables:
+	double lon(lon) ;
+		lon:axis = "X" ;
+		lon:units = "degrees_east" ;
+		lon:long_name = "longitude" ;
+		lon:standard_name = "longitude" ;
+	double lat(lat) ;
+		lat:axis = "Y" ;
+		lat:units = "degrees_north" ;
+		lat:long_name = "latitude" ;
+		lat:standard_name = "latitude" ;
+	double time(time) ;
+		time:long_name = "time" ;
+		time:standard_name = "time" ;
+		time:axis = "T" ;
+		time:units = "days since 1949-12-01 00:00:00Z" ;
+		time:calendar = "proleptic_gregorian" ;
+		time:bounds = "time_bnds" ;
+	double time_bnds(time, bnds) ;
+	float ts(time, lat, lon) ;
+		ts:long_name = "Surface Temperature" ;
+		ts:standard_name = "surface_temperature" ;
+		ts:coordinates = "lon lat" ;
+		ts:units = "K" ;
+		ts:_FillValue = 1.e+20f ;
+		ts:missing_value = 1.e+20f ;
+		ts:cell_methods = "time: mean" ;
+
+// global attributes:
+		:contact = "ivan.guettler@cirus.dhz.hr" ;
+		:creation_date = "2014-11-15" ;
+		:experiment = "Evaluation run with reanalysis forcing" ;
+		:experiment_id = "evaluation" ;
+		:driving_model_id = "ECMWF-ERAINT" ;
+		:driving_model_ensemble_member = "r1i1p1" ;
+		:driving_experiment_name = "evaluation" ;
+		:driving_experiment = "ECMWF-ERAINT, evaluation, r1i1p1" ;
+		:frequency = "mon" ;
+		:institute_id = "DHMZ" ;
+		:institution = "Meteorological and Hydrological Service of Croatia" ;
+		:model_id = "DHMZ-RegCM4-2" ;
+		:rcm_version_id = "v1" ;
+		:project_id = "CORDEX" ;
+		:product = "output" ;
+		:references = "http://gforge.ictp.it/gf/project/regcm/" ;
+		:CORDEX_domain = "EUR-44i" ;
+}

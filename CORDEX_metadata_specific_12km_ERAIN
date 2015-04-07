@@ -4,20 +4,20 @@
 	STARTyyy=1989
 	  ENDyyy=2008
 #-- Region to consider
- #   For this exp grid is 142 x 142 cell. Buffer zone includes 11 cells. After removing the buffer zone, the grid includes 120 x 120 cells
- #   Important: nco considers indexes by default 0:141 (not 1:142). To use 1:142 index counting in nco one can select -F.
+ #   For this exp grid is 573 x 573 cell. Buffer zone includes 11 cells. After removing the buffer zone, the grid includes 551 x 551 cells
+ #   Important: nco considers indexes by default 0:550 (not 1:551). To use 1:551 index counting in nco one can select -F.
  #   NXstart=12 -1
- #   NXendic=131-1
+ #   NXendic=562-1
  #   NYstart=12 -1
- #   NYendic=131-1
+ #   NYendic=562-1
 
     NXstart=11
-    NXendic=130
+    NXendic=562
     NYstart=11
-    NYendic=130
+    NYendic=562
 
 #-- Details of the regular grid are from "Table 2 Regular CORDEX grids" in "CORDEX Archive Design" document, version 3.1
-    RegularGrid=./CORDEX_metadata_05_grid.txt
+    RegularGrid=./CORDEX_metadata_01_grid.txt
 
 #-- VARIABLE source DIR
 sourceDIR[ 1]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
@@ -25,12 +25,12 @@ sourceDIR[ 2]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES
 sourceDIR[ 3]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
 sourceDIR[ 4]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
 sourceDIR[ 5]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 9]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
+sourceDIR[ 9]=''
 sourceDIR[10]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[32]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
-sourceDIR[33]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
-sourceDIR[37]='/home1/regcm/DISK_zemlja/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_SRF/DM'
-sourceDIR[38]='/home1/regcm/DISK_zemlja/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_SRF/DM'
+sourceDIR[32]=''
+sourceDIR[33]=''
+sourceDIR[37]=''
+sourceDIR[38]=''
 #-- VARIABLE source FILE
 sourceFILE[ 1]='EUROPE_STS'
 sourceFILE[ 2]='EUROPE_STS'

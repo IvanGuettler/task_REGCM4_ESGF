@@ -1,0 +1,4 @@
+filenameMM[  1]=_198901-199012
+filenameMM[  2]=_199101-200012
+filenameMM[  3]=_200101-200812
+NFILES_MM=3
