@@ -13,19 +13,20 @@ CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
-       INDX=37 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+       INDX=1 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
     collect=1  #Collect variable from various sources        
-      means=1  #Calculate daily, monthly and seasonal means  
-  rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
-interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1  #Split files into specific groups             
-   metadata=1  #Edit meta-data                              
-    convert=1  #Convert from netcdf3 > netcdf4 if needed
+      means=0  #Calculate daily, monthly and seasonal means  
+  rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
+interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=0  #Split files into specific groups             
+   metadata=0  #Edit meta-data                              
+    convert=0  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
 #Load meta data from separate file for specific experiment you are working on
-    source ./CORDEX_metadata_specific_50km_ERAIN
+    #source ./CORDEX_metadata_specific_50km_ERAIN
+    source ./CORDEX_metadata_specific_12km_ERAIN
 #All temporary output in the following directory
     tempTarget=/work/regcm/temp/test_CORDEX
 
@@ -130,9 +131,9 @@ if [ ${means} == 1 ] ; then
 # Perform averaging
 #---
 echo 'DM, MM and SM...'
-${CDO_PATH}/cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days           ${tempTarget}/${name[${INDX}]}.nc ${FILE1}_all.nc
-${CDO_PATH}/cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -monmean  ${tempTarget}/${name[${INDX}]}.nc ${FILE2}_all.nc
-${CDO_PATH}/cdo -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -seasmean ${tempTarget}/${name[${INDX}]}.nc ${FILE3}_all.nc
+${CDO_PATH}/cdo -f nc -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days           ${tempTarget}/${name[${INDX}]}.nc ${FILE1}_all.nc
+${CDO_PATH}/cdo -f nc -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -monmean  ${tempTarget}/${name[${INDX}]}.nc ${FILE2}_all.nc
+${CDO_PATH}/cdo -f nc -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -seasmean ${tempTarget}/${name[${INDX}]}.nc ${FILE3}_all.nc
 
 #---
 # Rename dimension x,y into jx,iy

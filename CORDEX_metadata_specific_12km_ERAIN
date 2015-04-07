@@ -12,21 +12,21 @@
  #   NYendic=562-1
 
     NXstart=11
-    NXendic=562
+    NXendic=561
     NYstart=11
-    NYendic=562
+    NYendic=561
 
 #-- Details of the regular grid are from "Table 2 Regular CORDEX grids" in "CORDEX Archive Design" document, version 3.1
     RegularGrid=./CORDEX_metadata_01_grid.txt
 
 #-- VARIABLE source DIR
-sourceDIR[ 1]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 2]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 3]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 4]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 5]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 1]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_STS'
+sourceDIR[ 2]=''
+sourceDIR[ 3]=''
+sourceDIR[ 4]=''
+sourceDIR[ 5]=''
 sourceDIR[ 9]=''
-sourceDIR[10]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[10]=''
 sourceDIR[32]=''
 sourceDIR[33]=''
 sourceDIR[37]=''
@@ -44,22 +44,22 @@ sourceFILE[33]='EUROPE_rotatedWind_vas'
 sourceFILE[37]='EUROPE_tg'
 sourceFILE[38]='EUROPE_zpbl'
 #-- VARIABLE RegCM name
-varalica[ 1]='t2avg'
-varalica[ 2]='t2max'
-varalica[ 3]='t2min'
-varalica[ 4]='pcpavg'
-varalica[ 5]='ps'
-varalica[ 9]='sfcwind'
-varalica[10]='w10max'
-varalica[32]='uas'
-varalica[33]='vas'
-varalica[37]='tg'
-varalica[38]='zpbl'
+varalica[ 1]='tas'
+varalica[ 2]=''
+varalica[ 3]=''
+varalica[ 4]=''
+varalica[ 5]=''
+varalica[ 9]=''
+varalica[10]=''
+varalica[32]=''
+varalica[33]=''
+varalica[37]=''
+varalica[38]=''
 
 #-------- Global attributes
 	Conventions="CF-1.4"
 	contact="ivan.guettler@cirus.dhz.hr"
-	creation_date="2014-11-15"
+	creation_date="2015-04-15"
 	experiment="Evaluation run with reanalysis forcing"
 	experiment_id="evaluation"
 	driving_experiment="ECMWF-ERAINT, evaluation, r1i1p1"
@@ -71,8 +71,8 @@ varalica[38]='zpbl'
 	model_id="DHMZ-RegCM4-2"
 	rcm_version_id="v1"
 	project_id="CORDEX"
-	CORDEX_domain="EUR-44"
-        CORDEX_domain_i="EUR-44i"
+	CORDEX_domain="EUR-11"
+        CORDEX_domain_i="EUR-11i"
 	product="output"
 	references="http://gforge.ictp.it/gf/project/regcm/"
 #-------- Global attributes
