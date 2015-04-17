@@ -13,11 +13,11 @@ CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
-       INDX=1 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=0  #Collect variable from various sources        
-      means=0  #Calculate daily, monthly and seasonal means  
-  rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
-interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+       INDX=4  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+    collect=1  #Collect variable from various sources        
+      means=1  #Calculate daily, monthly and seasonal means  
+  rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
+interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
       split=1  #Split files into specific groups             
    metadata=1  #Edit meta-data                              
     convert=1  #Convert from netcdf3 > netcdf4 if needed
@@ -358,7 +358,8 @@ mv ${tempTarget}/temp.nc ${FILE3i}${filenameSM[${j}]}.nc
 #Move unsplitted data to temp directory
 #---
         mkdir -p                             ${tempTarget}/temp
-	mv ${tempTarget}/*_all.nc            ${tempTarget}/temp
+	# 2015-04-07 mv ${tempTarget}/*_all.nc            ${tempTarget}/temp
+	rm -vf          ${tempTarget}/*_all.nc        
         mv ${tempTarget}/${name[${INDX}]}.nc ${tempTarget}/temp
 fi
 
@@ -390,10 +391,16 @@ if [ ${metadata} == 1 ] ; then
     #---
     #PREPHASE 1: determine grid type from the filename
     #---
-       if  [ grep -q "44_" ] || [ grep -q "11_" ]  <<< "${EDITING}"  ; then
+       if   grep -q "44_"  <<< "${EDITING}"  ; then
             INTERPI=0     #--------------------------> Original grid
        fi
-       if [ grep -q "44i_" ] || [ grep -q "11i_" ] <<< "${EDITING}"  ; then
+       if   grep -q "44i_" <<< "${EDITING}"  ; then
+            INTERPI=1     #--------------------------> Interpolated grid
+       fi
+       if   grep -q "11_"  <<< "${EDITING}"  ; then
+            INTERPI=0     #--------------------------> Original grid
+       fi
+       if   grep -q "11i_" <<< "${EDITING}"  ; then
             INTERPI=1     #--------------------------> Interpolated grid
        fi
     #---
@@ -486,7 +493,7 @@ echo "--------------------------------------------------------------------------
     #---
     if [ ${heights[${INDX}]} == 2 ]; then
     ${NCO_PATH}/ncrename -O -h -v m2,height              ${EDITING}
-    ${NCO_PATH}/ncap2    -O -h -s "height(0)=double(2)"  ${EDITING} ${tempTarget}/test.nc
+    ${NCO_PATH}/ncap2    -O -h -s "height=double(2)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
                               -a standard_name,height,c,c,${H2_standardname} \
@@ -496,7 +503,7 @@ echo "--------------------------------------------------------------------------
     fi
     if [ ${heights[${INDX}]} == 10 ]; then
     ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
-    ${NCO_PATH}/ncap2    -O -h -s "height(0)=double(10)"  ${EDITING} ${tempTarget}/test.nc
+    ${NCO_PATH}/ncap2    -O -h -s "height=double(10)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
                               -a standard_name,height,c,c,${H2_standardname} \
