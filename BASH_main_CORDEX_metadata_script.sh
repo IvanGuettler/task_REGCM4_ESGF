@@ -4,7 +4,7 @@
 	#(1) original files are allready daily means (or daily min/max). If not, first prepare these files separately.
         #(2) cdo & nco installed on your system. Important: ncap2 tool from the nco suit is needed.
         #(3) F90_gen_time.f90 successfully used
-        #(4) Selected stages of preparing interpolated fileds: DM, MM, SM computed --> Domain reduced --> bilinear interpolation performed.
+        #(4) Selected stages of preparing interpolated fileds: DM, MM, SM computed --> Domain reduced --> bilinear interpolation performed (only MM&SM)
 
 
 #The location of cdo & nco 
@@ -13,14 +13,14 @@ CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
-       INDX=4  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+       INDX=9  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
     collect=1  #Collect variable from various sources        
       means=1  #Calculate daily, monthly and seasonal means  
-  rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
-interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1  #Split files into specific groups             
-   metadata=1  #Edit meta-data                              
-    convert=1  #Convert from netcdf3 > netcdf4 if needed
+  rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
+interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=0  #Split files into specific groups             
+   metadata=0  #Edit meta-data                              
+    convert=0  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
