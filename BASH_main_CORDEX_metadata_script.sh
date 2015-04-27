@@ -13,14 +13,14 @@ CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
-       INDX=9  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=1  #Collect variable from various sources        
-      means=1  #Calculate daily, monthly and seasonal means  
-  rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
-interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=0  #Split files into specific groups             
-   metadata=0  #Edit meta-data                              
-    convert=0  #Convert from netcdf3 > netcdf4 if needed
+       INDX=33  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+    collect=0  #Collect variable from various sources        
+      means=0  #Calculate daily, monthly and seasonal means  
+  rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
+interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=1  #Split files into specific groups             
+   metadata=1  #Edit meta-data                              
+    convert=1  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
