@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VAR=vas
+VAR=tas
 
 for DOM in EUR-11 EUR-44; do
 

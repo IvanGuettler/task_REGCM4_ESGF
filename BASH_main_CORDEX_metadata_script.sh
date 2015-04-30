@@ -13,9 +13,9 @@ CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
-       INDX=33  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=0  #Collect variable from various sources        
-      means=0  #Calculate daily, monthly and seasonal means  
+       INDX=1  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+    collect=1  #Collect variable from various sources        
+      means=1  #Calculate daily, monthly and seasonal means  
   rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
 interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
       split=1  #Split files into specific groups             
@@ -493,7 +493,7 @@ echo "--------------------------------------------------------------------------
     #---
     if [ ${heights[${INDX}]} == 2 ]; then
     ${NCO_PATH}/ncrename -O -h -v m2,height              ${EDITING}
-    ${NCO_PATH}/ncap2    -O -h -s "height=double(2)"  ${EDITING} ${tempTarget}/test.nc
+    ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(2)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
                               -a standard_name,height,c,c,${H2_standardname} \
@@ -503,7 +503,7 @@ echo "--------------------------------------------------------------------------
     fi
     if [ ${heights[${INDX}]} == 10 ]; then
     ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
-    ${NCO_PATH}/ncap2    -O -h -s "height=double(10)"  ${EDITING} ${tempTarget}/test.nc
+    ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(10)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
                               -a standard_name,height,c,c,${H2_standardname} \
@@ -616,3 +616,4 @@ if [ ${convert} == 1 ] ; then
     done
 
 fi
+
