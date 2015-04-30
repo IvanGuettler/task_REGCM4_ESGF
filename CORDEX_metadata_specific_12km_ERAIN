@@ -20,17 +20,17 @@
     RegularGrid=./CORDEX_metadata_01_grid.txt
 
 #-- VARIABLE source DIR
-sourceDIR[ 1]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM'
+sourceDIR[ 1]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/tas'
 sourceDIR[ 2]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_STS'
 sourceDIR[ 3]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_STS'
-sourceDIR[ 4]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM'
-sourceDIR[ 5]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/ps/'
+sourceDIR[ 4]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/pr'
+sourceDIR[ 5]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/ps'
 sourceDIR[ 9]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/SRF_CALCULATED/DATA_wind10m/DM'
 sourceDIR[10]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_STS'
 sourceDIR[32]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/SRF_CALCULATED/DATA_wind10m/DM_6hr'
 sourceDIR[33]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/SRF_CALCULATED/DATA_wind10m/DM_6hr'
-sourceDIR[37]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/ts/'
-sourceDIR[38]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/zmla/'
+sourceDIR[37]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/ts'
+sourceDIR[38]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/zmla'
 #-- VARIABLE source FILE
 sourceFILE[ 1]='EUROPE_tas'
 sourceFILE[ 2]='EUROPE_STS'
