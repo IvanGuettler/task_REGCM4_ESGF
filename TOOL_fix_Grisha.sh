@@ -101,8 +101,8 @@ for FFF in 1 2 3 4 5 6 7 8 9 10 11; do
         #-----------------------------
 	#--> Grisha (8/8)
         #-----------------------------
-	${NCO_PATH}/ncatted -O -h -a  axis,x,d,,   ${FILE[${FFF}]}
-	${NCO_PATH}/ncatted -O -h -a  axis,y,d,,   ${FILE[${FFF}]}
+	${NCO_PATH}/ncatted -O -h -a  axis,lon,d,,   ${FILE[${FFF}]}
+	${NCO_PATH}/ncatted -O -h -a  axis,lat,d,,   ${FILE[${FFF}]}
 done #od FFF
 
 for FFF in 1 2 3 4 5 6            ; do
