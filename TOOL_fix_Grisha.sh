@@ -82,7 +82,7 @@ for FFF in 1 2 3 4 5 6 7 8 9 10 11; do
 	#--> Grisha (6/8)
         #-----------------------------
         	cd /home1/regcm/DISK_WORK/temp/test_CORDEX
-	        ${NCO_PATH}/ncap2    -O -h -s "x(:)=double(x(:)); y=double(y(:))"  ${FILE[${FFF}]} test_GRISHA.nc
+	        ${NCO_PATH}/ncap2    -O -h -s "x=double(x(:)); y=double(y(:))"  ${FILE[${FFF}]} test_GRISHA.nc
 	        ${NCO_PATH}/ncatted -O -h -a standard_name,x,c,c,"projection_x_coordinate"     \
 	                                  -a     long_name,x,c,c,"x-coordinate in Cartesian"   \
                                           -a         units,x,c,c,"km"                          \

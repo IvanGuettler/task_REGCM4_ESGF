@@ -60,6 +60,13 @@ for FFF in 1 2 3 4 5 6 7 8 9 10 11; do
 	#--> Grisha (2/2)
         #-----------------------------
         # Nothing here!
+        #-----------------------------
+	#--> DKRZ (2/5)
+        #-----------------------------
+        	cd /home1/regcm/DISK_WORK/temp/test_CORDEX
+	        ${NCO_PATH}/ncap2    -O -h -s "x=double(x(:)); y=double(y(:))"  ${FILE[${FFF}]} test_GRISHA.nc
+		mv test_GRISHA.nc ${FILE[${FFF}]}
+	        cd /home1/regcm/DIR_ivan/work/2014_CORDEX_METADATA_WORLD
 done #od FFF
 
 for FFF in 1 2 3 4 5 6            ; do
