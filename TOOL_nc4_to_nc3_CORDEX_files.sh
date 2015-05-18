@@ -1,5 +1,5 @@
 #PBS -S /bin/bash
-#PBS -N CRDX_fixMeta
+#PBS -N CRDX_nc42nc3
 #PBS -l select=1:ncpus=1:mem=14gb
 #PBS -q mono
 #PBS -j oe
