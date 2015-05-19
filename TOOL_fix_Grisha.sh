@@ -12,12 +12,17 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 cd /home1/regcm/DIR_ivan/work/2014_CORDEX_METADATA_WORLD
 
 
-for VAR in tas tasmin tasmax ts pr ps sfcWind sfcWindmax uas vas zmla ; do
+#for VAR in tas tasmin tasmax ts pr ps sfcWind sfcWindmax uas vas zmla ; do
+for VAR in pr ; do
 for DOM in EUR-11 EUR-44                                              ; do
 
 DIR13=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/day/
 DIR23=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/mon/
 DIR33=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/sem/
+
+DIR23i=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}i/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/mon/
+DIR33i=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}i/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/sem/
+
 text1=${DOM}_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
 text2=${DOM}i_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
 
@@ -33,12 +38,12 @@ text2=${DOM}i_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
 FILE[10]=${DIR33}/${VAR}/${VAR}_${text1}_sem_199012-200011.nc
 FILE[11]=${DIR33}/${VAR}/${VAR}_${text1}_sem_200012-200811.nc
 
-iFILE[1]=${DIR23}/${VAR}/${VAR}_${text2}_mon_198901-199012.nc
-iFILE[2]=${DIR23}/${VAR}/${VAR}_${text2}_mon_199101-200012.nc
-iFILE[3]=${DIR23}/${VAR}/${VAR}_${text2}_mon_200101-200812.nc
-iFILE[4]=${DIR33}/${VAR}/${VAR}_${text2}_sem_198903-199011.nc
-iFILE[5]=${DIR33}/${VAR}/${VAR}_${text2}_sem_199012-200011.nc
-iFILE[6]=${DIR33}/${VAR}/${VAR}_${text2}_sem_200012-200811.nc
+iFILE[1]=${DIR23i}/${VAR}/${VAR}_${text2}_mon_198901-199012.nc
+iFILE[2]=${DIR23i}/${VAR}/${VAR}_${text2}_mon_199101-200012.nc
+iFILE[3]=${DIR23i}/${VAR}/${VAR}_${text2}_mon_200101-200812.nc
+iFILE[4]=${DIR33i}/${VAR}/${VAR}_${text2}_sem_198903-199011.nc
+iFILE[5]=${DIR33i}/${VAR}/${VAR}_${text2}_sem_199012-200011.nc
+iFILE[6]=${DIR33i}/${VAR}/${VAR}_${text2}_sem_200012-200811.nc
 
 # New metadata
 	convention="CF-1.4"

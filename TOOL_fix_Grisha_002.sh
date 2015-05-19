@@ -12,7 +12,8 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 cd /home1/regcm/DIR_ivan/work/2014_CORDEX_METADATA_WORLD
 
 
-for VAR in tas tasmin tasmax ts pr ps sfcWind sfcWindmax uas vas zmla ; do
+#for VAR in tas tasmin tasmax ts pr ps sfcWind sfcWindmax uas vas zmla ; do
+for VAR in pr ; do
 for DOM in EUR-11 EUR-44                                              ; do
 
 DIR13=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/day/

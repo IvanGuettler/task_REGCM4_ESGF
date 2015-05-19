@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VAR=uas
+VAR=pr
 NC=3
 
 for DOM in EUR-11 EUR-44; do
