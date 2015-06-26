@@ -31,6 +31,8 @@ sourceDIR[32]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/SRF_
 sourceDIR[33]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/SRF_CALCULATED/DATA_wind10m/DM_6hr'
 sourceDIR[37]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/ts'
 sourceDIR[38]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/DM/zmla'
+sourceDIR[62]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/'
+sourceDIR[63]='/home1/regcm/DISK_zemlja/CORDEX/TEST/ERAInterim12km/postproc/FILES_SRF/'
 #-- VARIABLE source FILE
 sourceFILE[ 1]='EUROPE_tas'
 sourceFILE[ 2]='EUROPE_STS'
@@ -43,6 +45,8 @@ sourceFILE[32]='EUROPE_rotatedWind10m'
 sourceFILE[33]='EUROPE_rotatedWind10m'
 sourceFILE[37]='EUROPE_ts'
 sourceFILE[38]='EUROPE_zmla'
+sourceFILE[62]='EUROPE_SRF.1989010100_nc4.nc'
+sourceFILE[63]='EUROPE_SRF.1989010100_nc4.nc'
 #-- VARIABLE RegCM name
 varalica[ 1]='tas'
 varalica[ 2]='tasmax'
@@ -55,6 +59,8 @@ varalica[32]='uas'
 varalica[33]='vas'
 varalica[37]='ts'
 varalica[38]='zmla'
+varalica[62]='topo'
+varalica[63]='mask'
 
 #-------- Global attributes
 	Conventions="CF-1.4"

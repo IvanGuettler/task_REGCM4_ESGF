@@ -13,16 +13,18 @@ cd /home1/regcm/DIR_ivan/work/2014_CORDEX_METADATA_WORLD
 
 
 #for VAR in tas tasmin tasmax ts pr ps sfcWind sfcWindmax uas vas zmla ; do
-for VAR in pr ; do
-for DOM in EUR-11 EUR-44                                              ; do
+for VAR in pr                                                          ; do
+for DOM in EUR-11 EUR-44                                               ; do
 
-DIR13=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/day/
-DIR23=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/mon/
-DIR33=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/sem/
-DIR23i=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}i/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/mon/
-DIR33i=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}i/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/sem/
-text1=${DOM}_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
-text2=${DOM}i_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
+	DIR13=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/day/
+	DIR23=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/mon/
+	DIR33=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/sem/
+
+	DIR23i=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}i/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/mon/
+	DIR33i=/home1/regcm/DISK_WORK/temp/test_CORDEX/netcdf3/${DOM}i/DHMZ/ECMWF-ERAINT/evaluation/r1i1p1/DHMZ-RegCM4-2/v1/sem/
+
+	text1=${DOM}_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
+	text2=${DOM}i_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
 
  FILE[1]=${DIR13}/${VAR}/${VAR}_${text1}_day_19890101-19901231.nc 
  FILE[2]=${DIR13}/${VAR}/${VAR}_${text1}_day_19910101-19951231.nc
@@ -36,12 +38,12 @@ text2=${DOM}i_ECMWF-ERAINT_evaluation_r1i1p1_DHMZ-RegCM4-2_v1
 FILE[10]=${DIR33}/${VAR}/${VAR}_${text1}_sem_199012-200011.nc
 FILE[11]=${DIR33}/${VAR}/${VAR}_${text1}_sem_200012-200811.nc
 
-iFILE[1]=${DIR23}/${VAR}/${VAR}_${text2}_mon_198901-199012.nc
-iFILE[2]=${DIR23}/${VAR}/${VAR}_${text2}_mon_199101-200012.nc
-iFILE[3]=${DIR23}/${VAR}/${VAR}_${text2}_mon_200101-200812.nc
-iFILE[4]=${DIR33}/${VAR}/${VAR}_${text2}_sem_198903-199011.nc
-iFILE[5]=${DIR33}/${VAR}/${VAR}_${text2}_sem_199012-200011.nc
-iFILE[6]=${DIR33}/${VAR}/${VAR}_${text2}_sem_200012-200811.nc
+iFILE[1]=${DIR23i}/${VAR}/${VAR}_${text2}_mon_198901-199012.nc
+iFILE[2]=${DIR23i}/${VAR}/${VAR}_${text2}_mon_199101-200012.nc
+iFILE[3]=${DIR23i}/${VAR}/${VAR}_${text2}_mon_200101-200812.nc
+iFILE[4]=${DIR33i}/${VAR}/${VAR}_${text2}_sem_198903-199011.nc
+iFILE[5]=${DIR33i}/${VAR}/${VAR}_${text2}_sem_199012-200011.nc
+iFILE[6]=${DIR33i}/${VAR}/${VAR}_${text2}_sem_200012-200811.nc
 
 # New metadata
         DATE11="2014-11-15T12:00:00Z"
@@ -64,10 +66,10 @@ for FFF in 1 2 3 4 5 6 7 8 9 10 11; do
         #-----------------------------
 	#--> DKRZ (2/5)
         #-----------------------------
-        	cd /home1/regcm/DISK_WORK/temp/test_CORDEX
-	        ${NCO_PATH}/ncap2    -O -h -s "x=double(x(:)); y=double(y(:))"  ${FILE[${FFF}]} test_GRISHA.nc
-		mv test_GRISHA.nc ${FILE[${FFF}]}
-	        cd /home1/regcm/DIR_ivan/work/2014_CORDEX_METADATA_WORLD
+#        	cd /home1/regcm/DISK_WORK/temp/test_CORDEX
+#	        ${NCO_PATH}/ncap2    -O -h -s "x=double(x(:)); y=double(y(:))"  ${FILE[${FFF}]} test_GRISHA.nc
+#		mv test_GRISHA.nc ${FILE[${FFF}]}
+#	        cd /home1/regcm/DIR_ivan/work/2014_CORDEX_METADATA_WORLD
 done #od FFF
 
 for FFF in 1 2 3 4 5 6            ; do
@@ -83,14 +85,14 @@ for FFF in 1 2 3 4 5 6            ; do
         #-----------------------------
 	#--> Grisha (2/2)
         #-----------------------------
-        mkdir -p ${DIR23i}/${VAR}
-        mkdir -p ${DIR33i}/${VAR}
-        if [ ${FFF} -lt 4 ] ; then
-        	mv ${iFILE[${FFF}]} ${DIR23i}/${VAR} 
-        fi
-        if [ ${FFF} -gt 3 ] ; then
-        	mv ${iFILE[${FFF}]} ${DIR33i}/${VAR} 
-        fi
+#        mkdir -p ${DIR23i}/${VAR}
+#        mkdir -p ${DIR33i}/${VAR}
+#        if [ ${FFF} -lt 4 ] ; then
+#        	mv ${iFILE[${FFF}]} ${DIR23i}/${VAR} 
+#        fi
+#        if [ ${FFF} -gt 3 ] ; then
+#        	mv ${iFILE[${FFF}]} ${DIR33i}/${VAR} 
+#        fi
 
 done #od FFF
 
