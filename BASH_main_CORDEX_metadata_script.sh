@@ -378,7 +378,7 @@ fi
 if [ ${metadata} == 1 ] ; then
     echo 'Editing meta-data...'
 
-    EDITIN=(${tempTarget}/${name[${INDEX}]}*${CORDEX_domain}*nc)
+    EDITIN=(${tempTarget}/${name[${INDX}]}*${CORDEX_domain}*nc)
     FILENUMBER=${#EDITIN[@]}
     FILENUMBER=$((FILENUMBER-1))
 
@@ -578,7 +578,7 @@ if [ ${convert} == 1 ] ; then
     echo 'Converting netcdf3 > netcdf4...'
 
     cd ${tempTarget}
-    EDITIN=(${name[${INDEX}]}*${CORDEX_domain}*nc)
+    EDITIN=(${name[${INDX}]}*${CORDEX_domain}*nc)
     FILENUMBER=${#EDITIN[@]}
     FILENUMBER=$((FILENUMBER-1))
 

@@ -49,7 +49,7 @@ iFILE[6]=${DIR33i}/${VAR}/${VAR}_${text2}_sem_200012-200811.nc
 	convention="CF-1.4"
         falseEasting=0
         falseNorthing=0 
-        DATE11="2014-11-15T12:00:00:00Z"
+        DATE11="2014-11-15T12:00:00:00Z"   #2015-06-26 Uocena pogreska. Nije ozbiljna: DATA11 treba biti zapravo DATE44 i obrnuto.
         DATE44="2015-04-15T12:00:00:00Z"
 
 for FFF in 1 2 3 4 5 6 7 8 9 10 11; do

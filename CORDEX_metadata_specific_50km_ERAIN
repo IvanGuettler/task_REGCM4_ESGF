@@ -59,7 +59,7 @@ varalica[38]='zpbl'
 #-------- Global attributes
 	Conventions="CF-1.4"
 	contact="ivan.guettler@cirus.dhz.hr"
-	creation_date="2014-11-15"
+	creation_date="2014-11-15T12:00:00Z"
 	experiment="Evaluation run with reanalysis forcing"
 	experiment_id="evaluation"
 	driving_experiment="ECMWF-ERAINT, evaluation, r1i1p1"
@@ -89,6 +89,8 @@ varalica[38]='zpbl'
         projection_standard_parallel2=65.0
         projection_longitude_of_central_meridian=9.75
         projection_latitude_of_projection_origin=49.68
+        falseEasting=0
+        falseNorthing=0 
 
 	x_type="double"
 	x_name="x"
