@@ -13,7 +13,7 @@ CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
-       INDX=4  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+       INDX=1  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
     collect=1  #Collect variable from various sources        
       means=1  #Calculate daily, monthly and seasonal means  
   rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
