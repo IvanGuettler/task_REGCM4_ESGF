@@ -1,0 +1,142 @@
+#!/bin/bash
+
+#-- Years to ingest
+	STARTyyy=1989
+	  ENDyyy=2008
+#-- Region to consider
+ #   For this exp grid is 142 x 142 cell. Buffer zone includes 11 cells. After removing the buffer zone, the grid includes 120 x 120 cells
+ #   Important: nco considers indexes by default 0:141 (not 1:142). To use 1:142 index counting in nco one can select -F.
+ #   NXstart=12 -1
+ #   NXendic=131-1
+ #   NYstart=12 -1
+ #   NYendic=131-1
+
+    NXstart=11
+    NXendic=130
+    NYstart=11
+    NYendic=130
+
+#-- Details of the regular grid are from "Table 2 Regular CORDEX grids" in "CORDEX Archive Design" document, version 3.1
+    RegularGrid=./CORDEX_metadata_05_grid.txt
+
+#-- VARIABLE source DIR
+sourceDIR[ 1]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 2]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 3]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 4]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 5]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[ 9]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
+sourceDIR[10]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
+sourceDIR[32]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
+sourceDIR[33]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
+sourceDIR[37]='/home1/regcm/DISK_zemlja/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_SRF/DM'
+sourceDIR[38]='/home1/regcm/DISK_zemlja/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_SRF/DM'
+#-- VARIABLE source FILE
+sourceFILE[ 1]='EUROPE_STS'
+sourceFILE[ 2]='EUROPE_STS'
+sourceFILE[ 3]='EUROPE_STS'
+sourceFILE[ 4]='EUROPE_STS'
+sourceFILE[ 5]='EUROPE_STS'
+sourceFILE[ 9]='EUROPE_rotatedWind_sfcwind'
+sourceFILE[10]='EUROPE_STS'
+sourceFILE[32]='EUROPE_rotatedWind_uas'
+sourceFILE[33]='EUROPE_rotatedWind_vas'
+sourceFILE[37]='EUROPE_tg'
+sourceFILE[38]='EUROPE_zpbl'
+#-- VARIABLE RegCM name
+varalica[ 1]='t2avg'
+varalica[ 2]='t2max'
+varalica[ 3]='t2min'
+varalica[ 4]='pcpavg'
+varalica[ 5]='ps'
+varalica[ 9]='sfcwind'
+varalica[10]='w10max'
+varalica[32]='uas'
+varalica[33]='vas'
+varalica[37]='tg'
+varalica[38]='zpbl'
+
+#-------- Global attributes
+	Conventions="CF-1.4"
+	contact="ivan.guettler@cirus.dhz.hr"
+	creation_date="2014-11-15T12:00:00Z"
+	experiment="Evaluation run with reanalysis forcing"
+	experiment_id="evaluation"
+	driving_experiment="ECMWF-ERAINT, evaluation, r1i1p1"
+	driving_model_id="ECMWF-ERAINT"
+	driving_model_ensemble_member="r1i1p1"
+	driving_experiment_name="evaluation"
+	institution="Meteorological and Hydrological Service of Croatia"
+	institute_id="DHMZ"
+	model_id="DHMZ-RegCM4-2"
+	rcm_version_id="v1"
+	project_id="CORDEX"
+	CORDEX_domain="EUR-44"
+        CORDEX_domain_i="EUR-44i"
+	product="output"
+	references="http://gforge.ictp.it/gf/project/regcm/"
+#-------- Global attributes
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+#---------- Projection stuff
+        projection_type="char"
+        projection_name="Lambert_Conformal"
+        projection_grid_mapping_name="lambert_conformal_conic" 
+        projection_standard_parallel1=30.0
+        projection_standard_parallel2=65.0
+        projection_longitude_of_central_meridian=9.75
+        projection_latitude_of_projection_origin=49.68
+        falseEasting=0
+        falseNorthing=0 
+
+	x_type="double"
+	x_name="x"
+	x_units="km"
+	x_long_name="x coordinate of projection"
+	x_standard_name="projection_x_coordinate"
+	x_axis="X"
+
+	y_type="double"
+	y_name="y"
+	y_units="km"
+	y_long_name="y coordinate of projection"
+	y_standard_name="projection_y_coordinate"
+	y_axis="Y"
+
+	lon_type="double"
+	lon_name="lon"
+	lon_standard_name="longitude"
+	lon_long_name="longitude"
+	lon_units="degrees_east"
+
+	lat_type="double"
+	lat_name="lat"
+	lat_standard_name="latitude"
+	lat_long_name="latitude"
+	lat_units="degrees_north"
+#---------- Projection stuff
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+#----------- Time stuff
+        time_start_date='1949-12-01'
+        time_start_hour='00:00'
+        time_start='1949-12-01 00:00'
+        time_start_unit=day
+        time_long_name="time"
+        time_standard_name="time"
+        time_axis="T"
+        time_units="days since 1949-12-01 00:00:00Z"
+        time_calendar="proleptic_gregorian"
+        time_bounds="time_bnds"
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+#-----------------------------------------
+
