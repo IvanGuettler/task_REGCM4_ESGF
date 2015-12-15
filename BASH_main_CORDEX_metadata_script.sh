@@ -33,12 +33,6 @@ interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
 
 
 
-
-
-
-
-
-
 #==================================================
 #STEP: prepare variable
 #==================================================
@@ -427,7 +421,8 @@ echo "--------------------------------------------------------------------------
     #---
     #PHASE 2: add global atributes needed by CORDEX
     #---
-    ${NCO_PATH}/ncatted -O -h -a contact,global,c,c,"${contact}"                                               \
+    ${NCO_PATH}/ncatted -O -h -a Conventions,global,c,c,"${convention}"                                        \
+                              -a contact,global,c,c,"${contact}"                                             \
                               -a creation_date,global,c,c,"${creation_date}"                                   \
                               -a experiment,global,c,c,"${experiment}"                                         \
                               -a experiment_id,global,c,c,"${experiment_id}"                                   \
@@ -517,7 +512,7 @@ echo "--------------------------------------------------------------------------
     #PHASE 6: lon/lat float > double
     #---
 
-    ${NCO_PATH}/ncap2    -O -h -s "lon=double(lon);lat=double(lat)"  ${EDITING} ${tempTarget}/test.nc
+    ${NCO_PATH}/ncap2    -O -h -s "lon=double(lon); lat=double(lat)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
 
 
@@ -540,7 +535,27 @@ echo "--------------------------------------------------------------------------
                                      -a standard_parallel,Lambert_Conformal,c,f,${projection_standard_parallel1}                         \
                                      -a standard_parallel,Lambert_Conformal,a,f,${projection_standard_parallel2}                         \
                                      -a longitude_of_central_meridian,Lambert_Conformal,c,f,${projection_longitude_of_central_meridian}  \
-                                     -a latitude_of_projection_origin,Lambert_Conformal,c,f,${projection_latitude_of_projection_origin}  ${EDITING}
+                                     -a latitude_of_projection_origin,Lambert_Conformal,c,f,${projection_latitude_of_projection_origin}  \ 
+                                     -a  false_easting,Lambert_Conformal,c,f,"${falseEasting}"                                           \
+                                     -a false_northing,Lambert_Conformal,c,f,"${falseNorthing}"                                   ${EDITING}
+
+
+   #---
+   #PHASE 7b: after quality check
+   #---
+   ${NCO_PATH}/ncap2    -O -h -s "x=double(x(:)); y=double(y(:))" ${EDITING}  ${tempTarget} test_GRISHA.nc
+   ${NCO_PATH}/ncatted -O -h -a standard_name,x,c,c,"projection_x_coordinate"     \
+                             -a     long_name,x,c,c,"x-coordinate in Cartesian"   \
+                             -a         units,x,c,c,"km"                          \
+                             -a          axis,x,c,c,"X"                           \
+                             -a standard_name,y,c,c,"projection_y_coordinate"     \
+                             -a     long_name,y,c,c,"y-coordinate in Cartesian"   \
+                             -a         units,y,c,c,"km"                          \
+                             -a          axis,y,c,c,"Y" ${tempTarget}/test_GRISHA.nc
+    mv ${tempTarget}/test_GRISHA.nc ${EDITING}
+
+    ${NCO_PATH}/ncatted -O -h -a  axis,lon,d,,   ${EDITING}
+    ${NCO_PATH}/ncatted -O -h -a  axis,lat,d,,   ${EDITING}
 
     fi
 
@@ -556,11 +571,32 @@ echo "--------------------------------------------------------------------------
                               -a calendar,time,c,c,${time_calendar}               \
                               -a bounds,time,c,c,${time_bounds}                   ${EDITING}
     ${NCO_PATH}/ncrename -O -h -d nb2,bnds                                        ${EDITING}
-    
-    file=$((file+1))
-    done
-fi
 
+echo "-----------------------------------------------------------------------------8"
+    #---
+    #PHASE 9: add tracking id
+    #---
+    export traka=$(uuidgen -r)
+    ${NCO_PATH}/ncatted -O -h -a tracking_id,global,c,c,"${traka}"       ${EDITING}
+
+    
+
+echo "-----------------------------------------------------------------------------9"
+    #---
+    #PHASE 10: redefine vertical coordinate [not all variables for now are tested]
+    #---
+    if [ ${name[${INDX}]} == tas ] || [ ${name[${INDX}]} == tasmin ] || [ ${name[${INDX}]} == tasmax ] || [ ${name[${INDX}]} == sfcWind ] || [ ${name[${INDX}]} == sfcWindmax ] || [ ${name[${INDX}]} == uas ] || [ ${name[${INDX}]} == vas ] ; then
+        ${NCO_PATH}/ncwa -O -h --no_cll_mth -a lev ${EDITING} ${tempTarget}/temp_GRISHA.nc
+        mv ${tempTarget}/temp_GRISHA.nc ${EDITING}
+        ${NCO_PATH}/ncatted -O -h -a coordinates,${name[${INDX}]},m,c,"lon lat height"  ${EDITING}
+    fi
+
+
+    #---
+    # Go on next file!
+    #---
+    file=$((file+1))
+done
 
 
 
