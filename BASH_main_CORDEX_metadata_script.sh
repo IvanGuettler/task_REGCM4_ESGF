@@ -20,13 +20,14 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
       split=1  #Split files into specific groups             
    metadata=1  #Edit meta-data                              
-    convert=1  #Convert from netcdf3 > netcdf4 if needed
+    convert=0  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
 #Load meta data from separate file for specific experiment you are working on
-    #source ./CORDEX_metadata_specific_50km_ERAIN
-    source ./CORDEX_metadata_specific_12km_ERAIN
+    #001 source ./CORDEX_metadata_specific_50km_ERAIN
+    #002 source ./CORDEX_metadata_specific_12km_ERAIN
+         source ./CORDEX_metadata_specific_50km_ECEARTH
     export HDF5_DISABLE_VERSION_CHECK=1
 #All temporary output in the following directory
     tempTarget=/work/regcm/temp/test_CORDEX
@@ -47,18 +48,18 @@ if [ ${collect} == 1 ] ; then
             for MNTH in 0 1 2 3 4 5 6 7 8 9 10 11 ; do 
 	    echo ${MNTH}
             if [ ${heights[${INDX}]} == 0 ] ; then
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat                              \
-           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
+${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat                                  \
+           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
                          ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
             fi
             if [ ${heights[${INDX}]} == 2 ] ; then
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                           \
-           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
+${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                               \
+           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
                          ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
             fi
             if [ ${heights[${INDX}]} == 10 ] ; then
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m10                          \
-           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100.nc                   \
+${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m10                              \
+           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
                          ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
             fi
             done #<<< MNTH
@@ -69,7 +70,9 @@ ${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m1
     #Join all files into one file
     #---
      ${NCO_PATH}/ncrcat   -h ${tempTarget}/${name[${INDX}]}_??????0100.nc        ${tempTarget}/${name[${INDX}]}.nc
-      rm -vf ${tempTarget}/${name[${INDX}]}_??????0100.nc
+     nccopy -k 1  ${tempTarget}/${name[${INDX}]}.nc  ${tempTarget}/${name[${INDX}]}_nc3.nc
+     mv -v ${tempTarget}/${name[${INDX}]}_nc3.nc ${tempTarget}/${name[${INDX}]}.nc
+     rm -vf ${tempTarget}/${name[${INDX}]}_??????0100.nc
 
     #---
     #Rename original RegCM variable to CORDEX variable
@@ -258,9 +261,12 @@ fi
 #--
 # Ingest files containg parts of the filenames (start-end)
 #--
-	source ./prepared_filenames_DM.txt
-	source ./prepared_filenames_MM.txt
-	source ./prepared_filenames_SM.txt
+	#001, 002 ERAINT source ./prepared_filenames_DM.txt
+	#001, 002 ERAINT source ./prepared_filenames_MM.txt
+	#001, 002 ERAINT source ./prepared_filenames_SM.txt
+	source ./prepared_filenames_DM_ECEARTH.txt
+	source ./prepared_filenames_MM_ECEARTH.txt
+	source ./prepared_filenames_SM_ECEARTH.txt
 
 if [ ${split} == 1 ] ; then
     echo 'Splitting files...'
@@ -596,8 +602,8 @@ echo "--------------------------------------------------------------------------
     # Go on next file!
     #---
     file=$((file+1))
-done
-
+    done
+fi
 
 
 

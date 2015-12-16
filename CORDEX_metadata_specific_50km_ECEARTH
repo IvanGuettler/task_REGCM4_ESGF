@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #-- Years to ingest
-	STARTyyy=1989
-	  ENDyyy=2008
+	STARTyyy=1970 #JAN
+	  ENDyyy=2005 #NOV
 #-- Region to consider
  #   For this exp grid is 142 x 142 cell. Buffer zone includes 11 cells. After removing the buffer zone, the grid includes 120 x 120 cells
  #   Important: nco considers indexes by default 0:141 (not 1:142). To use 1:142 index counting in nco one can select -F.
@@ -20,31 +20,31 @@
     RegularGrid=./CORDEX_metadata_05_grid.txt
 
 #-- VARIABLE source DIR
-sourceDIR[ 1]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 2]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 3]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 4]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 5]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[ 9]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
-sourceDIR[10]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_STS'
-sourceDIR[32]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
-sourceDIR[33]='/disk/regcm/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/SRF_CALCULATED/DM'
-sourceDIR[37]='/home1/regcm/DISK_zemlja/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_SRF/DM'
-sourceDIR[38]='/home1/regcm/DISK_zemlja/CORDEX/TEST/RegCM-version/output_CORDEX_MAR2012/FILES_SRF/DM'
+sourceDIR[ 1]='/home1/regcm/DISK_zemlja/CORDEX/TEST/EC-EARTH/output/FILES_SRF'
+sourceDIR[ 2]=''
+sourceDIR[ 3]=''
+sourceDIR[ 4]=''
+sourceDIR[ 5]=''
+sourceDIR[ 9]=''
+sourceDIR[10]=''
+sourceDIR[32]=''
+sourceDIR[33]=''
+sourceDIR[37]=''
+sourceDIR[38]=''
 #-- VARIABLE source FILE
-sourceFILE[ 1]='EUROPE_STS'
-sourceFILE[ 2]='EUROPE_STS'
-sourceFILE[ 3]='EUROPE_STS'
-sourceFILE[ 4]='EUROPE_STS'
-sourceFILE[ 5]='EUROPE_STS'
-sourceFILE[ 9]='EUROPE_rotatedWind_sfcwind'
-sourceFILE[10]='EUROPE_STS'
-sourceFILE[32]='EUROPE_rotatedWind_uas'
-sourceFILE[33]='EUROPE_rotatedWind_vas'
-sourceFILE[37]='EUROPE_tg'
-sourceFILE[38]='EUROPE_zpbl'
+sourceFILE[ 1]='EUROPE_SRF'
+sourceFILE[ 2]=''
+sourceFILE[ 3]=''
+sourceFILE[ 4]=''
+sourceFILE[ 5]=''
+sourceFILE[ 9]=''
+sourceFILE[10]=''
+sourceFILE[32]=''
+sourceFILE[33]=''
+sourceFILE[37]=''
+sourceFILE[38]=''
 #-- VARIABLE RegCM name
-varalica[ 1]='t2avg'
+varalica[ 1]='t2m'
 varalica[ 2]='t2max'
 varalica[ 3]='t2min'
 varalica[ 4]='pcpavg'
@@ -60,12 +60,12 @@ varalica[38]='zpbl'
 	Conventions="CF-1.4"
 	contact="ivan.guettler@cirus.dhz.hr"
 	creation_date="2014-11-15T12:00:00Z"
-	experiment="Evaluation run with reanalysis forcing"
-	experiment_id="evaluation"
-	driving_experiment="ECMWF-ERAINT, evaluation, r1i1p1"
-	driving_model_id="ECMWF-ERAINT"
+	experiment="ICHEC-EC-EARTH,historical,r1i1p1"
+	experiment_id="historical"
+	driving_experiment="ICHEC-EC-EARTH,historical,r1i1p1"
+	driving_model_id="ICHEC-EC-EARTH"
 	driving_model_ensemble_member="r1i1p1"
-	driving_experiment_name="evaluation"
+	driving_experiment_name="historical"
 	institution="Meteorological and Hydrological Service of Croatia"
 	institute_id="DHMZ"
 	model_id="DHMZ-RegCM4-2"

@@ -20,12 +20,18 @@
 
       print *, "Enter starting date of your simulation (YYYYMMDD):"
 !     read  *, Sstart
-      Sstart=19890101
+!001,002 ERAINT      Sstart=19890101
+!003,004 EC-EARTH
+      Sstart=19700101
       print *, "Enter final    date of your simulation (YYYYMMDD):"
 !     read  *, Send
-      Send=20081231
+!001,002 ERAINT      Send=20081231
+!003,004 EC-EARTH
+      Send=20051130
       print *, "Select calendar: (1) 365 leap, (2) 365 nonleap, (3) 360"
 !     read  *, caln
+!001,002 ERAINT      caln=1
+!003,004 ECEARTH
       caln=1
 
         ! Compute time details (YEAR, MONTH, DAY)
@@ -74,9 +80,12 @@
 
 
       ! Output is writen in following files
-      open(unit=12, file="prepared_filenames_MM.txt", action="write",status="old",position="append")
-      open(unit=13, file="prepared_filenames_DM.txt", action="write",status="old",position="append")
-      open(unit=14, file="prepared_filenames_SM.txt", action="write",status="old",position="append")
+!001,002      open(unit=12, file="prepared_filenames_MM.txt", action="write",status="old",position="append")
+!001,002      open(unit=13, file="prepared_filenames_DM.txt", action="write",status="old",position="append")
+!001,002      open(unit=14, file="prepared_filenames_SM.txt", action="write",status="old",position="append")
+      open(unit=12, file="prepared_filenames_MM_ECEARTH.txt", action="write",status="old",position="append")
+      open(unit=13, file="prepared_filenames_DM_ECEARTH.txt", action="write",status="old",position="append")
+      open(unit=14, file="prepared_filenames_SM_ECEARTH.txt", action="write",status="old",position="append")
 
         filekMM=1
         filekDM=1

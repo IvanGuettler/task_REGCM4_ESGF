@@ -1,4 +1,0 @@
-filenameSM[  1]=_198903-199011
-filenameSM[  2]=_199012-200011
-filenameSM[  3]=_200012-200811
-NFILES_SM=3
