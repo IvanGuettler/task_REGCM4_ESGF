@@ -14,13 +14,13 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
        INDX=1  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=1  #Collect variable from various sources        
-      means=1  #Calculate daily, monthly and seasonal means  
-  rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
-interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1  #Split files into specific groups             
-   metadata=1  #Edit meta-data                              
-    convert=0  #Convert from netcdf3 > netcdf4 if needed
+    collect=0  #Collect variable from various sources        
+      means=0  #Calculate daily, monthly and seasonal means  
+  rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
+interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=0  #Split files into specific groups             
+   metadata=0  #Edit meta-data                              
+    convert=1  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
@@ -427,8 +427,8 @@ echo "--------------------------------------------------------------------------
     #---
     #PHASE 2: add global atributes needed by CORDEX
     #---
-    ${NCO_PATH}/ncatted -O -h -a Conventions,global,c,c,"${convention}"                                        \
-                              -a contact,global,c,c,"${contact}"                                             \
+    ${NCO_PATH}/ncatted -O -h -a Conventions,global,c,c,"${Conventions}"                                        \
+                              -a contact,global,c,c,"${contact}"                                               \
                               -a creation_date,global,c,c,"${creation_date}"                                   \
                               -a experiment,global,c,c,"${experiment}"                                         \
                               -a experiment_id,global,c,c,"${experiment_id}"                                   \
@@ -541,7 +541,7 @@ echo "--------------------------------------------------------------------------
                                      -a standard_parallel,Lambert_Conformal,c,f,${projection_standard_parallel1}                         \
                                      -a standard_parallel,Lambert_Conformal,a,f,${projection_standard_parallel2}                         \
                                      -a longitude_of_central_meridian,Lambert_Conformal,c,f,${projection_longitude_of_central_meridian}  \
-                                     -a latitude_of_projection_origin,Lambert_Conformal,c,f,${projection_latitude_of_projection_origin}  \ 
+                                     -a latitude_of_projection_origin,Lambert_Conformal,c,f,${projection_latitude_of_projection_origin}  \
                                      -a  false_easting,Lambert_Conformal,c,f,"${falseEasting}"                                           \
                                      -a false_northing,Lambert_Conformal,c,f,"${falseNorthing}"                                   ${EDITING}
 
@@ -549,7 +549,7 @@ echo "--------------------------------------------------------------------------
    #---
    #PHASE 7b: after quality check
    #---
-   ${NCO_PATH}/ncap2    -O -h -s "x=double(x(:)); y=double(y(:))" ${EDITING}  ${tempTarget} test_GRISHA.nc
+   ${NCO_PATH}/ncap2    -O -h -s "x=double(x(:)); y=double(y(:))" ${EDITING}  ${tempTarget}/test_GRISHA.nc
    ${NCO_PATH}/ncatted -O -h -a standard_name,x,c,c,"projection_x_coordinate"     \
                              -a     long_name,x,c,c,"x-coordinate in Cartesian"   \
                              -a         units,x,c,c,"km"                          \
