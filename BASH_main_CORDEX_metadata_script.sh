@@ -14,12 +14,12 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
        INDX=1  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=0  #Collect variable from various sources        
-      means=0  #Calculate daily, monthly and seasonal means  
-  rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
-interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=0  #Split files into specific groups             
-   metadata=0  #Edit meta-data                              
+    collect=1  #Collect variable from various sources        
+      means=1  #Calculate daily, monthly and seasonal means  
+  rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
+interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=1  #Split files into specific groups             
+   metadata=1  #Edit meta-data                              
     convert=1  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
@@ -642,17 +642,33 @@ if [ ${convert} == 1 ] ; then
        fi
 
         
-        DIR=/${CORDEX_domain}/${institute_id}/${driving_model_id}/${driving_experiment_name}/${driving_model_ensemble_member}/${model_id}/${rcm_version_id}/${FREQ}/${name[${INDX}]}
+         DIR=/${CORDEX_domain}/${institute_id}/${driving_model_id}/${driving_experiment_name}/${driving_model_ensemble_member}/${model_id}/${rcm_version_id}/${FREQ}/${name[${INDX}]}
+        DIRi=/${CORDEX_domain}i/${institute_id}/${driving_model_id}/${driving_experiment_name}/${driving_model_ensemble_member}/${model_id}/${rcm_version_id}/${FREQ}/${name[${INDX}]}
 
          DIRIN=./netcdf3/${DIR}
         DIROUT=./netcdf4/${DIR}
+        DIROUTi1=./netcdf3/${DIRi}
+        DIROUTi2=./netcdf4/${DIRi}
 
-        mkdir -p  ${DIRIN}
+        mkdir -p ${DIRIN}
         mkdir -p ${DIROUT}
+        mkdir -p ${DIROUTi1}
+        mkdir -p ${DIROUTi2}
 
         mv ${EDITING} ${DIRIN}
 
         nccopy -k 4 -d 1 ${DIRIN}/${EDITING} ${DIROUT}/${EDITING}
+
+       if   grep -q "44i_" <<< "${EDITING}"  ; then
+            INTERPI=1     #--------------------------> Interpolated grid
+            mv  ${DIRIN}/${EDITING} ${DIROUTi1}
+            mv ${DIROUT}/${EDITING} ${DIROUTi2}
+       fi
+       if   grep -q "11i_" <<< "${EDITING}"  ; then
+            INTERPI=1     #--------------------------> Interpolated grid
+            mv  ${DIRIN}/${EDITING} ${DIROUTi1}
+            mv ${DIROUT}/${EDITING} ${DIROUTi2}
+       fi
 
         file=$((file+1))
     done
