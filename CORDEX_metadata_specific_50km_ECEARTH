@@ -21,8 +21,8 @@
 
 #-- VARIABLE source DIR
 sourceDIR[ 1]='/home1/regcm/DISK_zemlja/CORDEX/TEST/EC-EARTH/output/FILES_SRF'
-sourceDIR[ 2]=''
-sourceDIR[ 3]=''
+sourceDIR[ 2]='/home1/regcm/DISK_zemlja/CORDEX/TEST/EC-EARTH/output/FILES_STS'
+sourceDIR[ 3]='/home1/regcm/DISK_zemlja/CORDEX/TEST/EC-EARTH/output/FILES_STS'
 sourceDIR[ 4]=''
 sourceDIR[ 5]=''
 sourceDIR[ 9]=''
@@ -33,8 +33,8 @@ sourceDIR[37]=''
 sourceDIR[38]=''
 #-- VARIABLE source FILE
 sourceFILE[ 1]='EUROPE_SRF'
-sourceFILE[ 2]=''
-sourceFILE[ 3]=''
+sourceFILE[ 2]='EUROPE_STS'
+sourceFILE[ 3]='EUROPE_STS'
 sourceFILE[ 4]=''
 sourceFILE[ 5]=''
 sourceFILE[ 9]=''
