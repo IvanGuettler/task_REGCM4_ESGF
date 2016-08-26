@@ -6,21 +6,22 @@
         #(3) F90_gen_time.f90 successfully used
         #(4) Selected stages of preparing interpolated fileds: DM, MM, SM computed --> Domain reduced --> bilinear interpolation performed (only MM&SM)
 
-
 #The location of cdo & nco 
 #--> DHMZ vihor
 CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
+#2->3->10
+
 #--> Select activities
-       INDX=1  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+       INDX=10 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
     collect=1  #Collect variable from various sources        
-      means=0  #Calculate daily, monthly and seasonal means  
-  rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
-interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=0  #Split files into specific groups             
-   metadata=0  #Edit meta-data                              
-    convert=0  #Convert from netcdf3 > netcdf4 if needed
+      means=1  #Calculate daily, monthly and seasonal means  
+  rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
+interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=1  #Split files into specific groups             
+   metadata=1  #Edit meta-data                              
+    convert=1  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
@@ -300,7 +301,7 @@ ${CDO_PATH}/cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00
 ${CDO_PATH}/cdo seldate,${filenameMM[${j}]:1:4}-${filenameMM[${j}]:5:2}-01T00:00:00,${filenameMM[${j}]:8:4}-${filenameMM[${j}]:12:2}-31T23:59:59 ${FILE2i}_all.nc  ${FILE2i}${filenameMM[${j}]}.nc
 
 #--
-#Time step has to be centered between two time_bnds. This is great idea from Grigory Nikulin:
+#Time step has to be centered between two time_bnds. This is great idea from Grigory Nikulin (SMHI):
 #--
 ${NCO_PATH}/ncap2 -s "time=((time_bnds(:,0)+time_bnds(:,1))/2.0)" ${FILE2}${filenameMM[${j}]}.nc ${tempTarget}/temp.nc
 mv ${tempTarget}/temp.nc ${FILE2}${filenameMM[${j}]}.nc
@@ -332,7 +333,7 @@ ${CDO_PATH}/cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00
 ${CDO_PATH}/cdo seldate,${filenameSM[${j}]:1:4}-${filenameSM[${j}]:5:2}-01T00:00:00,${filenameSM[${j}]:8:4}-${filenameSM[${j}]:12:2}-31T23:59:59 ${FILE3i}_all.nc  ${FILE3i}${filenameSM[${j}]}.nc
 
 #--
-#Time step has to be centered between two time_bnds. This is great idea from Grigory Nikulin:
+#Time step has to be centered between two time_bnds. This is great idea from Grigory Nikulin (SMHI):
 #--
 ${NCO_PATH}/ncap2 -s "time=((time_bnds(:,0)+time_bnds(:,1))/2.0)"  ${FILE3}${filenameSM[${j}]}.nc ${tempTarget}/temp.nc
 mv ${tempTarget}/temp.nc ${FILE3}${filenameSM[${j}]}.nc
@@ -506,11 +507,41 @@ echo "--------------------------------------------------------------------------
     ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
     ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(10)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
-    ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
-                              -a standard_name,height,c,c,${H2_standardname} \
-                              -a units,height,c,c,${H2_units}                \
-                              -a axis,height,c,c,${H2_axis}                  \
-                              -a positive,height,c,c,${H2_positive}          ${EDITING}
+    ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H10_longname}         \
+                              -a standard_name,height,c,c,${H10_standardname} \
+                              -a units,height,c,c,${H10_units}                \
+                              -a axis,height,c,c,${H10_axis}                  \
+                              -a positive,height,c,c,${H10_positive}          ${EDITING}
+    fi
+    if [ ${heights[${INDX}]} == 9 ]; then
+    ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
+    ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(10)"  ${EDITING} ${tempTarget}/test.nc
+    mv ${tempTarget}/test.nc ${EDITING}
+    ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H10_longname}         \
+                              -a standard_name,height,c,c,${H10_standardname} \
+                              -a units,height,c,c,${H10_units}                \
+                              -a axis,height,c,c,${H10_axis}                  \
+                              -a positive,height,c,c,${H10_positive}          ${EDITING}
+    fi
+    if [ ${heights[${INDX}]} == 32 ]; then
+    ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
+    ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(10)"  ${EDITING} ${tempTarget}/test.nc
+    mv ${tempTarget}/test.nc ${EDITING}
+    ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H10_longname}         \
+                              -a standard_name,height,c,c,${H10_standardname} \
+                              -a units,height,c,c,${H10_units}                \
+                              -a axis,height,c,c,${H10_axis}                  \
+                              -a positive,height,c,c,${H10_positive}          ${EDITING}
+    fi
+    if [ ${heights[${INDX}]} == 33 ]; then
+    ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
+    ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(10)"  ${EDITING} ${tempTarget}/test.nc
+    mv ${tempTarget}/test.nc ${EDITING}
+    ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H10_longname}         \
+                              -a standard_name,height,c,c,${H10_standardname} \
+                              -a units,height,c,c,${H10_units}                \
+                              -a axis,height,c,c,${H10_axis}                  \
+                              -a positive,height,c,c,${H10_positive}          ${EDITING}
     fi
 
 echo "-----------------------------------------------------------------------------5"
