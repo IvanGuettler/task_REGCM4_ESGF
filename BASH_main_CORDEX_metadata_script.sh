@@ -14,21 +14,22 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 #2->3->10
 
 #--> Select activities
-       INDX=38 #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=1  #Collect variable from various sources        
+       INDX=1  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+    collect=0  #Collect variable from various sources        
       means=1  #Calculate daily, monthly and seasonal means  
   rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
 interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1  #Split files into specific groups             
-   metadata=1  #Edit meta-data                              
-    convert=1  #Convert from netcdf3 > netcdf4 if needed
+      split=0  #Split files into specific groups             
+   metadata=0  #Edit meta-data                              
+    convert=0  #Convert from netcdf3 > netcdf4 if needed
 
 #General metadata
     source ./CORDEX_metadata_common
 #Load meta data from separate file for specific experiment you are working on
     #001 source ./CORDEX_metadata_specific_50km_ERAIN
     #002 source ./CORDEX_metadata_specific_12km_ERAIN
-         source ./CORDEX_metadata_specific_50km_ECEARTH
+    #003 source ./CORDEX_metadata_specific_50km_ECEARTH
+         source ./CORDEX_metadata_specific_12km_ECEARTH
     export HDF5_DISABLE_VERSION_CHECK=1
 #All temporary output in the following directory
     tempTarget=/work/regcm/temp/test_CORDEX
@@ -44,36 +45,36 @@ if [ ${collect} == 1 ] ; then
     #---
     #Collect specific variable from RegCM output or separately prepared quantities
     #---
-    for YEAR in $(seq ${STARTyyy} ${ENDyyy}); do
-    echo ${YEAR}
-            for MNTH in 0 1 2 3 4 5 6 7 8 9 10 11 ; do 
-	    echo ${MNTH}
-            if [ ${heights[${INDX}]} == 0 ] ; then
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat                                  \
-           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
-                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
-            fi
-            if [ ${heights[${INDX}]} == 2 ] ; then
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                               \
-           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
-                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
-            fi
-            if [ ${heights[${INDX}]} == 10 ] ; then
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m10                              \
-           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
-                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
-            fi
-            done #<<< MNTH
-    done #<<< YEAR
+#    for YEAR in $(seq ${STARTyyy} ${ENDyyy}); do
+#    echo ${YEAR}
+#            for MNTH in 0 1 2 3 4 5 6 7 8 9 10 11 ; do 
+#	    echo ${MNTH}
+#            if [ ${heights[${INDX}]} == 0 ] ; then
+#${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat                                  \
+#           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
+#                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
+#            fi
+#            if [ ${heights[${INDX}]} == 2 ] ; then
+#${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                               \
+#           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
+#                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
+#            fi
+#            if [ ${heights[${INDX}]} == 10 ] ; then
+#${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m10                              \
+#           ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
+#                         ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
+#            fi
+#            done #<<< MNTH
+#    done #<<< YEAR
 
 
-    #---
-    #Join all files into one file
-    #---
-     ${NCO_PATH}/ncrcat   -h ${tempTarget}/${name[${INDX}]}_??????0100.nc        ${tempTarget}/${name[${INDX}]}.nc
-     nccopy -k 1  ${tempTarget}/${name[${INDX}]}.nc  ${tempTarget}/${name[${INDX}]}_nc3.nc
-     mv -v ${tempTarget}/${name[${INDX}]}_nc3.nc ${tempTarget}/${name[${INDX}]}.nc
-     rm -vf ${tempTarget}/${name[${INDX}]}_??????0100.nc
+#    #---
+#    #Join all files into one file
+#    #---
+#     ${NCO_PATH}/ncrcat   -h ${tempTarget}/${name[${INDX}]}_??????0100.nc        ${tempTarget}/${name[${INDX}]}.nc
+#     nccopy -k 1  ${tempTarget}/${name[${INDX}]}.nc  ${tempTarget}/${name[${INDX}]}_nc3.nc
+#     mv -v ${tempTarget}/${name[${INDX}]}_nc3.nc ${tempTarget}/${name[${INDX}]}.nc
+#     rm -vf ${tempTarget}/${name[${INDX}]}_??????0100.nc
 
     #---
     #Rename original RegCM variable to CORDEX variable
@@ -130,7 +131,7 @@ if [ ${means} == 1 ] ; then
 # Perform averaging
 #---
 echo 'DM, MM and SM...'
-${CDO_PATH}/cdo -f nc -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days           ${tempTarget}/${name[${INDX}]}.nc ${FILE1}_all.nc
+${CDO_PATH}/cdo -f nc -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -daymean  ${tempTarget}/${name[${INDX}]}.nc ${FILE1}_all.nc
 ${CDO_PATH}/cdo -f nc -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -monmean  ${tempTarget}/${name[${INDX}]}.nc ${FILE2}_all.nc
 ${CDO_PATH}/cdo -f nc -r setreftime,${time_start_date},${time_start_hour},${time_start_unit} -setcalendar,${time_calendar} -settunits,days -seasmean ${tempTarget}/${name[${INDX}]}.nc ${FILE3}_all.nc
 
