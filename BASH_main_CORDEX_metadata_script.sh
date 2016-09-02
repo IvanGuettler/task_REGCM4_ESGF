@@ -15,11 +15,11 @@ NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 
 #--> Select activities
        INDX=1  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=0  #Collect variable from various sources        
-      means=0  #Calculate daily, monthly and seasonal means  
+    collect=1  #Collect variable from various sources        
+      means=1  #Calculate daily, monthly and seasonal means  
   rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
 interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1  #Split files into specific groups             
+      split=0  #Split files into specific groups             
    metadata=0  #Edit meta-data                              
     convert=0  #Convert from netcdf3 > netcdf4 if needed
 
@@ -49,18 +49,18 @@ if [ ${collect} == 1 ] ; then
     echo ${YEAR}
             for MNTH in 0 1 2 3 4 5 6 7 8 9 10 11 ; do 
 	    echo ${MNTH}
-             if [ ${heights[${INDX}]} == 0 ] ; then
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat                                  \
+            if [ ${heights[${INDX}]} == 0 ] ; then
+${NCO_PATH}/ncks --3 -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat                                  \
            ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
                          ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
             fi
             if [ ${heights[${INDX}]} == 2 ] ; then
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                               \
+${NCO_PATH}/ncks --3 -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m2                               \
            ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
                          ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
             fi
             if [ ${heights[${INDX}]} == 10 ] ; then
-${NCO_PATH}/ncks -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m10                              \
+${NCO_PATH}/ncks --3 -O -h -v time,time_bnds,iy,jx,${varalica[${INDX}]},xlon,xlat,m10                              \
            ${sourceDIR[${INDX}]}/${sourceFILE[${INDX}]}.${YEAR}${MONTHS[${MNTH}]}0100_nc4.nc                   \
                          ${tempTarget}/${name[${INDX}]}_${YEAR}${MONTHS[${MNTH}]}0100.nc
             fi
@@ -138,9 +138,9 @@ ${CDO_PATH}/cdo -f nc -r setreftime,${time_start_date},${time_start_hour},${time
 #---
 # Rename dimension x,y into jx,iy
 #---
-    ${NCO_PATH}/ncrename -O -h -d x,jx -d y,iy     ${FILE1}_all.nc
-    ${NCO_PATH}/ncrename -O -h -d x,jx -d y,iy     ${FILE2}_all.nc
-    ${NCO_PATH}/ncrename -O -h -d x,jx -d y,iy     ${FILE3}_all.nc
+    ${NCO_PATH}/ncrename -O -h -d .x,jx -d .y,iy     ${FILE1}_all.nc
+    ${NCO_PATH}/ncrename -O -h -d .x,jx -d .y,iy     ${FILE2}_all.nc
+    ${NCO_PATH}/ncrename -O -h -d .x,jx -d .y,iy     ${FILE3}_all.nc
 
 #---
 # cdo did not copy varialbes iy,jx. (Recheck this step with new cdo version)
@@ -215,15 +215,15 @@ if [ ${interpolate} == 1 ] ; then
 #---
 # Rename dimensions lon,lat into jx,iy
 #---
-    ${NCO_PATH}/ncrename -O -h -d lon,jx -d lat,iy    ${FILE2i}_all.nc
-    ${NCO_PATH}/ncrename -O -h -d lon,jx -d lat,iy    ${FILE3i}_all.nc
+    ${NCO_PATH}/ncrename -O -h -d .lon,jx -d .lat,iy    ${FILE2i}_all.nc
+    ${NCO_PATH}/ncrename -O -h -d .lon,jx -d .lat,iy    ${FILE3i}_all.nc
 
 #---
 # After performing interpolation using cdo, variables xlon,xlat can be renamed to lon,lat
 #---
-    ${NCO_PATH}/ncrename -O -h -v xlon,lon -v xlat,lat ${FILE1}_all.nc
-    ${NCO_PATH}/ncrename -O -h -v xlon,lon -v xlat,lat ${FILE2}_all.nc
-    ${NCO_PATH}/ncrename -O -h -v xlon,lon -v xlat,lat ${FILE3}_all.nc
+    ${NCO_PATH}/ncrename -O -h -v .xlon,lon -v .xlat,lat ${FILE1}_all.nc
+    ${NCO_PATH}/ncrename -O -h -v .xlon,lon -v .xlat,lat ${FILE2}_all.nc
+    ${NCO_PATH}/ncrename -O -h -v .xlon,lon -v .xlat,lat ${FILE3}_all.nc
 
 #--
 # Rename information concering the coordinates in the local metadata
@@ -361,8 +361,9 @@ mv ${tempTarget}/temp.nc ${FILE3i}${filenameSM[${j}]}.nc
 #---
         mkdir -p                             ${tempTarget}/temp
 	# 2015-04-07 mv ${tempTarget}/*_all.nc            ${tempTarget}/temp
-	rm -vf          ${tempTarget}/*_all.nc        
+	# 2016-09-02 rm -vf          ${tempTarget}/*_all.nc        
         mv ${tempTarget}/${name[${INDX}]}.nc ${tempTarget}/temp
+        mv ${tempTarget}/*_all.nc ${tempTarget}/temp
 fi
 
 
