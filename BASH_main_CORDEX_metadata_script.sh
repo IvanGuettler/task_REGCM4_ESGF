@@ -10,28 +10,43 @@
 #--> DHMZ vihor
 CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
+export HDF5_DISABLE_VERSION_CHECK=1
 
 #2->3->10
 
 #--> Select activities
-       INDX=1  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+       INDX=5  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
     collect=1  #Collect variable from various sources        
       means=1  #Calculate daily, monthly and seasonal means  
-  rm_buffer=0  #Remove buffer zone e.g. 11 grid cells        
-interpolate=0  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=0  #Split files into specific groups             
-   metadata=0  #Edit meta-data                              
-    convert=0  #Convert from netcdf3 > netcdf4 if needed
+  rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
+interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=1  #Split files into specific groups             
+   metadata=1  #Edit meta-data                              
+    convert=1  #Convert from netcdf3 > netcdf4 if needed
 
+#--
 #General metadata
     source ./CORDEX_metadata_common
+#--
+#--
 #Load meta data from separate file for specific experiment you are working on
+#--
     #001 source ./CORDEX_metadata_specific_50km_ERAIN
     #002 source ./CORDEX_metadata_specific_12km_ERAIN
-    #003 source ./CORDEX_metadata_specific_50km_ECEARTH
-         source ./CORDEX_metadata_specific_12km_ECEARTH
-    export HDF5_DISABLE_VERSION_CHECK=1
+         source ./CORDEX_metadata_specific_50km_ECEARTH
+    #004 source ./CORDEX_metadata_specific_12km_ECEARTH
+#--
+# Ingest files containg parts of the filenames (start-end)
+#--
+	#001, 002 ERAINT source ./prepared_filenames_DM.txt
+	#001, 002 ERAINT source ./prepared_filenames_MM.txt
+	#001, 002 ERAINT source ./prepared_filenames_SM.txt
+	source ./prepared_filenames_DM_ECEARTH.txt
+	source ./prepared_filenames_MM_ECEARTH.txt
+	source ./prepared_filenames_SM_ECEARTH.txt
+#--
 #All temporary output in the following directory
+#--
     tempTarget=/work/regcm/temp/test_CORDEX
 
 
@@ -260,15 +275,6 @@ fi
 #==================================================
 
 # This part of the code assumes everything was fine with the F90_gen_time.f90. Test carefully and send possible bug details to ivan.guettler@gmail.com.
-#--
-# Ingest files containg parts of the filenames (start-end)
-#--
-	#001, 002 ERAINT source ./prepared_filenames_DM.txt
-	#001, 002 ERAINT source ./prepared_filenames_MM.txt
-	#001, 002 ERAINT source ./prepared_filenames_SM.txt
-	source ./prepared_filenames_DM_ECEARTH.txt
-	source ./prepared_filenames_MM_ECEARTH.txt
-	source ./prepared_filenames_SM_ECEARTH.txt
 
 if [ ${split} == 1 ] ; then
     echo 'Splitting files...'
@@ -454,20 +460,20 @@ echo "--------------------------------------------------------------------------
     #PHASE 3: rename dimensions
     #---
     if [ ${INTERPI} == 0 ]; then
-    ${NCO_PATH}/ncrename -O -h -v iy,y \
-                               -v jx,x \
-                               -d iy,y \
-                               -d jx,x ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -v .iy,y \
+                               -v .jx,x \
+                               -d .iy,y \
+                               -d .jx,x ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a CORDEX_domain,global,c,c,"${CORDEX_domain}"   ${EDITING}
     fi
     if [ ${INTERPI} == 1 ]; then
     ${NCO_PATH}/ncatted -O  -h -a CORDEX_domain,global,c,c,"${CORDEX_domain_i}" ${EDITING}
     fi
     if [ ${heights[${INDX}]} == 2 ]; then
-    ${NCO_PATH}/ncrename -O -h -d m2,lev ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -d .m2,lev ${EDITING}
     fi
     if [ ${heights[${INDX}]} == 10 ]; then
-    ${NCO_PATH}/ncrename -O -h -d m10,lev ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -d .m10,lev ${EDITING}
     fi
    
 
@@ -496,7 +502,7 @@ echo "--------------------------------------------------------------------------
     #PHASE 5: edit height (this has to be generalized)
     #---
     if [ ${heights[${INDX}]} == 2 ]; then
-    ${NCO_PATH}/ncrename -O -h -v m2,height              ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -v .m2,height              ${EDITING}
     ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(2)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H2_longname}         \
@@ -506,7 +512,7 @@ echo "--------------------------------------------------------------------------
                               -a positive,height,c,c,${H2_positive}          ${EDITING}
     fi
     if [ ${heights[${INDX}]} == 10 ]; then
-    ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -v .m10,height              ${EDITING}
     ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(10)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H10_longname}         \
@@ -516,7 +522,7 @@ echo "--------------------------------------------------------------------------
                               -a positive,height,c,c,${H10_positive}          ${EDITING}
     fi
     if [ ${heights[${INDX}]} == 9 ]; then
-    ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -v .m10,height              ${EDITING}
     ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(10)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H10_longname}         \
@@ -526,7 +532,7 @@ echo "--------------------------------------------------------------------------
                               -a positive,height,c,c,${H10_positive}          ${EDITING}
     fi
     if [ ${heights[${INDX}]} == 32 ]; then
-    ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -v .m10,height              ${EDITING}
     ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(10)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H10_longname}         \
@@ -536,7 +542,7 @@ echo "--------------------------------------------------------------------------
                               -a positive,height,c,c,${H10_positive}          ${EDITING}
     fi
     if [ ${heights[${INDX}]} == 33 ]; then
-    ${NCO_PATH}/ncrename -O -h -v m10,height              ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -v .m10,height              ${EDITING}
     ${NCO_PATH}/ncap2    -O -h -s "height(:)=double(10)"  ${EDITING} ${tempTarget}/test.nc
     mv ${tempTarget}/test.nc ${EDITING}
     ${NCO_PATH}/ncatted -O -h -a long_name,height,c,c,${H10_longname}         \
@@ -609,7 +615,7 @@ echo "--------------------------------------------------------------------------
                               -a units,time,c,c,"days since 1949-12-01 00:00:00Z" \
                               -a calendar,time,c,c,${time_calendar}               \
                               -a bounds,time,c,c,${time_bounds}                   ${EDITING}
-    ${NCO_PATH}/ncrename -O -h -d nb2,bnds                                        ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -d .nb2,bnds                                        ${EDITING}
 
 echo "-----------------------------------------------------------------------------8"
     #---
