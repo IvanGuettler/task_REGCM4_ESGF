@@ -1,11 +1,8 @@
 #!/bin/bash
 
 #-- Years to ingest
-	STARTyyy=1970 #JAN
+	STARTyyy=1971 #JAN
 	  ENDyyy=2005 #NOV
-#--
-#   time_bnds 
-    MOVETB=6
 
 #-- Region to consider
  #   For this exp grid is 142 x 142 cell. Buffer zone includes 11 cells. After removing the buffer zone, the grid includes 120 x 120 cells
@@ -63,7 +60,7 @@ varalica[38]='zpbl'
 #-------- Global attributes
 	Conventions="CF-1.4"
 	contact="ivan.guettler@cirus.dhz.hr"
-	creation_date="2014-11-15T12:00:00Z"
+	creation_date="2014-03-15T12:00:00Z"
 	experiment="ICHEC-EC-EARTH,historical,r1i1p1"
 	experiment_id="historical"
 	driving_experiment="ICHEC-EC-EARTH,historical,r1i1p1"

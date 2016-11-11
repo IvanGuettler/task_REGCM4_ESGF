@@ -22,7 +22,7 @@
 !     read  *, Sstart
 !001,002 ERAINT      Sstart=19890101
 !003,004 EC-EARTH
-      Sstart=19700101
+      Sstart=19710101
       print *, "Enter final    date of your simulation (YYYYMMDD):"
 !     read  *, Send
 !001,002 ERAINT      Send=20081231

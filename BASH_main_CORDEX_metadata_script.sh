@@ -8,21 +8,21 @@
 
 #The location of cdo & nco 
 #--> DHMZ vihor
-CDO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
+CDO_PATH='/usr/local/bin/'
 NCO_PATH='/home1/regcm/regcmlibs_my_nco/bin'
 export HDF5_DISABLE_VERSION_CHECK=1
 
 #2->3->10
 
 #--> Select activities
-       INDX=5  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
-    collect=1  #Collect variable from various sources        
-      means=1  #Calculate daily, monthly and seasonal means  
-  rm_buffer=1  #Remove buffer zone e.g. 11 grid cells        
-interpolate=1  #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
-      split=1  #Split files into specific groups             
-   metadata=1  #Edit meta-data                              
-    convert=1  #Convert from netcdf3 > netcdf4 if needed
+       INDX=1  #WHICH VARIABLE? (use CORDEX_metadata_common to read more).
+    collect=0   #Collect variable from various sources        
+      means=0   #Calculate daily, monthly and seasonal means  
+  rm_buffer=0   #Remove buffer zone e.g. 11 grid cells        
+interpolate=0   #Interpolate to regular CORDEX grid (0.5 or 0.125 deg)
+      split=1   #Split files into specific groups             
+   metadata=1   #Edit meta-data                              
+    convert=1   #Convert from netcdf3 > netcdf4 if needed
 
 #--
 #General metadata
@@ -615,7 +615,7 @@ echo "--------------------------------------------------------------------------
                               -a units,time,c,c,"days since 1949-12-01 00:00:00Z" \
                               -a calendar,time,c,c,${time_calendar}               \
                               -a bounds,time,c,c,${time_bounds}                   ${EDITING}
-    ${NCO_PATH}/ncrename -O -h -d .nb2,bnds                                        ${EDITING}
+    ${NCO_PATH}/ncrename -O -h -d .nb2,bnds                                       ${EDITING}
 
 echo "-----------------------------------------------------------------------------8"
     #---
